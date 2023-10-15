@@ -40,7 +40,7 @@ A tiny (<2kb gzipped), typed JMAP client with zero dependencies, adhering to the
 
 ## Installation
 
-Jam works in any environment that supports the [Web Fetch API][mdn-using-fetch], including Node.js (`>=18`) and the browser.
+Jam works in any environment that supports the [Web Fetch API][mdn-using-fetch] and ES Modules, including Node.js (`>=18`) and the browser.
 
 Use as a package:
 

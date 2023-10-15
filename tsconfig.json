@@ -2,14 +2,15 @@
   "compilerOptions": {
     "lib": ["ESNext", "DOM"],
     "module": "esnext",
-    "target": "ES2022",
+    "target": "ES2018",
     "moduleResolution": "node",
     "strict": true,
     "skipLibCheck": true,
     "allowSyntheticDefaultImports": true,
     "emitDeclarationOnly": true,
     "declaration": true,
-    "outDir": "dist"
+    "outDir": "dist",
+    "declarationMap": true
   },
   "include": ["src/**/*"]
 }

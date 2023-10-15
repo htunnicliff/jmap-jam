@@ -4,9 +4,10 @@ import { execSync } from "child_process";
 export default defineConfig({
   entry: ["src/index.ts"],
   outDir: "dist",
-  format: ["cjs", "esm"],
+  format: "esm",
   clean: true,
-  target: ["es2022"],
+  target: ["es2018"],
+  sourcemap: true,
   async onSuccess() {
     execSync("tsc");
   },
