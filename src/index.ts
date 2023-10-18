@@ -45,12 +45,6 @@ export type ClientConfig = {
   customCapabilities?: Record<string, string>;
 };
 
-export type RequestOptions = {
-  fetchInit?: RequestInit;
-  using?: JMAPRequest["using"];
-  createdIds?: JMAPRequest["createdIds"];
-};
-
 export function createClient(config: ClientConfig) {
   // ----------------------------------
   // Local variables and functions
@@ -82,7 +76,11 @@ export function createClient(config: ClientConfig) {
 
   async function request<R extends Record<string, RequestsTuple<Requests>>>(
     requests: R,
-    options: RequestOptions = {}
+    options: {
+      fetchInit?: RequestInit;
+      using?: JMAPRequest["using"];
+      createdIds?: JMAPRequest["createdIds"];
+    } = {}
   ) {
     // Extract options
     const { using = [], fetchInit, createdIds: createdIdsInput } = options;
