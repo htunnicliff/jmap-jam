@@ -29,10 +29,7 @@ A tiny (<2kb gzipped), typed JMAP client with zero dependencies, adhering to the
 - [TypeScript](#typescript)
 - [API Reference](#api-reference)
   - [`#session`](#session)
-  - [`requestMany()`](#requestmany)
-  - [`requestManyOrFail()`](#requestmanyorfail)
   - [`request()`](#request)
-  - [`requestOrFail()`](#requestorfail)
   - [`getPrimaryAccount()`](#getprimaryaccount)
   - [`downloadBlob()`](#downloadblob)
   - [`uploadBlob()`](#uploadblob)
@@ -87,10 +84,10 @@ To learn more about requests in JMAP, see the following resources:
 
 > Though JMAP examples often show multiple method calls being used in a single request, see the [Notes on Concurrency](#notes-on-concurrency) section for information about why a single method call per request can sometimes be more efficient.
 
-Here's what a series of requests looks like with Jam using [`requestMany`](#requestmany):
+Here's what a series of requests looks like with Jam using [`request`](#request):
 
 ```ts
-const [result] = await client.requestMany({
+const [result] = await client.request({
   myMailboxes: [
     "Mailbox/get",
     {
@@ -134,8 +131,6 @@ This will transform into the following JMAP request:
 }
 ```
 
-You can also use [`request`](#request), [`requestOrFail`](#requestorfail), or [`requestManyOrFail`](#requestmanyorfail).
-
 [jmap-3.2]: https://datatracker.ietf.org/doc/html/rfc8620#section-3.2
 [jmap-3.7-result-refs]: https://datatracker.ietf.org/doc/html/rfc8620#section-3.7
 
@@ -149,9 +144,9 @@ To make concurrent method calls, send them in separate requests.
 
 In sum:
 
-- Prefer using [`request`](#request)/[`requestOrFail`](#requestorfail), parallelizing when desired (e.g. with [`Promise.all`][promise-all]).
-- If a method call needs the output of another method call, use [`requestMany`](#requestmany)/[`requestManyOrFail`](#requestmanyorfail) to take advantage of [result references][jmap-3.7-result-refs].
-- Or, if reducing the quantity of HTTP requests is more important than concurrency, use [`requestMany`](#requestmany)/[`requestManyOrFail`](#requestmanyorfail) to send multiple method calls in a single request even if they aren't dependent on each other.
+- Prefer using separate [`request`](#request)'s, parallelizing when desired (e.g. with [`Promise.all`][promise-all]).
+- If a method call needs the output of another method call, use [`request`](#request) with object syntax to take advantage of [result references][jmap-3.7-result-refs] between method calls.
+- Or, if reducing the quantity of HTTP requests is more important than concurrency, use [`request`](#request) with object syntax to send multiple method calls in a single request even if they aren't dependent on each other.
 
 [jmap-3.10]: https://datatracker.ietf.org/doc/html/rfc8620#section-3.10
 [promise-all]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/all
@@ -181,7 +176,7 @@ console.log(session); // =>
 // }
 ```
 
-### `requestMany()`
+### `request()`
 
 Send a standard JMAP request.
 
@@ -189,7 +184,7 @@ This accepts multiple method calls and returns success
 or error results for each method call.
 
 ```js
-const [results] = await client.requestMany({
+const [results] = await client.request({
   mailboxes: ["Mailbox/get", { accountId, properties: ["name"] }],
   emails: ["Email/get", { accountId, properties: ["subject"] }],
 });
@@ -198,60 +193,6 @@ console.log(results); // =>
 //   mailboxes: { data: { ... } }, // or { error: { ... } }
 //   emails: { data: { ... } }, // or { error: { ... }
 // }
-```
-
-### `requestManyOrFail()`
-
-Send a standard JMAP request.
-
-This accepts multiple method calls and only returns success results.
-If any method calls result in an error, the function will throw.
-
-```js
-const [results] = await client.requestManyOrFail({
-  mailboxes: ["Mailbox/get", { accountId, properties: ["name"] }],
-  emails: ["Email/get", { accountId, properties: ["subject"] }],
-});
-console.log(results); // =>
-// {
-//   mailboxes: { ... },
-//   emails: { ... },
-// }
-```
-
-### `request()`
-
-Send a JMAP request with only a single method call.
-
-This accepts one method call and returns a success or error result.
-
-```js
-const [mailboxes] = await client.request([
-  "Mailbox/get",
-  { accountId, properties: ["name"] },
-]);
-console.log(mailboxes); // =>
-// { data: { ... } } // or { error: { ... } }
-```
-
-### `requestOrFail()`
-
-Send a JMAP request with only a single method call.
-
-This accepts one method call and only returns a success result.
-If an error occurs, the function will throw.
-
-```js
-const [mailboxes] = await client.requestOrFail([
-  "Mailbox/get",
-  { accountId, properties: ["name"] },
-]);
-console.log(mailboxes); // =>
-// [
-//   { name: "Inbox" },
-//   { name: "Drafts" },
-//   ...
-// ]
 ```
 
 ### `getPrimaryAccount()`
