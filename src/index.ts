@@ -43,9 +43,16 @@ export type ClientConfig = {
    * ```
    */
   customCapabilities?: Record<string, string>;
+  /**
+   * The error handling strategy to use when one or more method calls
+   * receive an error response.
+   */
+  errorHandling?: "throw" | "return";
 };
 
-export function createClient(config: ClientConfig) {
+export function createClient<Config extends ClientConfig>(config: Config) {
+  config.errorHandling ??= "throw";
+
   // ----------------------------------
   // Local variables and functions
   // ----------------------------------
@@ -74,39 +81,44 @@ export function createClient(config: ClientConfig) {
     cache: "no-cache",
   }).then((res) => res.json());
 
-  async function request<R extends Record<string, RequestsTuple<Requests>>>(
-    requests: R,
+  async function request<
+    R extends RequestsTuple<Requests>,
+    Result extends Responses<R[1]>[R[0]]
+  >(
+    [method, args]: R,
     options: {
       fetchInit?: RequestInit;
       using?: JMAPRequest["using"];
       createdIds?: JMAPRequest["createdIds"];
     } = {}
-  ) {
+  ): Promise<
+    [
+      Result,
+      {
+        sessionState: JMAPResponse["sessionState"];
+        createdIds: JMAPResponse["createdIds"];
+        response: Response;
+      }
+    ]
+  > {
     // Extract options
     const { using = [], fetchInit, createdIds: createdIdsInput } = options;
 
     // Assemble method calls
-    const methods = new Set<string>();
-    const methodCalls = Object.entries(requests).map(
-      ([methodCallId, invocation]) => {
-        const [method, args] = invocation;
-        methods.add(method);
-        return [method, args, methodCallId] as Invocation<typeof args>;
-      }
-    );
+    const invocation: Invocation<typeof args> = [method, args, "r1"];
 
     // Build request
     const body = {
       using: [
         ...getCapabilitiesForMethodCalls({
-          methodNames: methods,
+          methodNames: [method],
           availableCapabilities: capabilities,
         }),
         ...using,
       ],
-      methodCalls,
+      methodCalls: [invocation],
       createdIds: createdIdsInput,
-    } satisfies JMAPRequest;
+    } satisfies JMAPRequest<[typeof invocation]>;
 
     // Ensure session is loaded (if not already)
     const { apiUrl } = await session;
@@ -137,52 +149,27 @@ export function createClient(config: ClientConfig) {
     }
 
     // Handle success
-    const { methodResponses, sessionState, createdIds } =
-      (await response.json()) as JMAPResponse;
+    const {
+      methodResponses: [methodResponse],
+      sessionState,
+      createdIds,
+    } = (await response.json()) as JMAPResponse<[Invocation<Result>]>;
 
-    // Build response
-    const results = Object.fromEntries(
-      methodResponses.map(([methodName, dataOrError, requestId]) => {
-        let payload;
-        if (methodName === "error") {
-          payload = {
-            requestId,
-            error: dataOrError,
-            data: null,
-          };
-        } else {
-          payload = {
-            requestId,
-            data: dataOrError,
-            error: null,
-          };
-        }
+    // Handle error responses
+    const [name, data] = methodResponse;
 
-        return [requestId, payload] as const;
-      })
-    ) as {
-      [K in keyof R]: {
-        requestId: K;
-      } & (
-        | {
-            error: null;
-            data: Responses<R[K][1]>[R[K][0]];
-          }
-        | {
-            error: ProblemDetails;
-            data: null;
-          }
-      );
-    };
-
-    return [
-      results,
-      {
-        sessionState,
-        createdIds,
-        response,
-      },
-    ] as const;
+    if (name === "error" && config.errorHandling === "throw") {
+      throw data;
+    } else {
+      return [
+        data,
+        {
+          sessionState,
+          createdIds,
+          response,
+        },
+      ];
+    }
   }
 
   /**
