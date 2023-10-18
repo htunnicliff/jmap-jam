@@ -80,30 +80,7 @@ export function createClient(config: ClientConfig) {
     cache: "no-cache",
   }).then((res) => res.json());
 
-  // ----------------------------------
-  // Request functions
-  // ----------------------------------
-
-  /**
-   * Send a standard JMAP request.
-   *
-   * This accepts multiple method calls and returns success
-   * or error results for each method call.
-   *
-   * @example
-   * ```js
-   * const [results] = await client.requestMany({
-   *   mailboxes: ["Mailbox/get", { accountId, properties: ["name"] }],
-   *   emails: ["Email/get", { accountId, properties: ["subject"],  }],
-   * });
-   * console.log(results) // =>
-   * // {
-   * //   mailboxes: { data: { ... } }, // or { error: { ... } }
-   * //   emails: { data: { ... } }, // or { error: { ... }
-   * // }
-   * ```
-   */
-  async function requestMany<R extends Record<string, RequestsTuple<Requests>>>(
+  async function request<R extends Record<string, RequestsTuple<Requests>>>(
     requests: R,
     options: RequestOptions = {}
   ) {
@@ -208,110 +185,6 @@ export function createClient(config: ClientConfig) {
         response,
       },
     ] as const;
-  }
-
-  /**
-   * Send a standard JMAP request.
-   *
-   * This accepts multiple method calls and only returns success results.
-   * If any method calls result in an error, the function will throw.
-   *
-   * @example
-   * ```js
-   * const [results] = await client.requestManyOrFail({
-   *   mailboxes: ["Mailbox/get", { accountId, properties: ["name"] }],
-   *   emails: ["Email/get", { accountId, properties: ["subject"],  }],
-   * });
-   * console.log(results) // =>
-   * // {
-   * //   mailboxes: { ... },
-   * //   emails: { ... },
-   * // }
-   * ```
-   */
-  async function requestManyOrFail<
-    R extends Record<string, RequestsTuple<Requests>>
-  >(requests: R, options: RequestOptions = {}) {
-    const [result, meta] = await requestMany(requests, options);
-
-    try {
-      if (Object.values(result).some((r) => r.error)) {
-        throw result;
-      }
-    } catch (cause) {
-      throw new Error("One or more method calls resulted in an error", {
-        cause,
-      });
-    }
-
-    const resultData = Object.fromEntries(
-      Object.entries(result).map(([requestId, { data }]) => [requestId, data])
-    ) as {
-      [K in keyof typeof result]: NonNullable<(typeof result)[K]["data"]>;
-    };
-
-    return [resultData, meta] as const;
-  }
-
-  /**
-   * Send a JMAP request with only a single method call.
-   *
-   * This accepts one method call and returns a success or error result.
-   *
-   * @example
-   * ```js
-   * const [mailboxes] = await client.request([
-   *   "Mailbox/get",
-   *   { accountId, properties: ["name"] }
-   * ]);
-   * console.log(mailboxes) // =>
-   * // { data: { ... } } // or { error: { ... } }
-   * ```
-   */
-  async function request<R extends RequestsTuple<Requests>>(
-    singleRequest: R,
-    options: RequestOptions = {}
-  ) {
-    const [{ req }, meta] = await requestMany({ req: singleRequest }, options);
-
-    return [req, meta] as const;
-  }
-
-  /**
-   * Send a JMAP request with only a single method call.
-   *
-   * This accepts one method call and only returns a success result.
-   * If an error occurs, the function will throw.
-   *
-   * @example
-   * ```js
-   * const [mailboxes] = await client.requestOrFail([
-   *   "Mailbox/get",
-   *   { accountId, properties: ["name"] }
-   * ]);
-   * console.log(mailboxes) // =>
-   * // [
-   * //   { name: "Inbox" },
-   * //   { name: "Drafts" },
-   * //   ...
-   * // ]
-   * ```
-   */
-  async function requestOrFail<R extends RequestsTuple<Requests>>(
-    singleRequest: R,
-    options: RequestOptions = {}
-  ) {
-    const [{ req }, meta] = await requestMany({ req: singleRequest }, options);
-
-    try {
-      if (req.error) {
-        throw req;
-      }
-    } catch (cause) {
-      throw new Error("Method call resulted in an error", { cause });
-    }
-
-    return [req.data as NonNullable<typeof req.data>, meta] as const;
   }
 
   /**
@@ -434,9 +307,6 @@ export function createClient(config: ClientConfig) {
     session,
     getPrimaryAccount,
     request,
-    requestOrFail,
-    requestMany,
-    requestManyOrFail,
     uploadBlob,
     downloadBlob,
     connectEventSource,
