@@ -1,9 +1,10 @@
+import type { Exact } from "type-fest";
 import {
   getCapabilitiesForMethodCalls,
   knownCapabilities,
 } from "./capabilities";
 import { expandURITemplate } from "./helpers";
-import type { Requests, RequestsTuple, Responses } from "./types/client";
+import type { Requests, Responses } from "./types/client";
 import type {
   BlobDownloadParams,
   BlobUploadParams,
@@ -85,10 +86,11 @@ export function createClient<Config extends ClientConfig>({
   }).then((res) => res.json());
 
   async function request<
-    R extends RequestsTuple<Requests>,
-    Result extends Responses<R[1]>[R[0]]
+    Method extends keyof Requests,
+    Args extends Exact<Requests[Method], Args>,
+    Result extends Responses<Args>[Method]
   >(
-    [method, args]: R,
+    [method, args]: [Method, Args],
     options: {
       fetchInit?: RequestInit;
       using?: JMAPRequest["using"];
