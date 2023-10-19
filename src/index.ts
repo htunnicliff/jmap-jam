@@ -3,7 +3,11 @@ import {
   getCapabilitiesForMethodCalls,
   knownCapabilities,
 } from "./capabilities";
-import { expandURITemplate } from "./helpers";
+import {
+  expandURITemplate,
+  getErrorFromInvocation,
+  isErrorInvocation,
+} from "./helpers";
 import type { Requests, Responses } from "./types/client";
 import type {
   BlobDownloadParams,
@@ -88,7 +92,18 @@ export function createClient<Config extends ClientConfig>({
   async function request<
     Method extends keyof Requests,
     Args extends Exact<Requests[Method], Args>,
-    Result extends Responses<Args>[Method]
+    ResponseData extends Responses<Args>[Method],
+    Result extends Config["errorHandling"] extends "return"
+      ?
+          | {
+              data: ResponseData;
+              error: null;
+            }
+          | {
+              error: Responses<Args>[Method];
+              data: null;
+            }
+      : ResponseData
   >(
     [method, args]: [Method, Args],
     options: {
@@ -110,7 +125,7 @@ export function createClient<Config extends ClientConfig>({
     const { using = [], fetchInit, createdIds: createdIdsInput } = options;
 
     // Assemble method calls
-    const invocation: Invocation<typeof args> = [method, args, "r1"];
+    const invocation: Invocation<Args> = [method, args, "r1"];
 
     // Build request
     const body = {
@@ -123,7 +138,7 @@ export function createClient<Config extends ClientConfig>({
       ],
       methodCalls: [invocation],
       createdIds: createdIdsInput,
-    } satisfies JMAPRequest<[typeof invocation]>;
+    } satisfies JMAPRequest<[Invocation<Args>]>;
 
     // Ensure session is loaded (if not already)
     const { apiUrl } = await session;
@@ -158,22 +173,39 @@ export function createClient<Config extends ClientConfig>({
       methodResponses: [methodResponse],
       sessionState,
       createdIds,
-    } = (await response.json()) as JMAPResponse<[Invocation<Result>]>;
+    } = (await response.json()) as JMAPResponse<
+      [Invocation<ResponseData | ProblemDetails>]
+    >;
 
-    // Handle error responses
-    const [name, data] = methodResponse;
+    const meta = {
+      sessionState,
+      createdIds,
+      response,
+    };
 
-    if (name === "error" && errorHandling === "throw") {
-      throw data;
-    } else {
-      return [
-        data,
-        {
-          sessionState,
-          createdIds,
-          response,
-        },
-      ];
+    const error = getErrorFromInvocation(methodResponse);
+
+    switch (errorHandling) {
+      case "throw": {
+        if (error) {
+          throw error;
+        } else {
+          // TODO: Fix these type errors
+          // @ts-expect-error - works as expected, but TS is erroring
+          return [methodResponse[1], meta];
+        }
+      }
+      case "return": {
+        if (error) {
+          // TODO: Fix these type errors
+          // @ts-expect-error - works as expected, but TS is erroring
+          return [{ error, data: null }, meta];
+        } else {
+          // TODO: Fix these type errors
+          // @ts-expect-error - works as expected, but TS is erroring
+          return [{ data: methodResponse[1], error: null }, meta];
+        }
+      }
     }
   }
 

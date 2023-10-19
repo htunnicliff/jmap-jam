@@ -1,3 +1,5 @@
+import { Invocation, ProblemDetails } from "./types/jmap";
+
 /**
  * Expands a URI template with the given parameters.
  *
@@ -18,4 +20,20 @@ export function expandURITemplate(
   }
 
   return new URL(expanded);
+}
+
+export function isErrorInvocation(
+  input: Invocation
+): input is Invocation<ProblemDetails> {
+  return input[0] === "error";
+}
+
+export function getErrorFromInvocation<T extends Invocation>(
+  invocation: T
+): ProblemDetails | null {
+  if (isErrorInvocation(invocation)) {
+    return invocation[1];
+  }
+
+  return null;
 }
