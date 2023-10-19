@@ -89,6 +89,9 @@ export function createClient<Config extends ClientConfig>({
     cache: "no-cache",
   }).then((res) => res.json());
 
+  /**
+   * Send a JMAP request containing a single method call
+   */
   async function request<
     Method extends keyof Requests,
     Args extends Exact<Requests[Method], Args>,
