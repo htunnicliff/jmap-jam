@@ -37,3 +37,39 @@ export function getErrorFromInvocation<T extends Invocation>(
 
   return null;
 }
+
+/**
+ * Note: This could be more defensive, but for now I'm willing to trust that JMAP
+ * servers will follow the specs (meaning: each method call will have a response
+ * with a matching ID, no duplicates, etc. if the status code is 2xx)
+ */
+export function getResultsForMethodCalls(
+  methodCallResponses: Array<Invocation<any>>,
+  { returnErrors }: { returnErrors: boolean }
+) {
+  return Object.fromEntries(
+    methodCallResponses.map(([name, data, id]) => {
+      if (!returnErrors) {
+        return [id, data];
+      }
+
+      if (name === "error") {
+        return [
+          id,
+          {
+            data: null,
+            error: data as ProblemDetails,
+          },
+        ];
+      } else {
+        return [
+          id,
+          {
+            data,
+            error: null,
+          },
+        ];
+      }
+    })
+  );
+}
