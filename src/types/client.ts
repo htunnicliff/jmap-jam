@@ -129,7 +129,7 @@ export type Requests = {
   "VacationResponse/set": SetArguments<VacationResponse>;
 };
 
-export type RequestsTuple<R extends Record<string, any>> = {
+export type RequestsTuple<R> = {
   [Method in keyof R]: [Method, R[Method]];
 }[keyof R];
 

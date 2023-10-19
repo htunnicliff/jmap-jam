@@ -31,5 +31,8 @@
     "tsup": "7.2.0",
     "tsx": "3.13.0",
     "typescript": "5.2.2"
+  },
+  "dependencies": {
+    "type-fest": "4.5.0"
   }
 }
