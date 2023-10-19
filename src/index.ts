@@ -6,6 +6,7 @@ import {
 import {
   expandURITemplate,
   getErrorFromInvocation,
+  getResultsForMethodCalls,
   isErrorInvocation,
 } from "./helpers";
 import type { Requests, Responses } from "./types/client";
@@ -89,6 +90,103 @@ export function createClient<Config extends ClientConfig>({
     cache: "no-cache",
   }).then((res) => res.json());
 
+  async function requestMany(
+    requests: Record<string, any>,
+    options: {
+      fetchInit?: RequestInit;
+      using?: JMAPRequest["using"];
+      createdIds?: JMAPRequest["createdIds"];
+    } = {}
+  ) {
+    // Extract options
+    const { using = [], fetchInit, createdIds: createdIdsInput } = options;
+
+    // Assemble method calls
+    const methodNames = new Set<string>();
+    const methodCalls = Object.entries(requests).map(([id, [name, args]]) => {
+      methodNames.add(name);
+      return [name, args, id] as Invocation<typeof args>;
+    });
+
+    // Build request
+    const body: JMAPRequest<typeof methodCalls> = {
+      using: [
+        ...getCapabilitiesForMethodCalls({
+          methodNames,
+          availableCapabilities: capabilities,
+        }),
+        ...using,
+      ],
+      methodCalls,
+      createdIds: createdIdsInput,
+    };
+
+    // Ensure session is loaded (if not already)
+    const { apiUrl } = await session;
+
+    // Send request
+    const response = await fetch(apiUrl, {
+      method: "POST",
+      headers: {
+        Authorization: authHeader,
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(body),
+      ...fetchInit,
+    });
+
+    // Handle 4xx-5xx errors
+    if (!response.ok) {
+      let error: string | ProblemDetails;
+
+      if (response.headers.get("Content-Type")?.includes("json")) {
+        error = (await response.json()) as ProblemDetails;
+      } else {
+        error = await response.text();
+      }
+
+      throw error;
+    }
+
+    // Handle success
+    const { methodResponses, sessionState, createdIds } =
+      (await response.json()) as JMAPResponse;
+
+    const meta = {
+      sessionState,
+      createdIds,
+      response,
+    };
+
+    switch (errorHandling) {
+      case "throw": {
+        const errors = methodResponses
+          .map(getErrorFromInvocation)
+          .filter((e): e is NonNullable<typeof e> => e !== null);
+
+        if (errors.length > 0) {
+          throw errors;
+        } else {
+          return [
+            getResultsForMethodCalls(methodResponses, {
+              returnErrors: false,
+            }),
+            meta,
+          ];
+        }
+      }
+      case "return": {
+        return [
+          getResultsForMethodCalls(methodResponses, {
+            returnErrors: true,
+          }),
+          meta,
+        ];
+      }
+    }
+  }
+
   /**
    * Send a JMAP request containing a single method call
    */
@@ -131,7 +229,7 @@ export function createClient<Config extends ClientConfig>({
     const invocation: Invocation<Args> = [method, args, "r1"];
 
     // Build request
-    const body = {
+    const body: JMAPRequest<[Invocation<Args>]> = {
       using: [
         ...getCapabilitiesForMethodCalls({
           methodNames: [method],
@@ -141,7 +239,7 @@ export function createClient<Config extends ClientConfig>({
       ],
       methodCalls: [invocation],
       createdIds: createdIdsInput,
-    } satisfies JMAPRequest<[Invocation<Args>]>;
+    };
 
     // Ensure session is loaded (if not already)
     const { apiUrl } = await session;
@@ -332,6 +430,7 @@ export function createClient<Config extends ClientConfig>({
     session,
     getPrimaryAccount,
     request,
+    requestMany,
     uploadBlob,
     downloadBlob,
     connectEventSource,
