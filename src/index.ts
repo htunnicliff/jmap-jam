@@ -50,9 +50,12 @@ export type ClientConfig = {
   errorHandling?: "throw" | "return";
 };
 
-export function createClient<Config extends ClientConfig>(config: Config) {
-  config.errorHandling ??= "throw";
-
+export function createClient<Config extends ClientConfig>({
+  bearerToken,
+  sessionUrl,
+  customCapabilities,
+  errorHandling = "throw",
+}: Config) {
   // ----------------------------------
   // Local variables and functions
   // ----------------------------------
@@ -60,20 +63,20 @@ export function createClient<Config extends ClientConfig>(config: Config) {
   /**
    * Headers to send with every request
    */
-  const authHeader = `Bearer ${config.bearerToken}`;
+  const authHeader = `Bearer ${bearerToken}`;
 
   /**
    * All available capabilities (known and custom)
    */
   const capabilities = new Map<string, string>([
-    ...Object.entries(config.customCapabilities ?? {}),
+    ...Object.entries(customCapabilities ?? {}),
     ...Object.entries(knownCapabilities),
   ]);
 
   /**
    * An immediately fetched session promise
    */
-  const session: Promise<Session> = fetch(config.sessionUrl, {
+  const session: Promise<Session> = fetch(sessionUrl, {
     headers: {
       Authorization: authHeader,
       Accept: "application/json",
@@ -158,7 +161,7 @@ export function createClient<Config extends ClientConfig>(config: Config) {
     // Handle error responses
     const [name, data] = methodResponse;
 
-    if (name === "error" && config.errorHandling === "throw") {
+    if (name === "error" && errorHandling === "throw") {
       throw data;
     } else {
       return [
@@ -270,7 +273,7 @@ export function createClient<Config extends ClientConfig>(config: Config) {
    * Initiate an event source to subscribe to server-sent events
    */
   async function connectEventSource(options: {
-    types: "*" | Array<Entity | keyof typeof config.customCapabilities>;
+    types: "*" | Array<Entity | keyof typeof customCapabilities>;
     ping: number;
     closeafter?: EventSourceArguments["closeafter"];
   }) {
