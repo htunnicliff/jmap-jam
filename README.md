@@ -3,7 +3,7 @@
   <h1 align="center">Jam: A JMAP Client</h1>
 </div>
 
-A tiny, typed JMAP client with zero runtime dependencies, adhering to the following IETF standards:
+A tiny (&lt;2kb gzipped), typed JMAP client with zero runtime dependencies, adhering to the following IETF standards:
 
 - [RFC 8620][jmap-rfc] - JMAP
 - [RFC 8621][jmap-mail-rfc] - JMAP for Mail
