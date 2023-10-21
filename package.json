@@ -16,7 +16,7 @@
   "description": "A JMAP client library for Node.js and the browser.",
   "repository": {
     "type": "git",
-    "url": "https://github.com/htunnicliff/jmap-jam"
+    "url": "git+https://github.com/htunnicliff/jmap-jam.git"
   },
   "author": {
     "name": "Hunter Tunnicliff",
