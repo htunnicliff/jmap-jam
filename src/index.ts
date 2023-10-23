@@ -72,10 +72,6 @@ export function createClient<Config extends ClientConfig>({
   customCapabilities,
   errorHandling = "throw",
 }: Config) {
-  // ----------------------------------
-  // Local variables and functions
-  // ----------------------------------
-
   /**
    * Headers to send with every request
    */
@@ -100,103 +96,6 @@ export function createClient<Config extends ClientConfig>({
     cache: "no-cache",
   }).then((res) => res.json());
 
-  async function requestMany(
-    requests: Record<string, any>,
-    options: {
-      fetchInit?: RequestInit;
-      using?: JMAPRequest["using"];
-      createdIds?: JMAPRequest["createdIds"];
-    } = {}
-  ) {
-    // Extract options
-    const { using = [], fetchInit, createdIds: createdIdsInput } = options;
-
-    // Assemble method calls
-    const methodNames = new Set<string>();
-    const methodCalls = Object.entries(requests).map(([id, [name, args]]) => {
-      methodNames.add(name);
-      return [name, args, id] as Invocation<typeof args>;
-    });
-
-    // Build request
-    const body: JMAPRequest<typeof methodCalls> = {
-      using: [
-        ...getCapabilitiesForMethodCalls({
-          methodNames,
-          availableCapabilities: capabilities,
-        }),
-        ...using,
-      ],
-      methodCalls,
-      createdIds: createdIdsInput,
-    };
-
-    // Ensure session is loaded (if not already)
-    const { apiUrl } = await session;
-
-    // Send request
-    const response = await fetch(apiUrl, {
-      method: "POST",
-      headers: {
-        Authorization: authHeader,
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(body),
-      ...fetchInit,
-    });
-
-    // Handle 4xx-5xx errors
-    if (!response.ok) {
-      let error: string | ProblemDetails;
-
-      if (response.headers.get("Content-Type")?.includes("json")) {
-        error = (await response.json()) as ProblemDetails;
-      } else {
-        error = await response.text();
-      }
-
-      throw error;
-    }
-
-    // Handle success
-    const { methodResponses, sessionState, createdIds } =
-      (await response.json()) as JMAPResponse;
-
-    const meta = {
-      sessionState,
-      createdIds,
-      response,
-    };
-
-    switch (errorHandling) {
-      case "throw": {
-        const errors = methodResponses
-          .map(getErrorFromInvocation)
-          .filter((e): e is NonNullable<typeof e> => e !== null);
-
-        if (errors.length > 0) {
-          throw errors;
-        } else {
-          return [
-            getResultsForMethodCalls(methodResponses, {
-              returnErrors: false,
-            }),
-            meta,
-          ];
-        }
-      }
-      case "return": {
-        return [
-          getResultsForMethodCalls(methodResponses, {
-            returnErrors: true,
-          }),
-          meta,
-        ];
-      }
-    }
-  }
-
   type LocalInvocation<
     Method extends Methods,
     Args extends Exact<Requests[Method], Args>
@@ -208,7 +107,7 @@ export function createClient<Config extends ClientConfig>({
     response: Response;
   };
 
-  type GetResult<Data> = Config["errorHandling"] extends "throw"
+  type GetResult<Data> = typeof errorHandling extends "throw"
     ? Data
     :
         | {
@@ -301,18 +200,109 @@ export function createClient<Config extends ClientConfig>({
         if (error) {
           throw error;
         } else {
-          // @ts-expect-error - works as expected, but TS is erroring
+          // @ts-ignore
           return [methodResponse[1], meta];
         }
       }
       case "return": {
         if (error) {
-          // @ts-expect-error - works as expected, but TS is erroring
           return [{ error, data: null }, meta];
         } else {
-          // @ts-expect-error - works as expected, but TS is erroring
-          return [{ data: methodResponse[1], error: null }, meta];
+          return [{ data: methodResponse[1] as Data, error: null }, meta];
         }
+      }
+    }
+  }
+
+  async function requestMany<Requests extends { [id: string]: [Methods, any] }>(
+    requests: Requests,
+    options: RequestOptions = {}
+  ) {
+    // Extract options
+    const { using = [], fetchInit, createdIds: createdIdsInput } = options;
+
+    // Assemble method calls
+    const methodNames = new Set<string>();
+    const methodCalls = Object.entries(requests).map(([id, [name, args]]) => {
+      methodNames.add(name);
+      return [name, args, id] as Invocation<typeof args>;
+    });
+
+    // Build request
+    const body: JMAPRequest<typeof methodCalls> = {
+      using: [
+        ...getCapabilitiesForMethodCalls({
+          methodNames,
+          availableCapabilities: capabilities,
+        }),
+        ...using,
+      ],
+      methodCalls,
+      createdIds: createdIdsInput,
+    };
+
+    // Ensure session is loaded (if not already)
+    const { apiUrl } = await session;
+
+    // Send request
+    const response = await fetch(apiUrl, {
+      method: "POST",
+      headers: {
+        Authorization: authHeader,
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(body),
+      ...fetchInit,
+    });
+
+    // Handle 4xx-5xx errors
+    if (!response.ok) {
+      let error: string | ProblemDetails;
+
+      if (response.headers.get("Content-Type")?.includes("json")) {
+        error = (await response.json()) as ProblemDetails;
+      } else {
+        error = await response.text();
+      }
+
+      throw error;
+    }
+
+    // Handle success
+    const { methodResponses, sessionState, createdIds } =
+      (await response.json()) as JMAPResponse;
+
+    const meta = {
+      sessionState,
+      createdIds,
+      response,
+    };
+
+    switch (errorHandling) {
+      case "throw": {
+        const errors = methodResponses
+          .map(getErrorFromInvocation)
+          .filter((e): e is NonNullable<typeof e> => e !== null);
+
+        if (errors.length > 0) {
+          throw errors;
+        } else {
+          return [
+            getResultsForMethodCalls(methodResponses, {
+              returnErrors: false,
+            }),
+            meta,
+          ];
+        }
+      }
+      case "return": {
+        return [
+          getResultsForMethodCalls(methodResponses, {
+            returnErrors: true,
+          }),
+          meta,
+        ];
       }
     }
   }
