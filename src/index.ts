@@ -107,7 +107,7 @@ export function createClient<Config extends ClientConfig>({
     response: Response;
   };
 
-  type GetResult<Data> = typeof errorHandling extends "throw"
+  type GetResult<Data> = Config["errorHandling"] extends "throw"
     ? Data
     :
         | {
@@ -206,8 +206,10 @@ export function createClient<Config extends ClientConfig>({
       }
       case "return": {
         if (error) {
+          // @ts-ignore
           return [{ error, data: null }, meta];
         } else {
+          // @ts-ignore
           return [{ data: methodResponse[1] as Data, error: null }, meta];
         }
       }
