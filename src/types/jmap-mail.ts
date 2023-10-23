@@ -1,4 +1,10 @@
-import { FilterCondition, ID, UTCDate } from "../jmap";
+import type { FilterCondition, ID, UTCDate } from "./jmap";
+
+/**
+ * JMAP Mail
+ *
+ * [rfc8621](https://datatracker.ietf.org/doc/html/rfc8621)
+ */
 
 export type Entities = {
   Mailbox: Mailbox;
@@ -16,6 +22,9 @@ export type Entity = keyof Entities;
 // Mailboxes
 // =================================
 
+/**
+ * [rfc8621 § 2](https://datatracker.ietf.org/doc/html/rfc8621#section-2)
+ */
 export type Mailbox = {
   id: ID;
   name: string;
@@ -51,6 +60,9 @@ export type Mailbox = {
   };
 };
 
+/**
+ * [rfc8621 § 2.3](https://datatracker.ietf.org/doc/html/rfc8621#section-2.3)
+ */
 export type MailboxFilterCondition = {
   parentId: ID | null;
   name: string;
@@ -63,6 +75,9 @@ export type MailboxFilterCondition = {
 // Threads
 // =================================
 
+/**
+ * [rfc8621 § 3](https://datatracker.ietf.org/doc/html/rfc8621#section-3)
+ */
 export type Thread = {
   id: ID;
   emailIds: ID[];
@@ -72,8 +87,22 @@ export type Thread = {
 // Emails
 // =================================
 
-export type Email = {
-  // Metadata
+/**
+ * [rfc8621 § 4](https://datatracker.ietf.org/doc/html/rfc8621#section-4)
+ */
+export type Email = EmailMetadataFields &
+  EmailHeaderFields &
+  EmailBodyPartFields & {
+    // TODO: Support header parsed forms
+    [K in HeaderFieldKey]: any;
+  };
+
+export type EmailWithoutHeaderKeys = Omit<Email, HeaderFieldKey>;
+
+/**
+ * [rfc8621 § 4.1.1](https://datatracker.ietf.org/doc/html/rfc8621#section-4.1.1)
+ */
+type EmailMetadataFields = {
   id: ID;
   blobId: ID;
   threadId: ID;
@@ -81,7 +110,62 @@ export type Email = {
   keywords: Record<Exclude<string, ForbiddenKeywordCharacters>, boolean>;
   size: number;
   receivedAt: string;
-  // Header fields
+};
+
+export type ForbiddenKeywordCharacters =
+  | "("
+  | ")"
+  | "{"
+  | "]"
+  | "%"
+  | "*"
+  | '"'
+  | "\\";
+
+/**
+ * [rfc8621 § 4.1.2.3](https://datatracker.ietf.org/doc/html/rfc8621#section-4.1.2.3)
+ */
+export type EmailAddress = {
+  name: string | null;
+  email: string;
+};
+
+/**
+ * [rfc8621 § 4.1.2.4](https://datatracker.ietf.org/doc/html/rfc8621#section-4.1.2.4)
+ */
+export type EmailAddressGroup = {
+  name: string | null;
+  addresses: EmailAddress[];
+};
+
+/**
+ * [rfc8621 § 4.1.2](https://datatracker.ietf.org/doc/html/rfc8621#section-4.1.2)
+ */
+export type HeaderParsedForm = {
+  Raw: string;
+  Text: string;
+  Addresses: EmailAddress[];
+  GroupedAddresses: EmailAddressGroup[];
+  MessageIds: string[] | null;
+  Date: string | null;
+  URLs: string[] | null;
+};
+
+/**
+ * [rfc8621 § 4.1.3](https://datatracker.ietf.org/doc/html/rfc8621#section-4.1.3)
+ */
+export type HeaderFieldKey =
+  | `header:${string}:as${keyof HeaderParsedForm}:all`
+  | `header:${string}:as${keyof HeaderParsedForm}`
+  | `header:${string}:all`
+  | `header:${string}`;
+
+export type EmailHeader = {
+  name: string;
+  value: string;
+};
+
+type EmailHeaderFields = {
   headers: EmailHeader[];
   messageId: string[] | null;
   inReplyTo: string[] | null;
@@ -94,7 +178,12 @@ export type Email = {
   replyTo: EmailAddress[] | null;
   subject: string | null;
   sentAt: string | null;
-  // Body parts
+};
+
+/**
+ * [rfc8621 § 4.1.4](https://datatracker.ietf.org/doc/html/rfc8621#section-4.1.4)
+ */
+type EmailBodyPartFields = {
   bodyStructure: EmailBodyPart;
   bodyValues: Record<ID, EmailBodyValue>;
   textBody: EmailBodyPart[];
@@ -102,39 +191,6 @@ export type Email = {
   attachments: EmailBodyPart[];
   hasAttachment: boolean;
   preview: string;
-};
-
-export type EmailFilterCondition = FilterCondition<{
-  inMailbox: ID;
-  inMailboxOtherThan: ID[];
-  before: UTCDate;
-  after: UTCDate;
-  minSize: number;
-  maxSize: number;
-  allInThreadHaveKeyword: string;
-  someInThreadHaveKeyword: string;
-  noneInThreadHaveKeyword: string;
-  hasKeyword: string;
-  notKeyword: string;
-  hasAttachment: boolean;
-  text: string;
-  from: string;
-  to: string;
-  cc: string;
-  bcc: string;
-  subject: string;
-  body: string;
-  header: [string] | [string, string];
-}>;
-
-export type EmailHeader = {
-  name: string;
-  value: string;
-};
-
-export type EmailAddress = {
-  name: string | null;
-  email: string;
 };
 
 export type EmailBodyPart = {
@@ -158,6 +214,35 @@ export type EmailBodyValue = {
   isTruncated: boolean;
 };
 
+/**
+ * [rfc8621 § 4.4.1](https://datatracker.ietf.org/doc/html/rfc8621#section-4.4.1)
+ */
+export type EmailFilterCondition = FilterCondition<{
+  inMailbox: ID;
+  inMailboxOtherThan: ID[];
+  before: UTCDate;
+  after: UTCDate;
+  minSize: number;
+  maxSize: number;
+  allInThreadHaveKeyword: string;
+  someInThreadHaveKeyword: string;
+  noneInThreadHaveKeyword: string;
+  hasKeyword: string;
+  notKeyword: string;
+  hasAttachment: boolean;
+  text: string;
+  from: string;
+  to: string;
+  cc: string;
+  bcc: string;
+  subject: string;
+  body: string;
+  header: [string] | [string, string];
+}>;
+
+/**
+ * [rfc8621 § 4.8](https://datatracker.ietf.org/doc/html/rfc8621#section-4.8)
+ */
 export type EmailImport = {
   blobId: ID;
   mailboxIds: Record<ID, boolean>;
@@ -165,20 +250,13 @@ export type EmailImport = {
   receivedAt: UTCDate;
 };
 
-export type ForbiddenKeywordCharacters =
-  | "("
-  | ")"
-  | "{"
-  | "]"
-  | "%"
-  | "*"
-  | '"'
-  | "\\";
-
 // =================================
 // Search Snippets
 // =================================
 
+/**
+ * [rfc8621 § 5](https://datatracker.ietf.org/doc/html/rfc8621#section-5)
+ */
 export type SearchSnippet = {
   emailId: ID;
   subject: string | null;
@@ -189,6 +267,9 @@ export type SearchSnippet = {
 // Identities
 // =================================
 
+/**
+ * [rfc8621 § 6](https://datatracker.ietf.org/doc/html/rfc8621#section-6)
+ */
 export type Identity = {
   id: ID;
   name: string;
@@ -204,6 +285,9 @@ export type Identity = {
 // Email Submission
 // =================================
 
+/**
+ * [rfc8621 § 7](https://datatracker.ietf.org/doc/html/rfc8621#section-7)
+ */
 export type EmailSubmission = {
   id: ID;
   identityId: ID;
@@ -217,14 +301,12 @@ export type EmailSubmission = {
   mdnBlobIds: ID[];
 };
 
-export type UndoStatus = "pending" | "final" | "canceled";
-
 export type Envelope = {
-  mailFrom: Address;
-  rcptTo: Address[];
+  mailFrom: EmailSubmissionAddress;
+  rcptTo: EmailSubmissionAddress[];
 };
 
-export type Address = {
+export type EmailSubmissionAddress = {
   email: string;
   parameters: Record<string, unknown> | null;
 };
@@ -244,10 +326,15 @@ export type EmailSubmissionFilterCondition = {
   after: UTCDate;
 };
 
+export type UndoStatus = "pending" | "final" | "canceled";
+
 // =================================
 // Vacation Response
 // =================================
 
+/**
+ * [rfc8621 § 8](https://datatracker.ietf.org/doc/html/rfc8621#section-8)
+ */
 export type VacationResponse = {
   id: ID;
   isEnabled: boolean;

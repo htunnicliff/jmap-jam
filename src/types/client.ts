@@ -28,13 +28,15 @@ import {
   EmailImport,
   EmailSubmission,
   EmailSubmissionFilterCondition,
+  EmailWithoutHeaderKeys,
+  HeaderFieldKey,
   Identity,
   Mailbox,
   MailboxFilterCondition,
   SearchSnippet,
   Thread,
   VacationResponse,
-} from "./jmap-mail/entities";
+} from "./jmap-mail";
 import { HasAllKeysOfRelated } from "./utilities";
 
 export type Requests = {
@@ -66,13 +68,12 @@ export type Requests = {
   "Thread/get": GetArguments<Thread>;
   "Thread/changes": ChangesArguments;
   // Email ----------------------------------
-  "Email/get": GetArguments<Email> & {
-    bodyProperties?: Array<keyof Email>;
+  "Email/get": GetArguments<EmailWithoutHeaderKeys> & {
+    bodyProperties?: Array<keyof EmailWithoutHeaderKeys>;
     fetchTextBodyValues?: boolean;
     fetchHTMLBodyValues?: boolean;
     fetchAllBodyValues?: boolean;
     maxBodyValueBytes?: number;
-    // TODO: Headers?
   };
   "Email/changes": ChangesArguments;
   "Email/query": QueryArguments<Email, EmailFilterCondition> & {

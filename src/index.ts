@@ -28,7 +28,7 @@ import type {
   ProblemDetails,
   Session,
 } from "./types/jmap";
-import type { Entity } from "./types/jmap-mail/entities";
+import type { Entity } from "./types/jmap-mail";
 
 export class JamClient<Config extends ClientConfig> {
   /**
@@ -384,3 +384,14 @@ export class JamClient<Config extends ClientConfig> {
 }
 
 export default JamClient;
+
+// JMAP types
+export type * from "./types/jmap";
+export type * as JMAP from "./types/jmap";
+
+// JMAP mail types
+export type * from "./types/jmap-mail";
+export type * as JMAPMail from "./types/jmap-mail";
+
+// Client types
+export type * from "./types/client";
