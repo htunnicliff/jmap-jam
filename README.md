@@ -60,11 +60,12 @@ Use in the browser:
 To initialize a client, provide the session URL for a JMAP server to connect to, as well as a bearer token for authenticating requests.
 
 ```ts
-import { createClient } from "jmap-jam";
+import JamClient from "jmap-jam";
 
-const client = createClient({
+const client = new JamClient({
   sessionUrl: "https://jmap.example.com/.well-known/jmap",
   bearerToken: "super-secret-token",
+  errorStrategy: "throw",
 });
 ```
 

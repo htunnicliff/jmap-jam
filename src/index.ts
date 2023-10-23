@@ -1,4 +1,3 @@
-import type { Exact } from "type-fest";
 import {
   getCapabilitiesForMethodCalls,
   knownCapabilities,
@@ -9,10 +8,14 @@ import {
   getResultsForMethodCalls,
 } from "./helpers";
 import type {
+  ClientConfig,
   GetArgs,
   GetResponseData,
+  GetResult,
+  LocalInvocation,
+  Meta,
   Methods,
-  Requests,
+  RequestOptions,
 } from "./types/client";
 import type {
   BlobDownloadParams,
@@ -27,109 +30,64 @@ import type {
 } from "./types/jmap";
 import type { Entity } from "./types/jmap-mail/entities";
 
-export type ClientConfig = {
-  /**
-   * The bearer token used to authenticate all requests
-   */
-  bearerToken: string;
-
-  /**
-   * The URL of the JMAP session resources
-   */
-  sessionUrl: string;
-
-  /**
-   * A map of custom entities and their required capability identifiers
-   *
-   * @example
-   * ```
-   * const client = createClient({
-   *   customCapabilities: {
-   *     "Sandwich": "urn:bigco:params:jmap:sandwich",
-   *     "TextMessage": "foo:bar:jmap:sms",
-   *     "Spaceship": "myspaceship-jmap-urn",
-   *   },
-   * });
-   * ```
-   */
-  customCapabilities?: Record<string, string>;
-  /**
-   * The error handling strategy to use when one or more method calls
-   * receive an error response.
-   */
-  errorHandling?: "throw" | "return";
-};
-
-type RequestOptions = {
-  fetchInit?: RequestInit;
-  using?: JMAPRequest["using"];
-  createdIds?: JMAPRequest["createdIds"];
-};
-
-export function createClient<Config extends ClientConfig>({
-  bearerToken,
-  sessionUrl,
-  customCapabilities,
-  errorHandling = "throw",
-}: Config) {
+export class JamClient<Config extends ClientConfig> {
   /**
    * Headers to send with every request
    */
-  const authHeader = `Bearer ${bearerToken}`;
+  authHeader: string;
 
   /**
    * All available capabilities (known and custom)
    */
-  const capabilities = new Map<string, string>([
-    ...Object.entries(customCapabilities ?? {}),
-    ...Object.entries(knownCapabilities),
-  ]);
+  capabilities: Map<string, string>;
 
   /**
    * An immediately fetched session promise
    */
-  const session: Promise<Session> = fetch(sessionUrl, {
-    headers: {
-      Authorization: authHeader,
-      Accept: "application/json",
-    },
-    cache: "no-cache",
-  }).then((res) => res.json());
+  session: Promise<Session>;
 
-  type LocalInvocation<
-    Method extends Methods,
-    Args extends Exact<Requests[Method], Args>
-  > = [Method, Args];
+  /**
+   * The error handling strategy to use
+   */
+  errorStrategy: "throw" | "return";
 
-  type Meta = {
-    sessionState: JMAPResponse["sessionState"];
-    createdIds: JMAPResponse["createdIds"];
-    response: Response;
-  };
+  constructor(config: Config) {
+    this.authHeader = `Bearer ${config.bearerToken}`;
 
-  type GetResult<Data> = Config["errorHandling"] extends "throw"
-    ? Data
-    :
-        | {
-            data: Data;
-            error: null;
-          }
-        | {
-            data: null;
-            error: ProblemDetails;
-          };
+    this.capabilities = new Map<string, string>([
+      ...Object.entries(config.customCapabilities ?? {}),
+      ...Object.entries(knownCapabilities),
+    ]);
+
+    this.session = JamClient.loadSession(config.sessionUrl, this.authHeader);
+
+    this.errorStrategy = config.errorStrategy;
+  }
+
+  /**
+   * Retrieve fresh session data
+   */
+  static async loadSession(sessionUrl: string, authHeader: string) {
+    return fetch(sessionUrl, {
+      headers: {
+        Authorization: authHeader,
+        Accept: "application/json",
+      },
+      cache: "no-cache",
+    }).then((res) => res.json());
+  }
 
   /**
    * Send a JMAP request containing a single method call
    */
-  async function request<
+  async request<
     Method extends Methods,
     Args extends GetArgs<Method, Args>,
     Data extends GetResponseData<Method, Args>
   >(
     [method, args]: LocalInvocation<Method, Args>,
     options?: RequestOptions
-  ): Promise<[GetResult<Data>, Meta]> {
+  ): Promise<[GetResult<Data, Config["errorStrategy"]>, Meta]> {
     const {
       using = [],
       fetchInit,
@@ -144,7 +102,7 @@ export function createClient<Config extends ClientConfig>({
       using: [
         ...getCapabilitiesForMethodCalls({
           methodNames: [method],
-          availableCapabilities: capabilities,
+          availableCapabilities: this.capabilities,
         }),
         ...using,
       ],
@@ -153,13 +111,13 @@ export function createClient<Config extends ClientConfig>({
     };
 
     // Ensure session is loaded (if not already)
-    const { apiUrl } = await session;
+    const { apiUrl } = await this.session;
 
     // Send request
     const response = await fetch(apiUrl, {
       method: "POST",
       headers: {
-        Authorization: authHeader,
+        Authorization: this.authHeader,
         Accept: "application/json",
         "Content-Type": "application/json",
       },
@@ -195,7 +153,7 @@ export function createClient<Config extends ClientConfig>({
 
     const error = getErrorFromInvocation(methodResponse);
 
-    switch (errorHandling) {
+    switch (this.errorStrategy) {
       case "throw": {
         if (error) {
           throw error;
@@ -216,7 +174,7 @@ export function createClient<Config extends ClientConfig>({
     }
   }
 
-  async function requestMany<Requests extends { [id: string]: [Methods, any] }>(
+  async requestMany<Requests extends { [id: string]: [Methods, any] }>(
     requests: Requests,
     options: RequestOptions = {}
   ) {
@@ -235,7 +193,7 @@ export function createClient<Config extends ClientConfig>({
       using: [
         ...getCapabilitiesForMethodCalls({
           methodNames,
-          availableCapabilities: capabilities,
+          availableCapabilities: this.capabilities,
         }),
         ...using,
       ],
@@ -244,13 +202,13 @@ export function createClient<Config extends ClientConfig>({
     };
 
     // Ensure session is loaded (if not already)
-    const { apiUrl } = await session;
+    const { apiUrl } = await this.session;
 
     // Send request
     const response = await fetch(apiUrl, {
       method: "POST",
       headers: {
-        Authorization: authHeader,
+        Authorization: this.authHeader,
         Accept: "application/json",
         "Content-Type": "application/json",
       },
@@ -281,7 +239,7 @@ export function createClient<Config extends ClientConfig>({
       response,
     };
 
-    switch (errorHandling) {
+    switch (this.errorStrategy) {
       case "throw": {
         const errors = methodResponses
           .map(getErrorFromInvocation)
@@ -312,19 +270,19 @@ export function createClient<Config extends ClientConfig>({
   /**
    * Get the ID of the primary mail account for the current session
    */
-  async function getPrimaryAccount() {
-    return (await session).primaryAccounts?.["urn:ietf:params:jmap:mail"];
+  async getPrimaryAccount() {
+    return (await this.session).primaryAccounts?.["urn:ietf:params:jmap:mail"];
   }
 
   /**
    * Upload a blob
    */
-  async function uploadBlob(
+  async uploadBlob(
     accountId: BlobUploadParams["accountId"],
     body: BodyInit,
     fetchInit: RequestInit = {}
   ) {
-    const { uploadUrl } = await session;
+    const { uploadUrl } = await this.session;
 
     const params: BlobUploadParams = {
       accountId,
@@ -336,7 +294,7 @@ export function createClient<Config extends ClientConfig>({
       const response = await fetch(url, {
         method: "POST",
         headers: {
-          Authorization: authHeader,
+          Authorization: this.authHeader,
           Accept: "application/json",
         },
         body,
@@ -360,7 +318,7 @@ export function createClient<Config extends ClientConfig>({
   /**
    * Download a blob
    */
-  async function downloadBlob(
+  async downloadBlob(
     options: {
       accountId: BlobDownloadParams["accountId"];
       blobId: BlobDownloadParams["blobId"];
@@ -369,7 +327,7 @@ export function createClient<Config extends ClientConfig>({
     },
     fetchInit: RequestInit = {}
   ) {
-    const { downloadUrl } = await session;
+    const { downloadUrl } = await this.session;
 
     const params: BlobDownloadParams = {
       accountId: options.accountId,
@@ -384,7 +342,7 @@ export function createClient<Config extends ClientConfig>({
       const response = await fetch(url, {
         method: "GET",
         headers: {
-          Authorization: authHeader,
+          Authorization: this.authHeader,
         },
         ...fetchInit,
       });
@@ -406,8 +364,8 @@ export function createClient<Config extends ClientConfig>({
   /**
    * Initiate an event source to subscribe to server-sent events
    */
-  async function connectEventSource(options: {
-    types: "*" | Array<Entity | keyof typeof customCapabilities>;
+  async connectEventSource(options: {
+    types: "*" | Array<Entity>;
     ping: number;
     closeafter?: EventSourceArguments["closeafter"];
   }) {
@@ -417,23 +375,12 @@ export function createClient<Config extends ClientConfig>({
       ping: `${options.ping}`,
     };
 
-    const { eventSourceUrl } = await session;
+    const { eventSourceUrl } = await this.session;
 
     const url = expandURITemplate(eventSourceUrl, params);
 
     return new EventSource(url);
   }
-
-  // Public client interface
-  const client = {
-    session,
-    getPrimaryAccount,
-    request,
-    requestMany,
-    uploadBlob,
-    downloadBlob,
-    connectEventSource,
-  } as const;
-
-  return client;
 }
+
+export default JamClient;

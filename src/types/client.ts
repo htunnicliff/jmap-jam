@@ -11,10 +11,13 @@ import {
   GetArguments,
   GetResponse,
   ID,
+  ProblemDetails,
   QueryArguments,
   QueryChangesArguments,
   QueryChangesResponse,
   QueryResponse,
+  Request as JMAPRequest,
+  Response as JMAPResponse,
   SetArguments,
   SetError,
   SetResponse,
@@ -213,3 +216,68 @@ export type GetResponseData<
   Method extends Methods,
   Args
 > = Responses<Args>[Method];
+
+export type ClientConfig = {
+  /**
+   * The bearer token used to authenticate all requests
+   */
+  bearerToken: string;
+
+  /**
+   * The URL of the JMAP session resources
+   */
+  sessionUrl: string;
+
+  /**
+   * A map of custom entities and their required capability identifiers
+   *
+   * @example
+   * ```
+   * const client = createClient({
+   *   customCapabilities: {
+   *     "Sandwich": "urn:bigco:params:jmap:sandwich",
+   *     "TextMessage": "foo:bar:jmap:sms",
+   *     "Spaceship": "myspaceship-jmap-urn",
+   *   },
+   * });
+   * ```
+   */
+  customCapabilities?: Record<string, string>;
+  /**
+   * The error handling strategy to use when one or more method calls
+   * receive an error response.
+   */
+  errorStrategy: "throw" | "return";
+};
+
+export type RequestOptions = {
+  fetchInit?: RequestInit;
+  using?: JMAPRequest["using"];
+  createdIds?: JMAPRequest["createdIds"];
+};
+
+export type LocalInvocation<
+  Method extends Methods,
+  Args extends Exact<Requests[Method], Args>
+> = [Method, Args];
+
+export type Meta = {
+  sessionState: JMAPResponse["sessionState"];
+  createdIds: JMAPResponse["createdIds"];
+  response: Response;
+};
+
+export type GetResult<
+  Data,
+  HandleErrors extends "throw" | "return"
+> = HandleErrors extends "throw"
+  ? Data
+  :
+      | {
+          data: Data;
+          error: null;
+        }
+      | {
+          data: null;
+          error: ProblemDetails;
+        };
