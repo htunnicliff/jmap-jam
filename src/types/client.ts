@@ -1,3 +1,4 @@
+import { Exact } from "type-fest";
 import {
   BlobCopyArguments,
   BlobCopyResponse,
@@ -129,9 +130,7 @@ export type Requests = {
   "VacationResponse/set": SetArguments<VacationResponse>;
 };
 
-export type RequestsTuple<R> = {
-  [Method in keyof R]: [Method, R[Method]];
-}[keyof R];
+export type Methods = keyof Requests;
 
 export type Responses<A> = HasAllKeysOfRelated<
   Requests,
@@ -201,3 +200,16 @@ export type Responses<A> = HasAllKeysOfRelated<
     "VacationResponse/set": SetResponse<VacationResponse>;
   }
 >;
+
+/**
+ * Get the arguments for a method.
+ */
+export type GetArgs<Method extends Methods, T> = Exact<Requests[Method], T>;
+
+/**
+ * Get the response data for a method with specific arguments.
+ */
+export type GetResponseData<
+  Method extends Methods,
+  Args
+> = Responses<Args>[Method];

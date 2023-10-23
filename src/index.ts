@@ -7,9 +7,13 @@ import {
   expandURITemplate,
   getErrorFromInvocation,
   getResultsForMethodCalls,
-  isErrorInvocation,
 } from "./helpers";
-import type { Requests, Responses } from "./types/client";
+import type {
+  GetArgs,
+  GetResponseData,
+  Methods,
+  Requests,
+} from "./types/client";
 import type {
   BlobDownloadParams,
   BlobUploadParams,
@@ -54,6 +58,12 @@ export type ClientConfig = {
    * receive an error response.
    */
   errorHandling?: "throw" | "return";
+};
+
+type RequestOptions = {
+  fetchInit?: RequestInit;
+  using?: JMAPRequest["using"];
+  createdIds?: JMAPRequest["createdIds"];
 };
 
 export function createClient<Config extends ClientConfig>({
@@ -187,45 +197,47 @@ export function createClient<Config extends ClientConfig>({
     }
   }
 
+  type LocalInvocation<
+    Method extends Methods,
+    Args extends Exact<Requests[Method], Args>
+  > = [Method, Args];
+
+  type Meta = {
+    sessionState: JMAPResponse["sessionState"];
+    createdIds: JMAPResponse["createdIds"];
+    response: Response;
+  };
+
+  type GetResult<Data> = Config["errorHandling"] extends "throw"
+    ? Data
+    :
+        | {
+            data: Data;
+            error: null;
+          }
+        | {
+            data: null;
+            error: ProblemDetails;
+          };
+
   /**
    * Send a JMAP request containing a single method call
    */
   async function request<
-    Method extends keyof Requests,
-    Args extends Exact<Requests[Method], Args>,
-    ResponseData extends Responses<Args>[Method],
-    Result extends Config["errorHandling"] extends "return"
-      ?
-          | {
-              data: ResponseData;
-              error: null;
-            }
-          | {
-              error: Responses<Args>[Method];
-              data: null;
-            }
-      : ResponseData
+    Method extends Methods,
+    Args extends GetArgs<Method, Args>,
+    Data extends GetResponseData<Method, Args>
   >(
-    [method, args]: [Method, Args],
-    options: {
-      fetchInit?: RequestInit;
-      using?: JMAPRequest["using"];
-      createdIds?: JMAPRequest["createdIds"];
-    } = {}
-  ): Promise<
-    [
-      Result,
-      {
-        sessionState: JMAPResponse["sessionState"];
-        createdIds: JMAPResponse["createdIds"];
-        response: Response;
-      }
-    ]
-  > {
-    // Extract options
-    const { using = [], fetchInit, createdIds: createdIdsInput } = options;
+    [method, args]: LocalInvocation<Method, Args>,
+    options?: RequestOptions
+  ): Promise<[GetResult<Data>, Meta]> {
+    const {
+      using = [],
+      fetchInit,
+      createdIds: createdIdsInput,
+    } = options ?? {};
 
-    // Assemble method calls
+    // Assemble method call
     const invocation: Invocation<Args> = [method, args, "r1"];
 
     // Build request
@@ -259,13 +271,11 @@ export function createClient<Config extends ClientConfig>({
     // Handle 4xx-5xx errors
     if (!response.ok) {
       let error: string | ProblemDetails;
-
       if (response.headers.get("Content-Type")?.includes("json")) {
         error = (await response.json()) as ProblemDetails;
       } else {
         error = await response.text();
       }
-
       throw error;
     }
 
@@ -275,10 +285,10 @@ export function createClient<Config extends ClientConfig>({
       sessionState,
       createdIds,
     } = (await response.json()) as JMAPResponse<
-      [Invocation<ResponseData | ProblemDetails>]
+      [Invocation<Data | ProblemDetails>]
     >;
 
-    const meta = {
+    const meta: Meta = {
       sessionState,
       createdIds,
       response,
@@ -291,18 +301,15 @@ export function createClient<Config extends ClientConfig>({
         if (error) {
           throw error;
         } else {
-          // TODO: Fix these type errors
           // @ts-expect-error - works as expected, but TS is erroring
           return [methodResponse[1], meta];
         }
       }
       case "return": {
         if (error) {
-          // TODO: Fix these type errors
           // @ts-expect-error - works as expected, but TS is erroring
           return [{ error, data: null }, meta];
         } else {
-          // TODO: Fix these type errors
           // @ts-expect-error - works as expected, but TS is erroring
           return [{ data: methodResponse[1], error: null }, meta];
         }
