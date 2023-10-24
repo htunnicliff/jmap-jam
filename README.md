@@ -3,33 +3,38 @@
   <h1 align="center">Jam: A JMAP Client</h1>
 </div>
 
-A tiny (&lt;2kb gzipped), typed JMAP client with zero runtime dependencies, adhering to the following IETF standards:
+Jame is a tiny (&lt;3kb gzipped), strongly-typed JMAP client with zero runtime dependencies. It has friendly, fluent APIs that make working with JMAP a breeze.
+
+Jam is compatible with environments that support the [Web Fetch API][mdn-using-fetch] and [ES Modules][mdn-esm].
+
+Jam adheres to the following IETF standards:
 
 - [RFC 8620][jmap-rfc] - JMAP
 - [RFC 8621][jmap-mail-rfc] - JMAP for Mail
 
-> [!IMPORTANT]
-> Version `0.x` is considered unstable. Breaking changes may occur until version `1.0` is published.
-
-### To-do
-
-- [ ] [RFC 8887][jmap-ws-rfc] - JMAP Subprotocol for WebSocket
-
 [jmap-rfc]: https://datatracker.ietf.org/doc/html/rfc8620
 [jmap-mail-rfc]: https://datatracker.ietf.org/doc/html/rfc8621
-[jmap-ws-rfc]: https://datatracker.ietf.org/doc/html/rfc8887
+[mdn-esm]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules
 
 ### Table of Contents
 
 - [Installation](#installation)
 - [Getting Started](#getting-started)
   - [Making Requests](#making-requests)
+    - [Individual Requests](#individual-requests)
+    - [Multiple Requests](#multiple-requests)
+    - [Request Options](#request-options)
+    - [Response Metadata](#response-metadata)
   - [Notes on Concurrency](#notes-on-concurrency)
 - [TypeScript](#typescript)
+- [Capabilities](#capabilities)
 - [API Reference](#api-reference)
-  - [`#session`](#session)
+  - [`JamClient`](#jamclient)
   - [`#api.<entity>.<operation>()`](#apientityoperation)
   - [`request()`](#request)
+  - [`requestMany()`](#requestmany)
+    - [`$ref()`](#ref)
+  - [`#session`](#session)
   - [`getPrimaryAccount()`](#getprimaryaccount)
   - [`downloadBlob()`](#downloadblob)
   - [`uploadBlob()`](#uploadblob)
@@ -122,7 +127,7 @@ Both methods of sending requests have strongly typed responses and can be used i
 
 > Though JMAP examples often show multiple method calls being used in a single request, see the [Notes on Concurrency](#notes-on-concurrency) section for information about why a single method call per request can sometimes be preferred.
 
-To send multiple method calls in a single request, use `requestMany`.
+To send multiple method calls in a single request, use [`requestMany`](#requestmany).
 
 ```ts
 const jam = new JamClient({ ... });
@@ -227,11 +232,47 @@ JMAP supports passing multiple method calls in a single request, but it is impor
 
 Jam provides types for JMAP methods, arguments, and responses as described in the [JMAP][jmap-rfc] and [JMAP Mail][jmap-mail-rfc] RFCs.
 
-All convenience methods, `request`, and `requestMany` will reveal autosuggested types for method names (e.g. `Email/get`), the arguments for that method, and the appropriate response.
+All [convenience methods](#apientityoperation), [`request`](#request), and [`requestMany`](#requestmany) will reveal autosuggested types for method names (e.g. `Email/get`), the arguments for that method, and the appropriate response.
 
 Many response types will infer from arguments. For example, when using an argument field such as `properties` to filter fields in a response, the response type will be narrowed to exclude fields that were not included.
 
+## Capabilities
+
+Jam has strongly-typed support for the following JMAP capabilities:
+
+| Entity           | Capability Identifier                   |
+| ---------------- | --------------------------------------- |
+| Core             | `urn:ietf:params:jmap:core`             |
+| Mailbox          | `urn:ietf:params:jmap:mail`             |
+| Thread           | `urn:ietf:params:jmap:mail`             |
+| Email            | `urn:ietf:params:jmap:mail`             |
+| SearchSnippet    | `urn:ietf:params:jmap:mail`             |
+| Identity         | `urn:ietf:params:jmap:submission`       |
+| EmailSubmission  | `urn:ietf:params:jmap:submission`       |
+| VacationResponse | `urn:ietf:params:jmap:vacationresponse` |
+
 ## API Reference
+
+### `JamClient`
+
+`JamClient` is Jam's primary entrypoint. To use Jam, import and construct an instance.
+
+The class can be imported by name or using default import syntax.
+
+```ts
+import JamClient from "jmap-jam";
+
+const jam = new JamClient({
+  bearerToken: "<bearer-token>",
+  sessionUrl: "<server-session-url>",
+});
+```
+
+A client instance requires both a `bearerToken` and `sessionUrl` in order to make authenticated requests.
+
+Upon constructing a client, Jam will immediately dispatch a request for a [session][jmap-section-2] from the server. This session will be used for all subsequent requests.
+
+[jmap-section-2]: https://datatracker.ietf.org/doc/html/rfc8620#section-2
 
 ### `#api.<entity>.<operation>()`
 
@@ -287,6 +328,48 @@ const [{ emailIds, emails }] = await jam.requestMany((r) => {
 
   return { emailIds, emails };
 });
+```
+
+#### `$ref()`
+
+Each item created within a `requestMany` callback is an instance of `InvocationDraft`. Internally, it keeps track of the invocation that was defined for use when the request is finalized and sent.
+
+The important part of `InvocationDraft` is that each draft exposes a method `$ref` that can be used to create a [result reference][jmap-3.7-result-refs] between invocations.
+
+To create a result reference, call `$ref` with a JSON pointer at the field that will receive the reference.
+
+The `emailIds.$ref("/ids")` call in the previous code block will be transformed into this valid JMAP result reference before the request is sent:
+
+```jsonc
+{
+  "using": ["urn:ietf:params:jmap:mail"],
+  "methodCalls": [
+    [
+      "Email/query",
+      {
+        "accountId": "<account-id>",
+        "filter": {
+          "inMailbox": "<mailbox-id>"
+        }
+      },
+      "emailIds"
+    ],
+    [
+      "Email/get",
+      {
+        "accountId": "<account-id>",
+        // Result reference created here
+        "#ids": {
+          "name": "Email/query",
+          "resultOf": "emailIds",
+          "path": "/ids"
+        },
+        "properties": ["id", "htmlBody"]
+      },
+      "emails"
+    ]
+  ]
+}
 ```
 
 ### `#session`
@@ -348,9 +431,6 @@ console.log(data); // =>
 ### `connectEventSource()`
 
 Connect to a JMAP event source using [Server-Sent Events](https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events).
-
-> [!NOTE]
-> At the time of this writing, the popular JMAP server host Fastmail has not implemented support for server-sent events.
 
 ```js
 const sse = await client.connectEventSource({
