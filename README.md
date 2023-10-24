@@ -14,7 +14,6 @@ A tiny (&lt;2kb gzipped), typed JMAP client with zero runtime dependencies, adhe
 ### To-do
 
 - [ ] [RFC 8887][jmap-ws-rfc] - JMAP Subprotocol for WebSocket
-- [ ] Fix [result reference][jmap-3.7-result-refs] types (these current work but may display TypeScript errors)
 
 [jmap-rfc]: https://datatracker.ietf.org/doc/html/rfc8620
 [jmap-mail-rfc]: https://datatracker.ietf.org/doc/html/rfc8621
@@ -50,7 +49,7 @@ Use in the browser:
 
 ```html
 <script type="module">
-  import { createClient } from "https://your-preferred-cdn.com/jmap-jam@<version>";
+  import JamClient from "https://your-preferred-cdn.com/jmap-jam@<version>";
 </script>
 ```
 
@@ -63,10 +62,9 @@ To initialize a client, provide the session URL for a JMAP server to connect to,
 ```ts
 import JamClient from "jmap-jam";
 
-const client = new JamClient({
+const jam = new JamClient({
   sessionUrl: "https://jmap.example.com/.well-known/jmap",
   bearerToken: "super-secret-token",
-  errorStrategy: "throw",
 });
 ```
 
@@ -84,23 +82,26 @@ To learn more about requests in JMAP, see the following resources:
 
 [jmap-5]: https://datatracker.ietf.org/doc/html/rfc8620#section-5
 
-> Though JMAP examples often show multiple method calls being used in a single request, see the [Notes on Concurrency](#notes-on-concurrency) section for information about why a single method call per request can sometimes be more efficient.
+#### Individual Requests
 
-Here's what a single request looks like with Jam using [`request`](#request):
+Here's what a single request looks like with Jam:
 
 ```ts
-const [mailboxes] = await client.request(["Mailbox/get", { accountId: "123" }]);
+const jam = new JamClient({ ... });
+
+// Using convenience methods
+const [mailboxes] = await jam.api.Mailbox.get({ accountId: "123" });
+
+// Using a plain request
+const [mailboxes] = await jam.request(["Mailbox/get",{ accountId: "123" }]);
 ```
 
-This will transform into the following JMAP request:
+Both of these methods output the same JMAP request:
 
 <!-- prettier-ignore -->
 ```jsonc
 {
-  "using": [
-    "urn:ietf:params:jmap:core",
-    "urn:ietf:params:jmap:mail",
-  ],
+  "using": ["urn:ietf:params:jmap:mail"],
   "methodCalls": [
     [
       "Mailbox/get", // <------------ Method name
@@ -111,6 +112,106 @@ This will transform into the following JMAP request:
 }
 ```
 
+Convenience methods for available JMAP entities (e.g. Email, Mailbox, Thread) are available through the [`api`](#apientityoperation) property.
+
+Or, as seen in the example, requests can be made without convenience methods by using the [`request`](#request) method directly.
+
+Both methods of sending requests have strongly typed responses and can be used interchangeably.
+
+#### Multiple Requests
+
+> Though JMAP examples often show multiple method calls being used in a single request, see the [Notes on Concurrency](#notes-on-concurrency) section for information about why a single method call per request can sometimes be preferred.
+
+To send multiple method calls in a single request, use `requestMany`.
+
+```ts
+const jam = new JamClient({ ... });
+
+const accountId = '<account-id>';
+const mailboxId = '<mailbox-id>';
+
+const [{ emails }, meta] = await jam.requestMany((t) => {
+  // Get the first 10 email IDs in the mailbox
+  const emailIds = t.Email.query({
+    accountId,
+    filter: {
+      inMailbox: mailboxId,
+    },
+    limit: 10,
+  });
+
+  // Get the emails with those IDs
+  const emails = t.Email.get({
+    accountId,
+    ids: emailIds.$ref("/ids"), // Using a result reference
+    properties: ["id", "htmlBody"],
+  });
+
+  return { emailIds, emails };
+});
+```
+
+This produces the following JMAP request:
+
+```jsonc
+{
+  "using": ["urn:ietf:params:jmap:mail"],
+  "methodCalls": [
+    [
+      "Email/query",
+      {
+        "accountId": "<account-id>",
+        "filter": {
+          "inMailbox": "<mailbox-id>"
+        }
+      },
+      "emailIds"
+    ],
+    [
+      "Email/get",
+      {
+        "accountId": "<account-id>",
+        "#ids": {
+          "name": "Email/query",
+          "resultOf": "emailIds",
+          "path": "/ids"
+        },
+        "properties": ["id", "htmlBody"]
+      },
+      "emails"
+    ]
+  ]
+}
+```
+
+The `t` argument used in the `requestMany` callback is a [Proxy](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy) that lets _invocation drafts_ be defined before they are assembled into an actual JMAP request sent to the server.
+
+To create a [result reference][jmap-3.7-result-refs] between invocations, use the `$ref` method on the invocation draft to be referenced.
+
+#### Request Options
+
+When making requests, you can pass an optional `options` object as the second argument to `request`, `requestMany`, or any of the convenience methods. This object accepts the following properties:
+
+- `fetchInit` - An object that will be passed to the Fetch API `fetch` method as the second argument. This can be used to set headers, change the HTTP method, etc. It can also be provided to the `JamClient` constructor to set default options for all requests.
+- `createdIds` - A object containing client-specified creation IDs mapped IDs the server
+  assigned when each record was successfully created.
+- `using` - An array of additional JMAP capabilities to include when making the request. This can be used to include non-standard capabilities that are supported by the server.
+
+#### Response Metadata
+
+Convenience methods, `request`, and `requestMany` all return a two-item tuple that contains the response data and metadata.
+
+```ts
+const [mailboxes, meta] = await jam.api.Mailbox.get({ accountId: "123" });
+const { sessionState, createdIds, response } = meta;
+```
+
+The meta object contains the following properties:
+
+- `sessionState` - The current session state.
+- `createdIds` - A map of method call IDs to the IDs of any objects created by the server in response to the request.
+- `response` - The actual Fetch API `Response`.
+
 [jmap-3.2]: https://datatracker.ietf.org/doc/html/rfc8620#section-3.2
 [jmap-3.7-result-refs]: https://datatracker.ietf.org/doc/html/rfc8620#section-3.7
 
@@ -120,52 +221,28 @@ This will transform into the following JMAP request:
 
 JMAP supports passing multiple method calls in a single request, but it is important to remember that each method call will be executed in sequence, not concurrently.
 
-To make concurrent method calls, send them in separate requests.
-
-In sum:
-
-- Prefer using separate [`request`](#request)'s, parallelizing when desired (e.g. with [`Promise.all`][promise-all]).
-- If a method call needs the output of another method call, use [`request`](#request) with object syntax to take advantage of [result references][jmap-3.7-result-refs] between method calls.
-- Or, if reducing the quantity of HTTP requests is more important than concurrency, use [`request`](#request) with object syntax to send multiple method calls in a single request even if they aren't dependent on each other.
-
 [jmap-3.10]: https://datatracker.ietf.org/doc/html/rfc8620#section-3.10
-[promise-all]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/all
 
 ## TypeScript
 
 Jam provides types for JMAP methods, arguments, and responses as described in the [JMAP][jmap-rfc] and [JMAP Mail][jmap-mail-rfc] RFCs.
 
-Using any of the `request*` methods will reveal autosuggested types for method names (e.g. `Email/get`), the arguments for that method, and the appropriate response.
+All convenience methods, `request`, and `requestMany` will reveal autosuggested types for method names (e.g. `Email/get`), the arguments for that method, and the appropriate response.
 
 Many response types will infer from arguments. For example, when using an argument field such as `properties` to filter fields in a response, the response type will be narrowed to exclude fields that were not included.
 
 ## API Reference
-
-### `#session`
-
-Get the client's current session.
-
-```js
-const session = await client.session;
-console.log(session); // =>
-// {
-//   capabilities: { ... },
-//   accounts: { ... },
-//   primaryAccounts: { ... },
-//   ...
-// }
-```
 
 ### `#api.<entity>.<operation>()`
 
 A convenience pattern for making individual JMAP requests that uses the [`request`](#request) method under the hood.
 
 ```js
-const [mailboxes] = await client.api.Mailbox.get({
+const [mailboxes] = await jam.api.Mailbox.get({
   accountId,
 });
 
-const [emails] = await client.api.Email.get({
+const [emails] = await jam.api.Email.get({
   accountId,
   ids: ["email-123"],
   properties: ["subject"],
@@ -176,19 +253,48 @@ const [emails] = await client.api.Email.get({
 
 Send a standard JMAP request.
 
-This accepts multiple method calls and returns success
-or error results for each method call.
+```ts
+const [mailboxes] = await jam.request(["Mailbox/get", { accountId }]);
+
+const [emails] = await jam.request([
+  "Email/get",
+  {
+    accountId,
+    ids: ["email-123"],
+    properties: ["subject"],
+  },
+]);
+```
+
+### `requestMany()`
+
+Send a JMAP request with multiple method calls.
 
 ```js
-const [results] = await client.request({
-  mailboxes: ["Mailbox/get", { accountId, properties: ["name"] }],
-  emails: ["Email/get", { accountId, properties: ["subject"] }],
+const [{ emailIds, emails }] = await jam.requestMany((r) => {
+  const emailIds = r.Email.query({
+    accountId,
+    filter: {
+      inMailbox: mailboxId,
+    },
+  });
+
+  const emails = r.Email.get({
+    accountId,
+    ids: emailIds.$ref("/ids"),
+    properties: ["id", "htmlBody"],
+  });
+
+  return { emailIds, emails };
 });
-console.log(results); // =>
-// {
-//   mailboxes: { data: { ... } }, // or { error: { ... } }
-//   emails: { data: { ... } }, // or { error: { ... }
-// }
+```
+
+### `#session`
+
+Get the client's current session.
+
+```js
+const session = await client.session;
 ```
 
 ### `getPrimaryAccount()`
@@ -197,7 +303,6 @@ Get the ID of the primary mail account for the current session.
 
 ```js
 const accountId = await client.getPrimaryAccount();
-console.log(accountId); // => "abcd"
 ```
 
 ### `downloadBlob()`
