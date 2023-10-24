@@ -13,6 +13,7 @@ import type {
   LocalInvocation,
   Meta,
   Methods,
+  ProxyAPI,
   RequestOptions,
 } from "./types/contracts";
 import type * as JMAP from "./types/jmap";
@@ -386,5 +387,40 @@ export class JamClient<Config extends ClientConfig> {
     const url = expandURITemplate(eventSourceUrl, params);
 
     return new EventSource(url);
+  }
+
+  /**
+   * A fluent API using {entity}.{operation} syntax
+   *
+   * @example
+   * ```ts
+   * const [emails] = await jam.api.Email.get({
+   *   accountId,
+   *   ids,
+   *   properties,
+   * });
+   *
+   * const [mailboxes] = await jam.api.Mailbox.query({
+   *   accountId,
+   *   filter: { name: "Inbox" },
+   * });
+   * ```
+   */
+  get api() {
+    return new Proxy<ProxyAPI>({} as ProxyAPI, {
+      get: (_, entity: string) =>
+        new Proxy(
+          {},
+          {
+            get: (__, operation: string) => {
+              return async (args: any, options?: RequestOptions) => {
+                const method = `${entity}/${operation}` as Methods;
+
+                return this.request([method, args], options);
+              };
+            },
+          }
+        ),
+    });
   }
 }

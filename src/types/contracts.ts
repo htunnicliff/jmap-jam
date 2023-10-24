@@ -248,3 +248,35 @@ export type GetResult<
           data: null;
           error: ProblemDetails;
         };
+
+/**
+ * This is an interface for a Proxy-based API that functions similarly to this example:
+ *
+ * @example
+ * ```ts
+ * const api = {
+ *   Email: {
+ *     get: (args) => jam.request(["Email/get", args]),
+ *     changes: (args) => jam.request(["Email/changes", args]),
+ *     // ...
+ *   },
+ *   Mailbox: {
+ *     get: (args) => jam.request(["Mailbox/get", args]),
+ *     query: (args) => jam.request(["Mailbox/query", args]),
+ *     // ...
+ *   },
+ *   // ...
+ * }
+ * ```
+ */
+export type ProxyAPI = {
+  [Entity in keyof Requests as Entity extends `${infer EntityName}/${string}`
+    ? EntityName
+    : never]: {
+    [Method in Entity as Method extends `${string}/${infer MethodName}`
+      ? MethodName
+      : never]: <A extends Requests[Method]>(
+      args: A
+    ) => Promise<[Responses<A>[Method], Meta]>;
+  };
+};

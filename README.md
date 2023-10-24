@@ -29,6 +29,7 @@ A tiny (&lt;2kb gzipped), typed JMAP client with zero runtime dependencies, adhe
 - [TypeScript](#typescript)
 - [API Reference](#api-reference)
   - [`#session`](#session)
+  - [`#api.<entity>.<operation>()`](#apientityoperation)
   - [`request()`](#request)
   - [`getPrimaryAccount()`](#getprimaryaccount)
   - [`downloadBlob()`](#downloadblob)
@@ -153,6 +154,22 @@ console.log(session); // =>
 //   primaryAccounts: { ... },
 //   ...
 // }
+```
+
+### `#api.<entity>.<operation>()`
+
+A convenience pattern for making individual JMAP requests that uses the [`request`](#request) method under the hood.
+
+```js
+const [mailboxes] = await client.api.Mailbox.get({
+  accountId,
+});
+
+const [emails] = await client.api.Email.get({
+  accountId,
+  ids: ["email-123"],
+  properties: ["subject"],
+});
 ```
 
 ### `request()`
