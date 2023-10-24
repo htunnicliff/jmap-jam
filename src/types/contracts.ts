@@ -1,4 +1,5 @@
 import type { Exact } from "type-fest";
+import type { HasAllKeysOfRelated } from "../helpers";
 import type {
   BlobCopyArguments,
   BlobCopyResponse,
@@ -11,13 +12,13 @@ import type {
   GetArguments,
   GetResponse,
   ID,
+  Request as JMAPRequest,
+  Response as JMAPResponse,
   ProblemDetails,
   QueryArguments,
   QueryChangesArguments,
   QueryChangesResponse,
   QueryResponse,
-  Request as JMAPRequest,
-  Response as JMAPResponse,
   SetArguments,
   SetError,
   SetResponse,
@@ -36,7 +37,6 @@ import type {
   Thread,
   VacationResponse,
 } from "./jmap-mail";
-import type { HasAllKeysOfRelated } from "../helpers";
 
 export type Requests = {
   // Core -----------------------------------
@@ -216,34 +216,6 @@ export type GetResponseData<
   Method extends Methods,
   Args
 > = Responses<Args>[Method];
-
-export type ClientConfig = {
-  /**
-   * The bearer token used to authenticate all requests
-   */
-  bearerToken: string;
-
-  /**
-   * The URL of the JMAP session resources
-   */
-  sessionUrl: string;
-
-  /**
-   * A map of custom entities and their required capability identifiers
-   *
-   * @example
-   * ```
-   * const client = createClient({
-   *   customCapabilities: {
-   *     "Sandwich": "urn:bigco:params:jmap:sandwich",
-   *     "TextMessage": "foo:bar:jmap:sms",
-   *     "Spaceship": "myspaceship-jmap-urn",
-   *   },
-   * });
-   * ```
-   */
-  customCapabilities?: Record<string, string>;
-};
 
 export type RequestOptions = {
   fetchInit?: RequestInit;

@@ -8,27 +8,43 @@ import {
   getResultsForMethodCalls,
 } from "./helpers";
 import type {
-  ClientConfig,
   GetArgs,
   GetResponseData,
-  GetResult,
   LocalInvocation,
   Meta,
   Methods,
   RequestOptions,
 } from "./types/contracts";
-import type {
-  BlobDownloadParams,
-  BlobUploadParams,
-  BlobUploadResponse,
-  EventSourceArguments,
-  Invocation,
-  Request as JMAPRequest,
-  Response as JMAPResponse,
-  ProblemDetails,
-  Session,
-} from "./types/jmap";
-import type { Entity } from "./types/jmap-mail";
+import type * as JMAP from "./types/jmap";
+import type * as JMAPMail from "./types/jmap-mail";
+
+export type ClientConfig = {
+  /**
+   * The bearer token used to authenticate all requests
+   */
+  bearerToken: string;
+
+  /**
+   * The URL of the JMAP session resources
+   */
+  sessionUrl: string;
+
+  /**
+   * A map of custom entities and their required capability identifiers
+   *
+   * @example
+   * ```
+   * const client = createClient({
+   *   customCapabilities: {
+   *     "Sandwich": "urn:bigco:params:jmap:sandwich",
+   *     "TextMessage": "foo:bar:jmap:sms",
+   *     "Spaceship": "myspaceship-jmap-urn",
+   *   },
+   * });
+   * ```
+   */
+  customCapabilities?: Record<string, string>;
+};
 
 export class JamClient<Config extends ClientConfig> {
   /**
@@ -44,7 +60,7 @@ export class JamClient<Config extends ClientConfig> {
   /**
    * An immediately fetched session promise
    */
-  session: Promise<Session>;
+  session: Promise<JMAP.Session>;
 
   constructor(config: Config) {
     this.authHeader = `Bearer ${config.bearerToken}`;
@@ -88,10 +104,10 @@ export class JamClient<Config extends ClientConfig> {
     } = options ?? {};
 
     // Assemble method call
-    const invocation: Invocation<Args> = [method, args, "r1"];
+    const invocation: JMAP.Invocation<Args> = [method, args, "r1"];
 
     // Build request
-    const body: JMAPRequest<[Invocation<Args>]> = {
+    const body: JMAP.Request<[JMAP.Invocation<Args>]> = {
       using: [
         ...getCapabilitiesForMethodCalls({
           methodNames: [method],
@@ -120,9 +136,9 @@ export class JamClient<Config extends ClientConfig> {
 
     // Handle 4xx-5xx errors
     if (!response.ok) {
-      let error: string | ProblemDetails;
+      let error: string | JMAP.ProblemDetails;
       if (response.headers.get("Content-Type")?.includes("json")) {
-        error = (await response.json()) as ProblemDetails;
+        error = (await response.json()) as JMAP.ProblemDetails;
       } else {
         error = await response.text();
       }
@@ -134,7 +150,7 @@ export class JamClient<Config extends ClientConfig> {
       methodResponses: [methodResponse],
       sessionState,
       createdIds,
-    } = (await response.json()) as JMAPResponse<[Invocation<Data>]>;
+    } = (await response.json()) as JMAP.Response<[JMAP.Invocation<Data>]>;
 
     const meta: Meta = {
       sessionState,
@@ -168,11 +184,11 @@ export class JamClient<Config extends ClientConfig> {
     const methodNames = new Set<string>();
     const methodCalls = Object.entries(requests).map(([id, [name, args]]) => {
       methodNames.add(name);
-      return [name, args, id] as Invocation<typeof args>;
+      return [name, args, id] as JMAP.Invocation<typeof args>;
     });
 
     // Build request
-    const body: JMAPRequest<typeof methodCalls> = {
+    const body: JMAP.Request<typeof methodCalls> = {
       using: [
         ...getCapabilitiesForMethodCalls({
           methodNames,
@@ -201,10 +217,10 @@ export class JamClient<Config extends ClientConfig> {
 
     // Handle 4xx-5xx errors
     if (!response.ok) {
-      let error: string | ProblemDetails;
+      let error: string | JMAP.ProblemDetails;
 
       if (response.headers.get("Content-Type")?.includes("json")) {
-        error = (await response.json()) as ProblemDetails;
+        error = (await response.json()) as JMAP.ProblemDetails;
       } else {
         error = await response.text();
       }
@@ -214,7 +230,7 @@ export class JamClient<Config extends ClientConfig> {
 
     // Handle success
     const { methodResponses, sessionState, createdIds } =
-      (await response.json()) as JMAPResponse;
+      (await response.json()) as JMAP.Response;
 
     const meta = {
       sessionState,
@@ -268,13 +284,13 @@ export class JamClient<Config extends ClientConfig> {
    * Upload a blob
    */
   async uploadBlob(
-    accountId: BlobUploadParams["accountId"],
+    accountId: JMAP.BlobUploadParams["accountId"],
     body: BodyInit,
     fetchInit: RequestInit = {}
   ) {
     const { uploadUrl } = await this.session;
 
-    const params: BlobUploadParams = {
+    const params: JMAP.BlobUploadParams = {
       accountId,
     };
 
@@ -293,13 +309,13 @@ export class JamClient<Config extends ClientConfig> {
 
       if (!response.ok) {
         if (response.headers.get("Content-Type")?.includes("json")) {
-          throw (await response.json()) as ProblemDetails;
+          throw (await response.json()) as JMAP.ProblemDetails;
         } else {
           throw await response.text();
         }
       }
 
-      return (await response.json()) as BlobUploadResponse;
+      return (await response.json()) as JMAP.BlobUploadResponse;
     } catch (cause) {
       throw new Error("Failed to upload blob", { cause });
     }
@@ -310,16 +326,16 @@ export class JamClient<Config extends ClientConfig> {
    */
   async downloadBlob(
     options: {
-      accountId: BlobDownloadParams["accountId"];
-      blobId: BlobDownloadParams["blobId"];
-      mimeType: BlobDownloadParams["type"];
-      fileName: BlobDownloadParams["name"];
+      accountId: JMAP.BlobDownloadParams["accountId"];
+      blobId: JMAP.BlobDownloadParams["blobId"];
+      mimeType: JMAP.BlobDownloadParams["type"];
+      fileName: JMAP.BlobDownloadParams["name"];
     },
     fetchInit: RequestInit = {}
   ) {
     const { downloadUrl } = await this.session;
 
-    const params: BlobDownloadParams = {
+    const params: JMAP.BlobDownloadParams = {
       accountId: options.accountId,
       blobId: options.blobId,
       type: options.mimeType,
@@ -339,7 +355,7 @@ export class JamClient<Config extends ClientConfig> {
 
       if (!response.ok) {
         if (response.headers.get("Content-Type")?.includes("json")) {
-          throw (await response.json()) as ProblemDetails;
+          throw (await response.json()) as JMAP.ProblemDetails;
         } else {
           throw await response.text();
         }
@@ -355,11 +371,11 @@ export class JamClient<Config extends ClientConfig> {
    * Initiate an event source to subscribe to server-sent events
    */
   async connectEventSource(options: {
-    types: "*" | Array<Entity>;
+    types: "*" | Array<JMAPMail.Entity>;
     ping: number;
-    closeafter?: EventSourceArguments["closeafter"];
+    closeafter?: JMAP.EventSourceArguments["closeafter"];
   }) {
-    const params: EventSourceArguments = {
+    const params: JMAP.EventSourceArguments = {
       types: options.types === "*" ? "*" : options.types.join(","),
       closeafter: options.closeafter ?? "no",
       ping: `${options.ping}`,

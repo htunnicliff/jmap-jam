@@ -10,7 +10,8 @@
     "emitDeclarationOnly": true,
     "declaration": true,
     "outDir": "dist",
-    "declarationMap": true
+    "declarationMap": true,
+    "noUnusedLocals": true
   },
   "include": ["src/**/*"]
 }
