@@ -3,7 +3,7 @@
   <h1 align="center">Jam: A JMAP Client</h1>
 </div>
 
-Jame is a tiny (&lt;3kb gzipped), strongly-typed JMAP client with zero runtime dependencies. It has friendly, fluent APIs that make working with JMAP a breeze.
+Jam is a tiny (&lt;3kb gzipped), strongly-typed JMAP client with zero runtime dependencies. It has friendly, fluent APIs that make working with JMAP a breeze.
 
 Jam is compatible with environments that support the [Web Fetch API][mdn-using-fetch] and [ES Modules][mdn-esm].
 
