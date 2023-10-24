@@ -102,8 +102,19 @@ export type Response<T extends Invocation[] = Invocation[]> = {
  * [rfc8620 § 3.7](https://datatracker.ietf.org/doc/html/rfc8620#section-3.7)
  */
 export type ResultReference = {
+  /**
+   * The method call id (see Section 3.2) of a previous method call in the current request.
+   */
   resultOf: string;
+  /**
+   * The required name of a response to that method call.
+   */
   name: string;
+  /**
+   * A pointer into the arguments of the response selected via the name and resultOf properties.
+   * This is a JSON Pointer [rfc6901](https://datatracker.ietf.org/doc/html/rfc6901), except it
+   * also allows the use of "*" to map through an array.
+   */
   path: JSONPointer;
 };
 

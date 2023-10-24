@@ -7,14 +7,15 @@ import {
   getErrorFromInvocation,
   getResultsForMethodCalls,
 } from "./helpers";
-import type {
-  GetArgs,
-  GetResponseData,
-  LocalInvocation,
-  Meta,
-  Methods,
-  ProxyAPI,
-  RequestOptions,
+import { buildRequestsFromDrafts, type DraftsFunction } from "./request-drafts";
+import {
+  type GetArgs,
+  type GetResponseData,
+  type LocalInvocation,
+  type Meta,
+  type Methods,
+  type ProxyAPI,
+  type RequestOptions,
 } from "./types/contracts";
 import type * as JMAP from "./types/jmap";
 import type * as JMAPMail from "./types/jmap-mail";
@@ -153,26 +154,26 @@ export class JamClient<Config extends ClientConfig> {
       createdIds,
     } = (await response.json()) as JMAP.Response<[JMAP.Invocation<Data>]>;
 
-    const meta: Meta = {
-      sessionState,
-      createdIds,
-      response,
-    };
-
     const error = getErrorFromInvocation(methodResponse);
     if (error) {
       throw error;
     }
 
-    return [methodResponse[1], meta];
+    return [
+      methodResponse[1],
+      {
+        sessionState,
+        createdIds,
+        response,
+      },
+    ];
   }
 
   async requestMany<
-    Requests extends { [id: string]: [Methods, any] },
     Options extends RequestOptions & {
       errorStrategy?: "throw" | "return";
     }
-  >(requests: Requests, options?: Options) {
+  >(draftsFn: DraftsFunction, options?: Options) {
     // Extract options
     const {
       using = [],
@@ -181,12 +182,7 @@ export class JamClient<Config extends ClientConfig> {
       errorStrategy = "throw",
     } = options ?? {};
 
-    // Assemble method calls
-    const methodNames = new Set<string>();
-    const methodCalls = Object.entries(requests).map(([id, [name, args]]) => {
-      methodNames.add(name);
-      return [name, args, id] as JMAP.Invocation<typeof args>;
-    });
+    const { methodCalls, methodNames } = buildRequestsFromDrafts(draftsFn);
 
     // Build request
     const body: JMAP.Request<typeof methodCalls> = {
@@ -233,7 +229,7 @@ export class JamClient<Config extends ClientConfig> {
     const { methodResponses, sessionState, createdIds } =
       (await response.json()) as JMAP.Response;
 
-    const meta = {
+    const meta: Meta = {
       sessionState,
       createdIds,
       response,

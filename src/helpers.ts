@@ -12,11 +12,11 @@ export function expandURITemplate(
   let expanded = template;
 
   for (const [key, value] of Object.entries(params)) {
-    if (!expanded.includes(`{${key}}`)) {
+    const parameter = "{" + key + "}";
+    if (!expanded.includes(parameter)) {
       throw new Error(`Template "${template}" is missing parameter: ${key}`);
     }
-
-    expanded = expanded.replaceAll(`{${key}}`, value);
+    expanded = expanded.replaceAll(parameter, value);
   }
 
   return new URL(expanded);
