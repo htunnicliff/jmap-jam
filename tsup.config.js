@@ -6,6 +6,8 @@ export default defineConfig({
   outDir: "dist",
   format: "esm",
   clean: true,
+  minifyWhitespace: true,
+  minifySyntax: true,
   target: ["es2018"],
   sourcemap: true,
   async onSuccess() {
