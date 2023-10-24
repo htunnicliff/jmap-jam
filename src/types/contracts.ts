@@ -243,11 +243,6 @@ export type ClientConfig = {
    * ```
    */
   customCapabilities?: Record<string, string>;
-  /**
-   * The error handling strategy to use when one or more method calls
-   * receive an error response.
-   */
-  errorStrategy: "throw" | "return";
 };
 
 export type RequestOptions = {

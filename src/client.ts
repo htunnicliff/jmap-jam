@@ -46,11 +46,6 @@ export class JamClient<Config extends ClientConfig> {
    */
   session: Promise<Session>;
 
-  /**
-   * The error handling strategy to use
-   */
-  errorStrategy: "throw" | "return";
-
   constructor(config: Config) {
     this.authHeader = `Bearer ${config.bearerToken}`;
 
@@ -60,8 +55,6 @@ export class JamClient<Config extends ClientConfig> {
     ]);
 
     this.session = JamClient.loadSession(config.sessionUrl, this.authHeader);
-
-    this.errorStrategy = config.errorStrategy;
   }
 
   /**
@@ -87,7 +80,7 @@ export class JamClient<Config extends ClientConfig> {
   >(
     [method, args]: LocalInvocation<Method, Args>,
     options?: RequestOptions
-  ): Promise<[GetResult<Data, Config["errorStrategy"]>, Meta]> {
+  ): Promise<[Data, Meta]> {
     const {
       using = [],
       fetchInit,
@@ -141,9 +134,7 @@ export class JamClient<Config extends ClientConfig> {
       methodResponses: [methodResponse],
       sessionState,
       createdIds,
-    } = (await response.json()) as JMAPResponse<
-      [Invocation<Data | ProblemDetails>]
-    >;
+    } = (await response.json()) as JMAPResponse<[Invocation<Data>]>;
 
     const meta: Meta = {
       sessionState,
@@ -152,34 +143,26 @@ export class JamClient<Config extends ClientConfig> {
     };
 
     const error = getErrorFromInvocation(methodResponse);
-
-    switch (this.errorStrategy) {
-      case "throw": {
-        if (error) {
-          throw error;
-        } else {
-          // @ts-ignore
-          return [methodResponse[1], meta];
-        }
-      }
-      case "return": {
-        if (error) {
-          // @ts-ignore
-          return [{ error, data: null }, meta];
-        } else {
-          // @ts-ignore
-          return [{ data: methodResponse[1] as Data, error: null }, meta];
-        }
-      }
+    if (error) {
+      throw error;
     }
+
+    return [methodResponse[1], meta];
   }
 
-  async requestMany<Requests extends { [id: string]: [Methods, any] }>(
-    requests: Requests,
-    options: RequestOptions = {}
-  ) {
+  async requestMany<
+    Requests extends { [id: string]: [Methods, any] },
+    Options extends RequestOptions & {
+      errorStrategy?: "throw" | "return";
+    }
+  >(requests: Requests, options?: Options) {
     // Extract options
-    const { using = [], fetchInit, createdIds: createdIdsInput } = options;
+    const {
+      using = [],
+      fetchInit,
+      createdIds: createdIdsInput,
+      errorStrategy = "throw",
+    } = options ?? {};
 
     // Assemble method calls
     const methodNames = new Set<string>();
@@ -239,7 +222,7 @@ export class JamClient<Config extends ClientConfig> {
       response,
     };
 
-    switch (this.errorStrategy) {
+    switch (errorStrategy) {
       case "throw": {
         const errors = methodResponses
           .map(getErrorFromInvocation)
@@ -256,7 +239,14 @@ export class JamClient<Config extends ClientConfig> {
           ];
         }
       }
-      case "return": {
+      case "return":
+      default: {
+        if (errorStrategy !== "return") {
+          console.error(
+            `Unknown error strategy: ${errorStrategy}. Using "return" strategy instead.`
+          );
+        }
+
         return [
           getResultsForMethodCalls(methodResponses, {
             returnErrors: true,
