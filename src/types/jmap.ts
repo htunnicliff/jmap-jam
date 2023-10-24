@@ -1,4 +1,4 @@
-import type { Obj } from "./utilities";
+import type { Obj } from "../helpers";
 
 /**
  * JMAP

@@ -1,5 +1,5 @@
-import { Exact } from "type-fest";
-import {
+import type { Exact } from "type-fest";
+import type {
   BlobCopyArguments,
   BlobCopyResponse,
   ChangesArguments,
@@ -22,14 +22,13 @@ import {
   SetError,
   SetResponse,
 } from "./jmap";
-import {
+import type {
   Email,
   EmailFilterCondition,
   EmailImport,
   EmailSubmission,
   EmailSubmissionFilterCondition,
   EmailWithoutHeaderKeys,
-  HeaderFieldKey,
   Identity,
   Mailbox,
   MailboxFilterCondition,
@@ -37,7 +36,7 @@ import {
   Thread,
   VacationResponse,
 } from "./jmap-mail";
-import { HasAllKeysOfRelated } from "./utilities";
+import type { HasAllKeysOfRelated } from "../helpers";
 
 export type Requests = {
   // Core -----------------------------------
