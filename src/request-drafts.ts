@@ -1,25 +1,23 @@
 import type { Invocation, JSONPointer, ResultReference } from "./types/jmap";
 import { LocalInvocation, Methods, Requests } from "./types/contracts";
 
-type Ref = ReturnType<InvocationDraft["$ref"]>;
+export type Ref<I = unknown> = ReturnType<InvocationDraft<I>["$ref"]>;
 
 /**
- * @private
- *
+ * Symbol used to identify arguments that need to be transformed
+ * into JMAP result references
+ */
+const r = Symbol("Result Reference");
+
+/**
  * These instances represent partially-formed method calls
  * used within `requestMany`. They are transformed into standard
  * JMAP method calls before being sent to the server.
  */
-class InvocationDraft {
-  #invocation: LocalInvocation<Methods, any>;
+export class InvocationDraft<I = unknown> {
+  #invocation: I;
 
-  /**
-   * Symbol used to identify arguments that need to be transformed
-   * into JMAP result references
-   */
-  static #ref = Symbol("Result Reference");
-
-  constructor(invocation: LocalInvocation<Methods, any>) {
+  constructor(invocation: I) {
     this.#invocation = invocation;
   }
 
@@ -29,7 +27,7 @@ class InvocationDraft {
    */
   $ref(path: JSONPointer) {
     return {
-      [InvocationDraft.#ref]: {
+      [r]: {
         path,
         invocation: this.#invocation,
       },
@@ -39,12 +37,8 @@ class InvocationDraft {
   /**
    * Determine if a value is a result reference placeholder
    */
-  static isRef(value: unknown): value is Ref {
-    return (
-      typeof value === "object" &&
-      value !== null &&
-      InvocationDraft.#ref in value
-    );
+  static isRef<I = unknown>(value: unknown): value is Ref<I> {
+    return typeof value === "object" && value !== null && r in value;
   }
 
   /**
@@ -52,15 +46,20 @@ class InvocationDraft {
    * by replacing result reference placeholders with JMAP result references
    * and applying user-provided IDs.
    */
-  static createInvocationsFromDrafts(drafts: Record<string, InvocationDraft>) {
+  static createInvocationsFromDrafts<T extends Record<string, InvocationDraft>>(
+    drafts: T
+  ) {
     // Track method names
     const methodNames = new Set<string>();
 
     // Associate IDs with invocation references
-    const invocationToId = new Map<LocalInvocation<Methods, any>, string>();
+    const invocationToId = new Map<unknown, string>();
 
     const methodCalls = Object.entries(drafts).map(([id, draft]) => {
-      const [method, inputArgs] = draft.#invocation;
+      const [method, inputArgs] = draft.#invocation as LocalInvocation<
+        any,
+        any
+      >;
 
       invocationToId.set(draft.#invocation, id);
       methodNames.add(method);
@@ -68,15 +67,15 @@ class InvocationDraft {
       // Transform partial refs into full refs
       const args = Object.fromEntries(
         Object.entries(inputArgs).map(([key, value]) => {
-          if (InvocationDraft.isRef(value)) {
-            const ref = value[InvocationDraft.#ref];
+          if (InvocationDraft.isRef<any>(value)) {
+            const { invocation, path } = value[r];
 
             return [
               `#${key}`, // Convert key to use JMAP ref syntax
               {
-                name: ref.invocation[0], // Ref method
-                resultOf: invocationToId.get(ref.invocation)!, // Ref ID
-                path: ref.path,
+                name: invocation[0], // Ref method
+                resultOf: invocationToId.get(invocation)!, // Ref ID
+                path,
               } satisfies ResultReference,
             ];
           }
@@ -86,34 +85,32 @@ class InvocationDraft {
         })
       );
 
-      return [method, args, id] as Invocation<typeof args>;
+      return [method, args, id] as Invocation;
     });
 
     return { methodCalls, methodNames };
   }
 }
 
-type DraftsProxy = {
+export type DraftsProxy = {
   [Entity in keyof Requests as Entity extends `${infer EntityName}/${string}`
     ? EntityName
     : never]: {
     [Method in Entity as Method extends `${string}/${infer MethodName}`
       ? MethodName
       : never]: <
-      A extends {
+      Args extends {
         [T in keyof Requests[Method]]: Requests[Method][T] | Ref;
       }
     >(
-      args: A
-    ) => InvocationDraft;
+      args: Args
+    ) => InvocationDraft<[Method, Args]>;
   };
 };
 
-export type DraftsFunction = (
-  t: DraftsProxy
-) => Record<string, InvocationDraft>;
-
-export function buildRequestsFromDrafts(draftsFn: DraftsFunction) {
+export function buildRequestsFromDrafts<
+  R extends Record<string, InvocationDraft<unknown>>
+>(draftsFn: (p: DraftsProxy) => R) {
   // Create a proxy to intercept {entity}.{operation} calls
   const draftsProxy = new Proxy({} as DraftsProxy, {
     get: (_, entity: string) =>

@@ -3,11 +3,18 @@ import {
   knownCapabilities,
 } from "./capabilities";
 import {
+  ExcludeValue,
+  IncludeValue,
   expandURITemplate,
   getErrorFromInvocation,
   getResultsForMethodCalls,
 } from "./helpers";
-import { buildRequestsFromDrafts, type DraftsFunction } from "./request-drafts";
+import {
+  type DraftsProxy,
+  type InvocationDraft,
+  type Ref,
+  buildRequestsFromDrafts,
+} from "./request-drafts";
 import {
   type GetArgs,
   type GetResponseData,
@@ -170,22 +177,30 @@ export class JamClient<Config extends ClientConfig> {
   }
 
   async requestMany<
-    Options extends RequestOptions & {
-      errorStrategy?: "throw" | "return";
-    }
-  >(draftsFn: DraftsFunction, options?: Options) {
+    F extends (b: DraftsProxy) => { [id: string]: InvocationDraft },
+    R extends ReturnType<F>
+  >(
+    draftsFn: F,
+    options: RequestOptions = {}
+  ): Promise<
+    [
+      {
+        [K in keyof R]: R[K] extends InvocationDraft<
+          infer I extends [Methods, IncludeValue<Record<string, any>, Ref>]
+        >
+          ? GetResponseData<I[0], ExcludeValue<I[1], Ref>>
+          : never;
+      },
+      Meta
+    ]
+  > {
     // Extract options
-    const {
-      using = [],
-      fetchInit,
-      createdIds: createdIdsInput,
-      errorStrategy = "throw",
-    } = options ?? {};
+    const { using = [], fetchInit, createdIds: createdIdsInput } = options;
 
     const { methodCalls, methodNames } = buildRequestsFromDrafts(draftsFn);
 
     // Build request
-    const body: JMAP.Request<typeof methodCalls> = {
+    const body: JMAP.Request = {
       using: [
         ...getCapabilitiesForMethodCalls({
           methodNames,
@@ -235,39 +250,19 @@ export class JamClient<Config extends ClientConfig> {
       response,
     };
 
-    switch (errorStrategy) {
-      case "throw": {
-        const errors = methodResponses
-          .map(getErrorFromInvocation)
-          .filter((e): e is NonNullable<typeof e> => e !== null);
+    const errors = methodResponses
+      .map(getErrorFromInvocation)
+      .filter((e): e is NonNullable<typeof e> => e !== null);
 
-        if (errors.length > 0) {
-          throw errors;
-        } else {
-          return [
-            getResultsForMethodCalls(methodResponses, {
-              returnErrors: false,
-            }),
-            meta,
-          ];
-        }
-      }
-      case "return":
-      default: {
-        if (errorStrategy !== "return") {
-          console.error(
-            `Unknown error strategy: ${errorStrategy}. Using "return" strategy instead.`
-          );
-        }
-
-        return [
-          getResultsForMethodCalls(methodResponses, {
-            returnErrors: true,
-          }),
-          meta,
-        ];
-      }
+    if (errors.length > 0) {
+      throw errors;
     }
+
+    return [
+      // @ts-expect-error TODO
+      getResultsForMethodCalls(methodResponses, { returnErrors: false }),
+      meta,
+    ];
   }
 
   /**

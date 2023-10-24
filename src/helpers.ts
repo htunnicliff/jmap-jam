@@ -84,3 +84,11 @@ export type HasAllKeysOfRelated<
   R extends Record<string | number | symbol, unknown>,
   T extends Record<keyof R, unknown>
 > = T;
+
+export type IncludeValue<T, V> = {
+  [K in keyof T]: T[K] | V;
+};
+
+export type ExcludeValue<T, V> = {
+  [K in keyof T]: Extract<T[K], V>;
+};
