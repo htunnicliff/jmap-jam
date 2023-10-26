@@ -3,6 +3,15 @@
   <h1 align="center">Jam: A JMAP Client</h1>
 </div>
 
+<p align="center">
+  <a href="https://bundlephobia.com/package/jmap-jam@latest">
+    <img alt="bundle size" src="https://img.shields.io/bundlephobia/minzip/jmap-jam">
+  </a>
+  <a href="https://github.com/htunnicliff/jmap-jam/blob/main/LICENSE.txt">
+    <img alt="NPM" src="https://img.shields.io/npm/l/jmap-jam">
+  </a>
+</p>
+
 Jam is a tiny (~2kb gzipped), strongly-typed JMAP client with zero runtime dependencies. It has friendly, fluent APIs that make working with JMAP a breeze.
 
 Jam is compatible with environments that support the [Web Fetch API][mdn-using-fetch] and [ES Modules][mdn-esm].
