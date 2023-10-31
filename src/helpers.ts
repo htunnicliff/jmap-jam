@@ -90,5 +90,5 @@ export type IncludeValue<T, V> = {
 };
 
 export type ExcludeValue<T, V> = {
-  [K in keyof T]: Extract<T[K], V>;
+  [K in keyof T]: Exclude<T[K], V>;
 };

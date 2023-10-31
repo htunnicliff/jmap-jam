@@ -1,7 +1,12 @@
-import type { Invocation, JSONPointer, ResultReference } from "./types/jmap";
+import type { ExcludeValue, IncludeValue } from "./helpers";
 import { LocalInvocation, Methods, Requests } from "./types/contracts";
+import type { Invocation, JSONPointer, ResultReference } from "./types/jmap";
 
 export type Ref<I = unknown> = ReturnType<InvocationDraft<I>["$ref"]>;
+
+export type WithRevValues<T> = IncludeValue<T, Ref>;
+
+export type WithoutRefValues<T> = ExcludeValue<T, Ref>;
 
 /**
  * Symbol used to identify arguments that need to be transformed
