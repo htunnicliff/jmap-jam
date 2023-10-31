@@ -14,6 +14,8 @@ import {
   type InvocationDraft,
   type Ref,
   buildRequestsFromDrafts,
+  WithRevValues,
+  WithoutRefValues,
 } from "./request-drafts";
 import {
   type GetArgs,
@@ -177,18 +179,18 @@ export class JamClient<Config extends ClientConfig = ClientConfig> {
   }
 
   async requestMany<
-    F extends (b: DraftsProxy) => { [id: string]: InvocationDraft },
-    R extends ReturnType<F>
+    DraftsFn extends (b: DraftsProxy) => { [id: string]: InvocationDraft },
+    Returning extends ReturnType<DraftsFn>
   >(
-    draftsFn: F,
+    draftsFn: DraftsFn,
     options: RequestOptions = {}
   ): Promise<
     [
       {
-        [K in keyof R]: R[K] extends InvocationDraft<
-          infer I extends [Methods, IncludeValue<Record<string, any>, Ref>]
+        [MethodId in keyof Returning]: Returning[MethodId] extends InvocationDraft<
+          infer Inv extends [Methods, WithRevValues<Record<string, any>>]
         >
-          ? GetResponseData<I[0], ExcludeValue<I[1], Ref>>
+          ? GetResponseData<Inv[0], WithoutRefValues<Inv[1]>>
           : never;
       },
       Meta
