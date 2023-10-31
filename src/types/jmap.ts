@@ -127,8 +127,8 @@ export type ResultReference = {
  */
 export type ProblemDetails = {
   type: string;
-  status: number;
-  detail: string;
+  status?: number;
+  detail?: string;
   instance?: string;
   methodCallId?: string;
 };
