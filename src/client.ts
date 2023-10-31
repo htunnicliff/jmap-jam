@@ -55,7 +55,7 @@ export type ClientConfig = {
   customCapabilities?: Record<string, string>;
 };
 
-export class JamClient<Config extends ClientConfig> {
+export class JamClient<Config extends ClientConfig = ClientConfig> {
   /**
    * Headers to send with every request
    */
