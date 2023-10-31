@@ -413,4 +413,14 @@ export class JamClient<Config extends ClientConfig = ClientConfig> {
         ),
     });
   }
+
+  static isProblemDetails(value: unknown): value is JMAP.ProblemDetails {
+    return (
+      typeof value === "object" &&
+      value !== null &&
+      "type" in value &&
+      "status" in value &&
+      "detail" in value
+    );
+  }
 }
