@@ -29,7 +29,8 @@ import type {
   EmailImport,
   EmailSubmission,
   EmailSubmissionFilterCondition,
-  EmailWithoutHeaderKeys,
+  GetValueFromHeaderKey,
+  HeaderFieldKey,
   Identity,
   Mailbox,
   MailboxFilterCondition,
@@ -67,13 +68,7 @@ export type Requests = {
   "Thread/get": GetArguments<Thread>;
   "Thread/changes": ChangesArguments;
   // Email ----------------------------------
-  "Email/get": GetArguments<EmailWithoutHeaderKeys> & {
-    bodyProperties?: Array<keyof EmailWithoutHeaderKeys>;
-    fetchTextBodyValues?: boolean;
-    fetchHTMLBodyValues?: boolean;
-    fetchAllBodyValues?: boolean;
-    maxBodyValueBytes?: number;
-  };
+  "Email/get": GetEmailArguments;
   "Email/changes": ChangesArguments;
   "Email/query": QueryArguments<Email, EmailFilterCondition> & {
     collapseThreads?: boolean;
@@ -163,7 +158,7 @@ export type Responses<A> = HasAllKeysOfRelated<
     "Thread/get": GetResponse<Thread, A>;
     "Thread/changes": ChangesResponse;
     // Email ----------------------------------
-    "Email/get": GetResponse<Email, A>;
+    "Email/get": GetEmailResponse<A>;
     "Email/changes": ChangesResponse;
     "Email/query": QueryResponse;
     "Email/queryChanges": QueryChangesResponse;
@@ -280,3 +275,33 @@ export type ProxyAPI = {
     ) => Promise<[Responses<A>[Method], Meta]>;
   };
 };
+
+export type GetEmailArguments = {
+  accountId: ID;
+  ids?: ReadonlyArray<ID> | null;
+  properties?: ReadonlyArray<keyof Email | HeaderFieldKey> | null;
+  bodyProperties?: Array<keyof Email>;
+  fetchTextBodyValues?: boolean;
+  fetchHTMLBodyValues?: boolean;
+  fetchAllBodyValues?: boolean;
+  maxBodyValueBytes?: number;
+};
+
+export type GetEmailResponse<Args> = Args extends GetEmailArguments
+  ? {
+      accountId: ID;
+      state: string;
+      list: ReadonlyArray<
+        Args["properties"] extends Array<infer P extends string>
+          ? {
+              [Key in P]: Key extends HeaderFieldKey
+                ? GetValueFromHeaderKey<Key>
+                : Key extends keyof Email
+                ? Email[Key]
+                : never;
+            }
+          : Email
+      >;
+      notFound: ReadonlyArray<ID>;
+    }
+  : never;

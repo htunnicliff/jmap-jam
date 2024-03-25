@@ -2,6 +2,9 @@
 export * from "./client";
 export { JamClient as default } from "./client";
 
+// Utils
+export * from "./utils";
+
 // -------------------------------------------------
 // Types
 // -------------------------------------------------

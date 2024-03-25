@@ -92,12 +92,7 @@ export type Thread = {
  */
 export type Email = EmailMetadataFields &
   EmailHeaderFields &
-  EmailBodyPartFields & {
-    // TODO: Support header parsed forms
-    [K in HeaderFieldKey]: any;
-  };
-
-export type EmailWithoutHeaderKeys = Omit<Email, HeaderFieldKey>;
+  EmailBodyPartFields;
 
 /**
  * [rfc8621 § 4.1.1](https://datatracker.ietf.org/doc/html/rfc8621#section-4.1.1)
@@ -159,6 +154,21 @@ export type HeaderFieldKey =
   | `header:${string}:as${keyof HeaderParsedForm}`
   | `header:${string}:all`
   | `header:${string}`;
+
+export type GetValueFromHeaderKey<K extends HeaderFieldKey> =
+  K extends `header:${string}:as${infer Form extends keyof HeaderParsedForm}:all`
+    ? HeaderParsedForm[Form] extends Array<infer _>
+      ? HeaderParsedForm[Form]
+      : Array<HeaderParsedForm[Form]>
+    : K extends `header:${string}:as${infer Form extends keyof HeaderParsedForm}`
+    ? HeaderParsedForm[Form]
+    : K extends `header:${string}:all`
+    ? string[]
+    : K extends `header:${infer Name extends string}`
+    ? Name extends `:${string}` | `${string}:` | `:${string}:`
+      ? never
+      : string
+    : never;
 
 export type EmailHeader = {
   name: string;
