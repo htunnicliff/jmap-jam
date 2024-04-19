@@ -1,9 +1,10 @@
 {
   "compilerOptions": {
     "lib": ["ESNext", "DOM"],
-    "module": "esnext",
+    "module": "Node16",
     "target": "ES2018",
-    "moduleResolution": "node",
+    "allowImportingTsExtensions": true,
+    "moduleResolution": "Node16",
     "strict": true,
     "skipLibCheck": true,
     "allowSyntheticDefaultImports": true,

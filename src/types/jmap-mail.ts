@@ -1,4 +1,4 @@
-import type { FilterCondition, ID, UTCDate } from "./jmap";
+import type { FilterCondition, ID, UTCDate } from "./jmap.ts";
 
 /**
  * JMAP Mail

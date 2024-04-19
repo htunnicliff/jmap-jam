@@ -1,6 +1,6 @@
-import type { ExcludeValue, IncludeValue } from "./helpers";
-import { LocalInvocation, Methods, Requests } from "./types/contracts";
-import type { Invocation, JSONPointer, ResultReference } from "./types/jmap";
+import type { ExcludeValue, IncludeValue } from "./helpers.ts";
+import { LocalInvocation, Methods, Requests } from "./types/contracts.ts";
+import type { Invocation, JSONPointer, ResultReference } from "./types/jmap.ts";
 
 export type Ref<I = unknown> = ReturnType<InvocationDraft<I>["$ref"]>;
 

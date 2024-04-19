@@ -1,4 +1,4 @@
-import type { Obj } from "../helpers";
+import type { Obj } from "../helpers.ts";
 
 /**
  * JMAP

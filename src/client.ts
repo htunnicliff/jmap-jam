@@ -1,19 +1,19 @@
 import {
   getCapabilitiesForMethodCalls,
   knownCapabilities,
-} from "./capabilities";
+} from "./capabilities.ts";
 import {
   expandURITemplate,
   getErrorFromInvocation,
   getResultsForMethodCalls,
-} from "./helpers";
+} from "./helpers.ts";
 import {
   WithRevValues,
   WithoutRefValues,
   buildRequestsFromDrafts,
   type DraftsProxy,
   type InvocationDraft,
-} from "./request-drafts";
+} from "./request-drafts.ts";
 import {
   type GetArgs,
   type GetResponseData,
@@ -22,9 +22,9 @@ import {
   type Methods,
   type ProxyAPI,
   type RequestOptions,
-} from "./types/contracts";
-import type * as JMAP from "./types/jmap";
-import type * as JMAPMail from "./types/jmap-mail";
+} from "./types/contracts.ts";
+import type * as JMAP from "./types/jmap.ts";
+import type * as JMAPMail from "./types/jmap-mail.ts";
 
 export type ClientConfig = {
   /**
