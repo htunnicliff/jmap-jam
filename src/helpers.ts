@@ -1,4 +1,4 @@
-import type { Invocation, ProblemDetails } from "./types/jmap";
+import type { Invocation, ProblemDetails } from "./types/jmap.ts";
 
 /**
  * Expands a URI template with the given parameters.

@@ -1,4 +1,4 @@
-import type { HeaderParsedForm } from "./types/jmap-mail";
+import type { HeaderParsedForm } from "./types/jmap-mail.ts";
 
 /**
  * Generate a key to retrieve a header field

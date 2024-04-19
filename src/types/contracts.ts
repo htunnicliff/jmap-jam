@@ -1,5 +1,5 @@
 import type { Exact } from "type-fest";
-import type { HasAllKeysOfRelated } from "../helpers";
+import type { HasAllKeysOfRelated } from "../helpers.ts";
 import type {
   BlobCopyArguments,
   BlobCopyResponse,
@@ -22,7 +22,7 @@ import type {
   SetArguments,
   SetError,
   SetResponse,
-} from "./jmap";
+} from "./jmap.ts";
 import type {
   Email,
   EmailFilterCondition,
@@ -37,7 +37,7 @@ import type {
   SearchSnippet,
   Thread,
   VacationResponse,
-} from "./jmap-mail";
+} from "./jmap-mail.ts";
 
 export type Requests = {
   // Core -----------------------------------
