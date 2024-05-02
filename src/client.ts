@@ -8,7 +8,7 @@ import {
   getResultsForMethodCalls,
 } from "./helpers.ts";
 import {
-  WithRevValues,
+  WithRefValues,
   WithoutRefValues,
   buildRequestsFromDrafts,
   type DraftsProxy,
@@ -84,7 +84,10 @@ export class JamClient<Config extends ClientConfig = ClientConfig> {
   /**
    * Retrieve fresh session data
    */
-  static async loadSession(sessionUrl: string, authHeader: string) {
+  static async loadSession(
+    sessionUrl: string,
+    authHeader: string
+  ): Promise<JMAP.Session> {
     return fetch(sessionUrl, {
       headers: {
         Authorization: authHeader,
@@ -185,7 +188,7 @@ export class JamClient<Config extends ClientConfig = ClientConfig> {
     [
       {
         [MethodId in keyof Returning]: Returning[MethodId] extends InvocationDraft<
-          infer Inv extends [Methods, WithRevValues<Record<string, any>>]
+          infer Inv extends [Methods, WithRefValues<Record<string, any>>]
         >
           ? GetResponseData<Inv[0], WithoutRefValues<Inv[1]>>
           : never;
@@ -267,7 +270,7 @@ export class JamClient<Config extends ClientConfig = ClientConfig> {
   /**
    * Get the ID of the primary mail account for the current session
    */
-  async getPrimaryAccount() {
+  async getPrimaryAccount(): Promise<string> {
     return (await this.session).primaryAccounts?.["urn:ietf:params:jmap:mail"];
   }
 
@@ -278,7 +281,7 @@ export class JamClient<Config extends ClientConfig = ClientConfig> {
     accountId: JMAP.BlobUploadParams["accountId"],
     body: BodyInit,
     fetchInit: RequestInit = {}
-  ) {
+  ): Promise<JMAP.BlobUploadResponse> {
     const { uploadUrl } = await this.session;
 
     const params: JMAP.BlobUploadParams = {
@@ -323,7 +326,7 @@ export class JamClient<Config extends ClientConfig = ClientConfig> {
       fileName: JMAP.BlobDownloadParams["name"];
     },
     fetchInit: RequestInit = {}
-  ) {
+  ): Promise<Response> {
     const { downloadUrl } = await this.session;
 
     const params: JMAP.BlobDownloadParams = {
@@ -365,7 +368,7 @@ export class JamClient<Config extends ClientConfig = ClientConfig> {
     types: "*" | Array<JMAPMail.Entity>;
     ping: number;
     closeafter?: JMAP.EventSourceArguments["closeafter"];
-  }) {
+  }): Promise<EventSource> {
     const params: JMAP.EventSourceArguments = {
       types: options.types === "*" ? "*" : options.types.join(","),
       closeafter: options.closeafter ?? "no",
@@ -396,7 +399,7 @@ export class JamClient<Config extends ClientConfig = ClientConfig> {
    * });
    * ```
    */
-  get api() {
+  get api(): ProxyAPI {
     return new Proxy<ProxyAPI>({} as ProxyAPI, {
       get: (_, entity: string) =>
         new Proxy(

@@ -2,17 +2,22 @@ import type { ExcludeValue, IncludeValue } from "./helpers.ts";
 import { LocalInvocation, Methods, Requests } from "./types/contracts.ts";
 import type { Invocation, JSONPointer, ResultReference } from "./types/jmap.ts";
 
-export type Ref<I = unknown> = ReturnType<InvocationDraft<I>["$ref"]>;
-
-export type WithRevValues<T> = IncludeValue<T, Ref>;
-
-export type WithoutRefValues<T> = ExcludeValue<T, Ref>;
-
 /**
  * Symbol used to identify arguments that need to be transformed
  * into JMAP result references
  */
 const r = Symbol("Result Reference");
+
+export type Ref<I = unknown> = {
+  [r]: {
+    path: `/${string}`;
+    invocation: I;
+  };
+};
+
+export type WithRefValues<T> = IncludeValue<T, Ref>;
+
+export type WithoutRefValues<T> = ExcludeValue<T, Ref>;
 
 /**
  * These instances represent partially-formed method calls
@@ -30,7 +35,7 @@ export class InvocationDraft<I = unknown> {
    * Create a result reference that points to the result
    * of a previous invocation.
    */
-  $ref(path: JSONPointer) {
+  $ref(path: JSONPointer): Ref<I> {
     return {
       [r]: {
         path,
@@ -53,7 +58,10 @@ export class InvocationDraft<I = unknown> {
    */
   static createInvocationsFromDrafts<T extends Record<string, InvocationDraft>>(
     drafts: T
-  ) {
+  ): {
+    methodCalls: Invocation[];
+    methodNames: Set<string>;
+  } {
     // Track method names
     const methodNames = new Set<string>();
 

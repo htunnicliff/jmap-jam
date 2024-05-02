@@ -11,14 +11,14 @@ import type { HeaderParsedForm } from "./types/jmap-mail.ts";
 export function headerField<
   Name extends string,
   Form extends keyof HeaderParsedForm
->(name: Name, form: Form) {
+>(name: Name, form: Form): `header:${Name}:as${Form}` {
   return `header:${name}:as${form}` as const;
 }
 
 export function allHeaderFields<
   Name extends string,
   Form extends keyof HeaderParsedForm
->(name: Name, form: Form) {
+>(name: Name, form: Form): `header:${Name}:as${Form}:all` {
   const header = headerField(name, form);
 
   return `${header}:all` as const;
