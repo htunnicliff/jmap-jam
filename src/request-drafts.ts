@@ -1,6 +1,10 @@
 import type { ExcludeValue, IncludeValue } from "./helpers.ts";
 import { LocalInvocation, Methods, Requests } from "./types/contracts.ts";
-import type { Invocation, JSONPointer, ResultReference } from "./types/jmap.ts";
+import type {
+  Invocation,
+  ExtendedJSONPointer,
+  ResultReference,
+} from "./types/jmap.ts";
 
 /**
  * Symbol used to identify arguments that need to be transformed
@@ -35,7 +39,7 @@ export class InvocationDraft<I = unknown> {
    * Create a result reference that points to the result
    * of a previous invocation.
    */
-  $ref(path: JSONPointer): Ref<I> {
+  $ref(path: ExtendedJSONPointer): Ref<I> {
     return {
       [r]: {
         path,
