@@ -6,13 +6,7 @@
   "types": "./dist/index.d.ts",
   "exports": "./dist/index.js",
   "sideEffects": false,
-  "files": [
-    "dist",
-    "src",
-    "package.json",
-    "LICENSE.txt",
-    "README.md"
-  ],
+  "files": ["dist", "src", "package.json", "LICENSE.txt", "README.md"],
   "license": "MIT",
   "description": "A JMAP client library for Node.js and the browser.",
   "repository": {
@@ -25,9 +19,11 @@
   },
   "scripts": {
     "preversion": "tsup",
-    "build": "tsup"
+    "build": "tsup",
+    "check": "biome check --write ."
   },
   "devDependencies": {
+    "@biomejs/biome": "1.9.3",
     "@types/node": "20.8.4",
     "tsup": "7.2.0",
     "tsx": "3.13.0",
