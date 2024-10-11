@@ -22,15 +22,14 @@
     "build": "tsup",
     "check": "biome check --write ."
   },
+  "dependencies": {
+    "type-fest": "4.26.1"
+  },
   "devDependencies": {
     "@biomejs/biome": "1.9.3",
-    "@types/node": "20.8.4",
-    "tsup": "7.2.0",
-    "tsx": "3.13.0",
-    "typescript": "5.2.2"
-  },
-  "dependencies": {
-    "type-fest": "4.5.0"
+    "@types/node": "22.7.5",
+    "tsup": "8.3.0",
+    "typescript": "5.6.3"
   },
   "packageManager": "npm@10.9.0+sha512.65a9c38a8172948f617a53619762cd77e12b9950fe1f9239debcb8d62c652f2081824b986fee7c0af6c0a7df615becebe4bf56e17ec27214a87aa29d9e038b4b"
 }
