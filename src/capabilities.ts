@@ -11,7 +11,7 @@ export const knownCapabilities = {
   SearchSnippet: "urn:ietf:params:jmap:mail",
   Identity: "urn:ietf:params:jmap:submission",
   EmailSubmission: "urn:ietf:params:jmap:submission",
-  VacationResponse: "urn:ietf:params:jmap:vacationresponse",
+  VacationResponse: "urn:ietf:params:jmap:vacationresponse"
 };
 
 /**
@@ -25,7 +25,7 @@ const entityMatcher = /^(\w+)\//;
  */
 export function getCapabilitiesForMethodCalls({
   methodNames,
-  availableCapabilities,
+  availableCapabilities
 }: {
   methodNames: Iterable<string>;
   availableCapabilities: ReadonlyMap<string, string>;

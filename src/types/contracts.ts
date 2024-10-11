@@ -1,6 +1,21 @@
 import type { Exact } from "type-fest";
 import type { HasAllKeysOfRelated } from "../helpers.ts";
 import type {
+  Email,
+  EmailFilterCondition,
+  EmailImport,
+  EmailSubmission,
+  EmailSubmissionFilterCondition,
+  GetValueFromHeaderKey,
+  HeaderFieldKey,
+  Identity,
+  Mailbox,
+  MailboxFilterCondition,
+  SearchSnippet,
+  Thread,
+  VacationResponse
+} from "./jmap-mail.ts";
+import type {
   BlobCopyArguments,
   BlobCopyResponse,
   ChangesArguments,
@@ -21,23 +36,8 @@ import type {
   QueryResponse,
   SetArguments,
   SetError,
-  SetResponse,
+  SetResponse
 } from "./jmap.ts";
-import type {
-  Email,
-  EmailFilterCondition,
-  EmailImport,
-  EmailSubmission,
-  EmailSubmissionFilterCondition,
-  GetValueFromHeaderKey,
-  HeaderFieldKey,
-  Identity,
-  Mailbox,
-  MailboxFilterCondition,
-  SearchSnippet,
-  Thread,
-  VacationResponse,
-} from "./jmap-mail.ts";
 
 export type Requests = {
   // Core -----------------------------------
@@ -297,8 +297,8 @@ export type GetEmailResponse<Args> = Args extends GetEmailArguments
               [Key in P]: Key extends HeaderFieldKey
                 ? GetValueFromHeaderKey<Key>
                 : Key extends keyof Email
-                ? Email[Key]
-                : never;
+                  ? Email[Key]
+                  : never;
             }
           : Email
       >;

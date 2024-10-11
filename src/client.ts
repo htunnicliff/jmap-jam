@@ -1,30 +1,30 @@
 import {
   getCapabilitiesForMethodCalls,
-  knownCapabilities,
+  knownCapabilities
 } from "./capabilities.ts";
 import {
   expandURITemplate,
   getErrorFromInvocation,
-  getResultsForMethodCalls,
+  getResultsForMethodCalls
 } from "./helpers.ts";
 import {
-  WithRefValues,
-  WithoutRefValues,
-  buildRequestsFromDrafts,
   type DraftsProxy,
   type InvocationDraft,
+  type WithRefValues,
+  type WithoutRefValues,
+  buildRequestsFromDrafts
 } from "./request-drafts.ts";
-import {
-  type GetArgs,
-  type GetResponseData,
-  type LocalInvocation,
-  type Meta,
-  type Methods,
-  type ProxyAPI,
-  type RequestOptions,
+import type {
+  GetArgs,
+  GetResponseData,
+  LocalInvocation,
+  Meta,
+  Methods,
+  ProxyAPI,
+  RequestOptions
 } from "./types/contracts.ts";
-import type * as JMAP from "./types/jmap.ts";
 import type * as JMAPMail from "./types/jmap-mail.ts";
+import type * as JMAP from "./types/jmap.ts";
 
 export type ClientConfig = {
   /**
@@ -75,7 +75,7 @@ export class JamClient<Config extends ClientConfig = ClientConfig> {
 
     this.capabilities = new Map<string, string>([
       ...Object.entries(config.customCapabilities ?? {}),
-      ...Object.entries(knownCapabilities),
+      ...Object.entries(knownCapabilities)
     ]);
 
     this.session = JamClient.loadSession(config.sessionUrl, this.authHeader);
@@ -91,9 +91,9 @@ export class JamClient<Config extends ClientConfig = ClientConfig> {
     return fetch(sessionUrl, {
       headers: {
         Authorization: authHeader,
-        Accept: "application/json",
+        Accept: "application/json"
       },
-      cache: "no-cache",
+      cache: "no-cache"
     }).then((res) => res.json());
   }
 
@@ -111,7 +111,7 @@ export class JamClient<Config extends ClientConfig = ClientConfig> {
     const {
       using = [],
       fetchInit,
-      createdIds: createdIdsInput,
+      createdIds: createdIdsInput
     } = options ?? {};
 
     // Assemble method call
@@ -122,12 +122,12 @@ export class JamClient<Config extends ClientConfig = ClientConfig> {
       using: [
         ...getCapabilitiesForMethodCalls({
           methodNames: [method],
-          availableCapabilities: this.capabilities,
+          availableCapabilities: this.capabilities
         }),
-        ...using,
+        ...using
       ],
       methodCalls: [invocation],
-      createdIds: createdIdsInput,
+      createdIds: createdIdsInput
     };
 
     // Ensure session is loaded (if not already)
@@ -139,10 +139,10 @@ export class JamClient<Config extends ClientConfig = ClientConfig> {
       headers: {
         Authorization: this.authHeader,
         Accept: "application/json",
-        "Content-Type": "application/json",
+        "Content-Type": "application/json"
       },
       body: JSON.stringify(body),
-      ...fetchInit,
+      ...fetchInit
     });
 
     // Handle 4xx-5xx errors
@@ -160,7 +160,7 @@ export class JamClient<Config extends ClientConfig = ClientConfig> {
     const {
       methodResponses: [methodResponse],
       sessionState,
-      createdIds,
+      createdIds
     } = (await response.json()) as JMAP.Response<[JMAP.Invocation<Data>]>;
 
     const error = getErrorFromInvocation(methodResponse);
@@ -173,8 +173,8 @@ export class JamClient<Config extends ClientConfig = ClientConfig> {
       {
         sessionState,
         createdIds,
-        response,
-      },
+        response
+      }
     ];
   }
 
@@ -206,12 +206,12 @@ export class JamClient<Config extends ClientConfig = ClientConfig> {
       using: [
         ...getCapabilitiesForMethodCalls({
           methodNames,
-          availableCapabilities: this.capabilities,
+          availableCapabilities: this.capabilities
         }),
-        ...using,
+        ...using
       ],
       methodCalls,
-      createdIds: createdIdsInput,
+      createdIds: createdIdsInput
     };
 
     // Ensure session is loaded (if not already)
@@ -223,10 +223,10 @@ export class JamClient<Config extends ClientConfig = ClientConfig> {
       headers: {
         Authorization: this.authHeader,
         Accept: "application/json",
-        "Content-Type": "application/json",
+        "Content-Type": "application/json"
       },
       body: JSON.stringify(body),
-      ...fetchInit,
+      ...fetchInit
     });
 
     // Handle 4xx-5xx errors
@@ -249,7 +249,7 @@ export class JamClient<Config extends ClientConfig = ClientConfig> {
     const meta: Meta = {
       sessionState,
       createdIds,
-      response,
+      response
     };
 
     const errors = methodResponses
@@ -263,7 +263,7 @@ export class JamClient<Config extends ClientConfig = ClientConfig> {
     return [
       // @ts-expect-error TODO
       getResultsForMethodCalls(methodResponses, { returnErrors: false }),
-      meta,
+      meta
     ];
   }
 
@@ -285,7 +285,7 @@ export class JamClient<Config extends ClientConfig = ClientConfig> {
     const { uploadUrl } = await this.session;
 
     const params: JMAP.BlobUploadParams = {
-      accountId,
+      accountId
     };
 
     const url = expandURITemplate(uploadUrl, params);
@@ -295,18 +295,17 @@ export class JamClient<Config extends ClientConfig = ClientConfig> {
         method: "POST",
         headers: {
           Authorization: this.authHeader,
-          Accept: "application/json",
+          Accept: "application/json"
         },
         body,
-        ...fetchInit,
+        ...fetchInit
       });
 
       if (!response.ok) {
         if (response.headers.get("Content-Type")?.includes("json")) {
           throw (await response.json()) as JMAP.ProblemDetails;
-        } else {
-          throw await response.text();
         }
+        throw await response.text();
       }
 
       return (await response.json()) as JMAP.BlobUploadResponse;
@@ -333,7 +332,7 @@ export class JamClient<Config extends ClientConfig = ClientConfig> {
       accountId: options.accountId,
       blobId: options.blobId,
       type: options.mimeType,
-      name: options.fileName,
+      name: options.fileName
     };
 
     const url = expandURITemplate(downloadUrl, params);
@@ -342,17 +341,16 @@ export class JamClient<Config extends ClientConfig = ClientConfig> {
       const response = await fetch(url, {
         method: "GET",
         headers: {
-          Authorization: this.authHeader,
+          Authorization: this.authHeader
         },
-        ...fetchInit,
+        ...fetchInit
       });
 
       if (!response.ok) {
         if (response.headers.get("Content-Type")?.includes("json")) {
           throw (await response.json()) as JMAP.ProblemDetails;
-        } else {
-          throw await response.text();
         }
+        throw await response.text();
       }
 
       return response;
@@ -372,7 +370,7 @@ export class JamClient<Config extends ClientConfig = ClientConfig> {
     const params: JMAP.EventSourceArguments = {
       types: options.types === "*" ? "*" : options.types.join(","),
       closeafter: options.closeafter ?? "no",
-      ping: `${options.ping}`,
+      ping: `${options.ping}`
     };
 
     const { eventSourceUrl } = await this.session;
@@ -411,9 +409,9 @@ export class JamClient<Config extends ClientConfig = ClientConfig> {
 
                 return this.request([method, args], options);
               };
-            },
+            }
           }
-        ),
+        )
     });
   }
 

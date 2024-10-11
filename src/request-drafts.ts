@@ -1,9 +1,9 @@
 import type { ExcludeValue, IncludeValue } from "./helpers.ts";
-import { LocalInvocation, Methods, Requests } from "./types/contracts.ts";
+import type { LocalInvocation, Methods, Requests } from "./types/contracts.ts";
 import type {
-  Invocation,
   ExtendedJSONPointer,
-  ResultReference,
+  Invocation,
+  ResultReference
 } from "./types/jmap.ts";
 
 /**
@@ -43,8 +43,8 @@ export class InvocationDraft<I = unknown> {
     return {
       [r]: {
         path,
-        invocation: this.#invocation,
-      },
+        invocation: this.#invocation
+      }
     };
   }
 
@@ -92,8 +92,8 @@ export class InvocationDraft<I = unknown> {
               {
                 name: invocation[0], // Ref method
                 resultOf: invocationToId.get(invocation)!, // Ref ID
-                path,
-              } satisfies ResultReference,
+                path
+              } satisfies ResultReference
             ];
           }
 
@@ -145,9 +145,9 @@ export function buildRequestsFromDrafts<
 
               return new InvocationDraft(invocation);
             };
-          },
+          }
         }
-      ),
+      )
   });
 
   // Create invocation drafts

@@ -1,4 +1,4 @@
-import { Except } from "type-fest";
+import type { Except } from "type-fest";
 import type { Obj } from "../helpers.ts";
 
 /**
@@ -352,7 +352,7 @@ export enum RequestErrorProblemType {
    * "limit" property MUST also be present on the "problem details"
    * object, containing the name of the limit being applied.
    */
-  Limit = "urn:ietf:params:jmap:error:limit",
+  Limit = "urn:ietf:params:jmap:error:limit"
 }
 
 /**
@@ -466,7 +466,7 @@ export enum MethodErrorType {
    * (as returned on the corresponding Account object in the
    * JMAP Session resource).
    */
-  AccountReadOnly = "accountReadOnly",
+  AccountReadOnly = "accountReadOnly"
 }
 
 // =================================
@@ -547,7 +547,7 @@ export enum GetRequestErrorType {
    * the maximum number the server is willing to process in a single
    * method call.
    */
-  RequestTooLarge = "requestTooLarge",
+  RequestTooLarge = "requestTooLarge"
 }
 
 /**
@@ -623,7 +623,7 @@ export enum ChangesRequestErrorType {
    * produce an update to an intermediate state when there are too many
    * updates.  The client MUST invalidate its `T` cache.
    */
-  CannotCalculateChanges = "cannotCalculateChanges",
+  CannotCalculateChanges = "cannotCalculateChanges"
 }
 
 /**
@@ -830,7 +830,7 @@ export enum SetErrorType {
    * (create; destroy).  This is a singleton type, so you
    * cannot create another one or destroy the existing one.
    */
-  Singleton = "singleton",
+  Singleton = "singleton"
 }
 
 export enum SetRequestErrorType {
@@ -844,7 +844,7 @@ export enum SetRequestErrorType {
    * An `ifInState` argument was supplied, and it does
    * not match the current state.
    */
-  StateMismatch = "stateMismatch",
+  StateMismatch = "stateMismatch"
 }
 
 /**
@@ -950,7 +950,7 @@ export enum CopySetErrorType {
    * type "Id" MUST be included on the SetError object with the id of the
    * existing record.
    */
-  AlreadyExists = "alreadyExists",
+  AlreadyExists = "alreadyExists"
 }
 
 export enum CopyRequestErrorType {
@@ -970,7 +970,7 @@ export enum CopyRequestErrorType {
    * match the current state, or an `ifFromInState` argument was supplied
    * and it does not match the current state in the from account.
    */
-  StateMismatch = "stateMismatch",
+  StateMismatch = "stateMismatch"
 }
 
 /**
@@ -1127,7 +1127,7 @@ export enum QueryRequestErrorType {
    * search input, the client SHOULD suggest that the user simplify their
    * search.
    */
-  UnsupportedFilter = "unsupportedFilter",
+  UnsupportedFilter = "unsupportedFilter"
 }
 
 /**
@@ -1241,7 +1241,7 @@ export enum QueryChangesRequestErrorType {
    * client's state being too old.  The client MUST invalidate its cache
    * of the query results.
    */
-  CannotCalculateChanges = "cannotCalculateChanges",
+  CannotCalculateChanges = "cannotCalculateChanges"
 }
 
 export type QueryChangesAddedItem = {
@@ -1270,7 +1270,7 @@ export enum FilterOperatorType {
   /**
    * None of the conditions must match for the filter to match.
    */
-  Not = "NOT",
+  Not = "NOT"
 }
 
 export type FilterCondition<Filter extends Obj> = Except<
@@ -1416,7 +1416,7 @@ export enum BlobCopySetErrorType {
    * The `fromAccountId` included with the request
    * does not correspond to a valid account.
    */
-  FromAccountNotFound = "fromAccountNotFound",
+  FromAccountNotFound = "fromAccountNotFound"
 }
 
 // =================================
@@ -1575,5 +1575,5 @@ export enum EventSourceCloseAfterType {
    * The connection is persisted by the server as a standard
    * event-source resource.
    */
-  No = "no",
+  No = "no"
 }

@@ -1,5 +1,5 @@
+import { execSync } from "node:child_process";
 import { defineConfig } from "tsup";
-import { execSync } from "child_process";
 
 export default defineConfig({
   entry: ["src/index.ts"],
@@ -12,5 +12,5 @@ export default defineConfig({
   sourcemap: true,
   async onSuccess() {
     execSync("tsc");
-  },
+  }
 });

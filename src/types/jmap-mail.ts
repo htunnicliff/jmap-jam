@@ -415,14 +415,14 @@ export type GetValueFromHeaderKey<K extends HeaderFieldKey> =
       ? HeaderParsedForm[Form]
       : Array<HeaderParsedForm[Form]>
     : K extends `header:${string}:as${infer Form extends keyof HeaderParsedForm}`
-    ? HeaderParsedForm[Form]
-    : K extends `header:${string}:all`
-    ? string[]
-    : K extends `header:${infer Name extends string}`
-    ? Name extends `:${string}` | `${string}:` | `:${string}:`
-      ? never
-      : string
-    : never;
+      ? HeaderParsedForm[Form]
+      : K extends `header:${string}:all`
+        ? string[]
+        : K extends `header:${infer Name extends string}`
+          ? Name extends `:${string}` | `${string}:` | `:${string}:`
+            ? never
+            : string
+          : never;
 
 /**
  * [rfc8621 § 4.1.3](https://datatracker.ietf.org/doc/html/rfc8621#section-4.1.3)
@@ -1101,7 +1101,7 @@ export enum DeliveryStatusDelivered {
    * information is available).  The `smtpReply` property may
    * still change if a DSN arrives.
    */
-  Unknown = "unknown",
+  Unknown = "unknown"
 }
 
 /**
@@ -1120,7 +1120,7 @@ export enum DeliveryStatusDisplayed {
    * guarantee that the recipient has noticed, read, or
    * understood the content.
    */
-  Yes = "yes",
+  Yes = "yes"
 }
 
 /**
@@ -1177,7 +1177,7 @@ export enum UndoStatus {
    * The submission was canceled and will not be
    * delivered to any recipient.
    */
-  Canceled = "canceled",
+  Canceled = "canceled"
 }
 
 // =================================

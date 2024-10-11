@@ -12,7 +12,7 @@ export function expandURITemplate(
   let expanded = template;
 
   for (const [key, value] of Object.entries(params)) {
-    const parameter = "{" + key + "}";
+    const parameter = `{${key}}`;
     if (!expanded.includes(parameter)) {
       throw new Error(`Template "${template}" is missing parameter: ${key}`);
     }
@@ -58,18 +58,17 @@ export function getResultsForMethodCalls(
           id,
           {
             data: null,
-            error: data as ProblemDetails,
-          },
-        ];
-      } else {
-        return [
-          id,
-          {
-            data,
-            error: null,
-          },
+            error: data as ProblemDetails
+          }
         ];
       }
+      return [
+        id,
+        {
+          data,
+          error: null
+        }
+      ];
     })
   );
 }
