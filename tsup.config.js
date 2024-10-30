@@ -11,6 +11,6 @@ export default defineConfig({
   target: ["es2018"],
   sourcemap: true,
   async onSuccess() {
-    execSync("tsc");
+    execSync("tsc --project tsconfig.build.json");
   }
 });
