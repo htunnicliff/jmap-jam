@@ -2,18 +2,23 @@ import type { Exact } from "type-fest";
 import type { HasAllKeysOfRelated } from "../helpers.ts";
 import type {
   Email,
+  EmailCreate,
   EmailFilterCondition,
   EmailImport,
   EmailSubmission,
+  EmailSubmissionCreate,
   EmailSubmissionFilterCondition,
   GetValueFromHeaderKey,
   HeaderFieldKey,
   Identity,
+  IdentityCreate,
   Mailbox,
+  MailboxCreate,
   MailboxFilterCondition,
   SearchSnippet,
   Thread,
-  VacationResponse
+  VacationResponse,
+  VacationResponseCreate
 } from "./jmap-mail.ts";
 import type {
   BlobCopyArguments,
@@ -30,6 +35,8 @@ import type {
   Request as JMAPRequest,
   Response as JMAPResponse,
   ProblemDetails,
+  PushSubscription,
+  PushSubscriptionCreate,
   QueryArguments,
   QueryChangesArguments,
   QueryChangesResponse,
@@ -47,7 +54,7 @@ export type Requests = {
   // Push Subscription ----------------------
   "PushSubscription/get": Omit<GetArguments<PushSubscription>, "accountId">;
   "PushSubscription/set": Omit<
-    SetArguments<PushSubscription>,
+    SetArguments<PushSubscriptionCreate>,
     "accountId" | "ifInState"
   >;
   // Mailbox --------------------------------
@@ -61,7 +68,7 @@ export type Requests = {
     Mailbox,
     MailboxFilterCondition
   >;
-  "Mailbox/set": SetArguments<Mailbox> & {
+  "Mailbox/set": SetArguments<MailboxCreate> & {
     onDestroyRemoveEmails?: boolean;
   };
   // Thread ---------------------------------
@@ -76,7 +83,7 @@ export type Requests = {
   "Email/queryChanges": QueryChangesArguments<Email, EmailFilterCondition> & {
     collapseThreads?: boolean;
   };
-  "Email/set": SetArguments<Omit<Email, "headers">>;
+  "Email/set": SetArguments<EmailCreate>;
   "Email/copy": CopyArguments<
     Pick<Email, "id" | "mailboxIds" | "keywords" | "receivedAt">
   >;
@@ -107,7 +114,7 @@ export type Requests = {
   // Identity -------------------------------
   "Identity/get": GetArguments<Identity>;
   "Identity/changes": ChangesArguments;
-  "Identity/set": SetArguments<Identity>;
+  "Identity/set": SetArguments<IdentityCreate>;
   // Email Submission -----------------------
   "EmailSubmission/get": GetArguments<EmailSubmission>;
   "EmailSubmission/changes": ChangesArguments;
@@ -119,13 +126,13 @@ export type Requests = {
     EmailSubmission,
     EmailSubmissionFilterCondition
   >;
-  "EmailSubmission/set": SetArguments<EmailSubmission> & {
+  "EmailSubmission/set": SetArguments<EmailSubmissionCreate> & {
     onSuccessUpdateEmail?: Record<ID, Partial<Email>> | null;
     onSuccessDestroyEmail?: ID[] | null;
   };
   // Vacation Response ----------------------
   "VacationResponse/get": GetArguments<VacationResponse>;
-  "VacationResponse/set": SetArguments<VacationResponse>;
+  "VacationResponse/set": SetArguments<VacationResponseCreate>;
 };
 
 export type Methods = keyof Requests;

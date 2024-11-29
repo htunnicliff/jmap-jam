@@ -1,3 +1,4 @@
+import type { OmitDeep } from "type-fest";
 import type { FilterCondition, ID, UTCDate } from "./jmap.ts";
 
 /**
@@ -32,6 +33,9 @@ export type Entity = keyof Entities;
 export type Mailbox = {
   /**
    * The id of the Mailbox
+   *
+   * @kind immutable
+   * @kind server-set
    */
   id: ID;
   /**
@@ -69,20 +73,28 @@ export type Mailbox = {
   sortOrder: number;
   /**
    * The number of Emails in this Mailbox.
+   *
+   * @kind server-set
    */
   totalEmails: number;
   /**
    * The number of Emails in this Mailbox that have neither the "$seen"
    * keyword nor the "$draft" keyword.
+   *
+   * @kind server-set
    */
   unreadEmails: number;
   /**
    * The number of Threads where at least one Email in the Thread is in
    * this Mailbox.
+   *
+   * @kind server-set
    */
   totalThreads: number;
   /**
    * An indication of the number of "unread" Threads in the Mailbox.
+   *
+   * @kind server-set
    */
   unreadThreads: number;
   /**
@@ -94,6 +106,8 @@ export type Mailbox = {
    * The set of rights (Access Control Lists (ACLs)) the user has in
    * relation to this Mailbox.  These are backwards compatible with
    * IMAP ACLs, as defined in [rfc4314](https://datatracker.ietf.org/doc/html/rfc4314).
+   *
+   * @kind server-set
    */
   myRights: {
     /**
@@ -157,6 +171,17 @@ export type Mailbox = {
   };
 };
 
+export type MailboxCreate = Omit<
+  Mailbox,
+  // Fields set by server
+  | "id"
+  | "totalEmails"
+  | "unreadEmails"
+  | "totalThreads"
+  | "unreadThreads"
+  | "myRights"
+>;
+
 /**
  * [rfc8621 § 2.3](https://datatracker.ietf.org/doc/html/rfc8621#section-2.3)
  */
@@ -182,6 +207,9 @@ export type MailboxFilterCondition = {
 export type Thread = {
   /**
    * The id of the Thread.
+   *
+   * @kind immutable
+   * @kind server-set
    */
   id: ID;
   /**
@@ -189,6 +217,8 @@ export type Thread = {
    * date of the Email, oldest first.  If two Emails have an identical
    * date, the sort is server dependent but MUST be stable (sorting by
    * id is recommended).
+   *
+   * @kind server-set
    */
   emailIds: ID[];
 };
@@ -208,6 +238,20 @@ export type Email = EmailMetadataFields &
   EmailHeaderFields &
   EmailBodyPartFields;
 
+// TODO: Support exclusive patterns described in [rfc8621 § 4.6](https://datatracker.ietf.org/doc/html/rfc8621#section-4.6)
+export type EmailCreate = Partial<
+  Omit<
+    Email,
+    | "id"
+    | "blobId"
+    | "threadId"
+    | "size"
+    | "hasAttachment"
+    | "preview"
+    | "headers"
+  >
+>;
+
 /**
  * [rfc8621 § 4.1.1](https://datatracker.ietf.org/doc/html/rfc8621#section-4.1.1)
  *
@@ -218,16 +262,25 @@ type EmailMetadataFields = {
   /**
    * The id of the Email object.  Note that this is the JMAP object id,
    * NOT the Message-ID header field value of the message [rfc5322](https://datatracker.ietf.org/doc/html/rfc5322).
+   *
+   * @kind immutable
+   * @kind server-set
    */
   id: ID;
   /**
    * The id representing the raw octets of the message [rfc5322](https://datatracker.ietf.org/doc/html/rfc5322) for
    * this Email.  This may be used to download the raw original message
    * or to attach it directly to another Email, etc.
+   *
+   * @kind immutable
+   * @kind server-set
    */
   blobId: ID;
   /**
    * The id of the Thread to which this Email belongs.
+   *
+   * @kind immutable
+   * @kind server-set
    */
   threadId: ID;
   /**
@@ -269,11 +322,16 @@ type EmailMetadataFields = {
    * The size, in octets, of the raw data for the message [rfc5322](https://datatracker.ietf.org/doc/html/rfc5322) (as
    * referenced by the "blobId", i.e., the number of octets in the file
    * the user would download).
+   *
+   * @kind immutable
+   * @kind server-set
    */
   size: number;
   /**
    * A UTC Date – The date the Email was received by the message store.  This is the
    * "internal date" in IMAP [rfc3501](https://datatracker.ietf.org/doc/html/rfc3501).
+   *
+   * @kind immutable
    */
   receivedAt: string;
 };
@@ -441,6 +499,8 @@ export type EmailHeader = {
 
 /**
  * [rfc8621 § 4.1.3](https://datatracker.ietf.org/doc/html/rfc8621#section-4.1.3)
+ *
+ * @kind immutable
  */
 type EmailHeaderFields = {
   /**
@@ -590,6 +650,8 @@ type EmailBodyPartFields = {
    * recursing into `message/rfc822` or `message/global` parts.  Note
    * that EmailBodyParts may have subParts if they are of type
    * `multipart/*`.
+   *
+   * @kind immutable
    */
   bodyStructure: EmailBodyPart;
   /**
@@ -597,6 +659,8 @@ type EmailBodyPartFields = {
    * some, or all `text/*` parts.  Which parts are included and whether
    * the value is truncated is determined by various arguments to
    * `Email/get` and `Email/parse`.
+   *
+   * @kind immutable
    */
   bodyValues: Record<ID, EmailBodyValue>;
   /**
@@ -604,6 +668,8 @@ type EmailBodyPartFields = {
    * `video/*` parts to display (sequentially) as the message body,
    * with a preference for `text/plain` when alternative versions are
    * available.
+   *
+   * @kind immutable
    */
   textBody: EmailBodyPart[];
   /**
@@ -611,6 +677,8 @@ type EmailBodyPartFields = {
    * `video/*` parts to display (sequentially) as the message body,
    * with a preference for `text/html` when alternative versions are
    * available.
+   *
+   * @kind immutable
    */
   htmlBody: EmailBodyPart[];
   /**
@@ -627,6 +695,8 @@ type EmailBodyPartFields = {
    * Note that a `text/html` body part [HTML] may reference image parts
    * in attachments by using `cid:` links to reference the Content-Id,
    * as defined in [RFC2392], or by referencing the Content-Location.
+   *
+   * @kind immutable
    */
   attachments: EmailBodyPart[];
   /**
@@ -637,6 +707,9 @@ type EmailBodyPartFields = {
    * server MAY ignore parts in this list that are processed
    * automatically in some way or are referenced as embedded images in
    * one of the `text/html` parts of the message.
+   *
+   * @kind immutable
+   * @kind server-set
    */
   hasAttachment: boolean;
   /**
@@ -655,6 +728,9 @@ type EmailBodyPartFields = {
    * the previous value is not considered incorrect, and the change
    * SHOULD NOT cause the Email object to be considered as changed by
    * the server.
+   *
+   * @kind immutable
+   * @kind server-set
    */
   preview: string;
 };
@@ -883,6 +959,9 @@ export type SearchSnippet = {
 export type Identity = {
   /**
    * The id of the Identity.
+   *
+   * @kind immutable
+   * @kind server-set
    */
   id: ID;
   /**
@@ -896,6 +975,8 @@ export type Identity = {
    * (the section before the `@`) is the single character `*` (e.g.,
    * `*@example.com`), the client may use any valid address ending in
    * that domain (e.g., `foo@example.com`).
+   *
+   * @kind immutable
    */
   email: string;
   /**
@@ -927,9 +1008,13 @@ export type Identity = {
    * set this to false for the user's username or other default
    * address.  Attempts to destroy an Identity with "mayDelete: false"
    * will be rejected with a standard "forbidden" SetError.
+   *
+   * @kind server-set
    */
   mayDelete: boolean;
 };
+
+export type IdentityCreate = Omit<Identity, "id" | "mayDelete">;
 
 // =================================
 // Email Submission
@@ -941,25 +1026,37 @@ export type Identity = {
 export type EmailSubmission = {
   /**
    * The id of the EmailSubmission.
+   *
+   * @kind immutable
+   * @kind server-set
    */
   id: ID;
   /**
    * The id of the Identity to associate with this submission.
+   *
+   * @kind immutable
    */
   identityId: ID;
   /**
    * The id of the Email to send.  The Email being sent does not have
    * to be a draft, for example, when "redirecting" an existing Email
    * to a different address.
+   *
+   * @kind immutable
    */
   emailId: ID;
   /**
    * The Thread id of the Email to send.  This is set by the server to
    * the `threadId` property of the Email referenced by the `emailId`.
+   *
+   * @kind immutable
+   * @kind server-set
    */
   threadId: ID;
   /**
    * Information for use when sending via SMTP.
+   *
+   * @kind immutable
    */
   envelope?: Envelope;
   /**
@@ -968,6 +1065,9 @@ export type EmailSubmission = {
    * submission, this MUST be the time when the server will release the
    * message; otherwise, it MUST be the time the EmailSubmission was
    * created.
+   *
+   * @kind immutable
+   * @kind server-set
    */
   sendAt: UTCDate;
   /**
@@ -985,6 +1085,8 @@ export type EmailSubmission = {
    *
    * This value is a map from the email address of each recipient to a
    * DeliveryStatus object.
+   *
+   * @kind server-set
    */
   deliveryStatus: Record<string, DeliveryStatus> | null;
   /**
@@ -992,6 +1094,8 @@ export type EmailSubmission = {
    * submission, in order of receipt, oldest first.  The blob is the
    * whole MIME message (with a top-level content-type of "multipart/
    * report"), as received.
+   *
+   * @kind server-set
    */
   dsnBlobIds: ID[];
   /**
@@ -999,9 +1103,16 @@ export type EmailSubmission = {
    * submission, in order of receipt, oldest first.  The blob is the
    * whole MIME message (with a top-level content-type of "multipart/
    * report"), as received.
+   *
+   * @kind server-set
    */
   mdnBlobIds: ID[];
 };
+
+export type EmailSubmissionCreate = Omit<
+  EmailSubmission,
+  "id" | "threadId" | "sendAt" | "deliveryStatus" | "dsnBlobIds" | "mdnBlobIds"
+>;
 
 /**
  * Information for use when sending via SMTP.
@@ -1198,6 +1309,9 @@ export type VacationResponse = {
   /**
    * The id of the object.  There is only ever one VacationResponse
    * object, and its id is `singleton`.
+   *
+   * @kind immutable
+   * @kind server-set
    */
   id: "singleton";
   /**
@@ -1243,3 +1357,5 @@ export type VacationResponse = {
    */
   htmlBody: string | null;
 };
+
+export type VacationResponseCreate = Omit<VacationResponse, "id">;

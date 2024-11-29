@@ -26,6 +26,11 @@ import type { Obj } from "../helpers.ts";
 export type ID = string;
 
 /**
+ * An arbitrary string defined by the client, used to identify created records
+ */
+export type CreationID = string;
+
+/**
  * [rfc8620 § 1.4](https://datatracker.ietf.org/doc/html/rfc8620#section-1.4)
  *
  * Where "Date" is given as a type, it means a string in "date-time"
@@ -629,7 +634,7 @@ export enum ChangesRequestErrorType {
 /**
  * [rfc8620 § 5.3](https://datatracker.ietf.org/doc/html/rfc8620#section-5.3)
  */
-export type SetArguments<T> = {
+export type SetArguments<T extends object> = {
   /**
    * The id of the account to use.
    */
@@ -653,7 +658,7 @@ export type SetArguments<T> = {
    * The client MUST omit any properties that may only be set by the
    * server (for example, the `id` property on most object types).
    */
-  create?: Record<ID, T>;
+  create?: Record<CreationID, T>;
   /**
    * A map of an id to a PatchObject to apply to the current `T`
    * object with that id, or null if no objects are to be updated.
@@ -1439,6 +1444,9 @@ export type TypeState = Record<string, string>;
 export type PushSubscription = {
   /**
    * The id of the push subscription.
+   *
+   * @kind immutable
+   * @kind server-set
    */
   id: ID;
   /**
@@ -1460,19 +1468,25 @@ export type PushSubscription = {
    *
    * To protect the privacy of the user, the `deviceClientId` id MUST NOT
    * contain an unobfuscated device id.
+   *
+   * @kind immutable
    */
   deviceClientId: string;
   /**
    * An absolute URL where the JMAP server will POST the data for the
    * push message.  This MUST begin with `https://`.
+   *
+   * @kind immutable
    */
   url: string;
   /**
    * Client-generated encryption keys.  If supplied, the server MUST
    * use them as specified in [RFC8291] to encrypt all data sent to the
    * push subscription.
+   *
+   * @kind immutable
    */
-  keys?: null | {
+  keys?: {
     /**
      * The P-256 Elliptic Curve Diffie-Hellman (ECDH) public key as
      * described in [RFC8291], encoded in URL-safe base64
@@ -1513,6 +1527,8 @@ export type PushSubscription = {
    */
   types?: string[];
 };
+
+export type PushSubscriptionCreate = Omit<PushSubscription, "id">;
 
 /**
  * [rfc8620 § 7.2.2](https://datatracker.ietf.org/doc/html/rfc8620#section-7.2.2)
