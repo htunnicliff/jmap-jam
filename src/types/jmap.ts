@@ -487,7 +487,7 @@ export type GetArguments<T> = {
    * type and the number of records does not exceed the
    * `maxObjectsInGet` limit.
    */
-  ids?: ReadonlyArray<ID> | null;
+  ids?: ReadonlyArray<ID>;
   /**
    *  If supplied, only the properties listed in the array are returned
    * for each `T` object.  If null, all properties of the object are
@@ -496,7 +496,7 @@ export type GetArguments<T> = {
    * requested, the call MUST be rejected with an "invalidArguments"
    * error.
    */
-  properties?: ReadonlyArray<keyof T> | null;
+  properties?: ReadonlyArray<keyof T>;
 };
 
 export type GetResponse<T, Args> = Args extends GetArguments<T>
@@ -574,7 +574,7 @@ export type ChangesArguments = {
    * is given, the server MUST reject the call with an
    * `invalidArguments` error.
    */
-  maxChanges: number | null;
+  maxChanges?: number;
 };
 
 export type ChangesResponse = {
@@ -642,7 +642,7 @@ export type SetArguments<T> = {
    * returned.  If null, any changes will be applied to the current
    * state.
    */
-  ifInState: string | null;
+  ifInState?: string;
   /**
    * A map of a *creation id* (a temporary id set by the client) to `T`
    * objects, or null if no objects are to be created.
@@ -653,13 +653,13 @@ export type SetArguments<T> = {
    * The client MUST omit any properties that may only be set by the
    * server (for example, the `id` property on most object types).
    */
-  create: Record<ID, T> | null;
+  create?: Record<ID, T>;
   /**
    * A map of an id to a PatchObject to apply to the current `T`
    * object with that id, or null if no objects are to be updated.
    */
-  update: PatchObject<T> | null;
-  destroy: ID[] | null;
+  update?: PatchObject<T>;
+  destroy?: ID[];
 };
 
 /**
@@ -863,7 +863,7 @@ export type CopyArguments<T extends { id: ID }> = {
    * `stateMismatch` error returned.  If null, the data will be read
    * from the current state.
    */
-  ifFromInState: string | null;
+  ifFromInState?: string;
   /**
    * The id of the account to copy records to.  This MUST be different
    * to the `fromAccountId`.
@@ -876,7 +876,7 @@ export type CopyArguments<T extends { id: ID }> = {
    * and a `stateMismatch` error returned.  If null, any changes will
    * be applied to the current state.
    */
-  ifInState: string | null;
+  ifInState?: string;
   /**
    * A map of the *creation id* to a `T` object.  The `T` object MUST
    * contain an `id` property, which is the id (in the fromAccount) of
@@ -884,7 +884,7 @@ export type CopyArguments<T extends { id: ID }> = {
    * properties included are used instead of the current value for that
    * property on the original.
    */
-  create: Record<ID, T> | null;
+  create: Record<ID, T>;
   /**
    * If true, an attempt will be made to destroy the original records
    * that were successfully copied: after emitting the "T/copy"
@@ -899,7 +899,7 @@ export type CopyArguments<T extends { id: ID }> = {
    * implicit "T/set" call, if made at the end of this request to
    * destroy the originals that were successfully copied.
    */
-  destroyFromIfInState: string | null;
+  destroyFromIfInState?: string;
 };
 
 export type CopyResponse<T> = {
@@ -985,7 +985,7 @@ export type QueryArguments<T extends Obj, Filter extends Obj = T> = {
    * Determines the set of T objects returned in the results.  If null, all
    * objects in the account of this type are included in the results.
    */
-  filter?: FilterOperator<Filter> | FilterCondition<Filter> | null;
+  filter?: FilterOperator<Filter> | FilterCondition<Filter>;
   /**
    * Lists the names of properties to compare between two `T` records,
    * and how to compare them, to determine which comes first in the
@@ -996,7 +996,7 @@ export type QueryArguments<T extends Obj, Filter extends Obj = T> = {
    * order is server dependent, but it MUST be stable between calls to
    * "T/query".
    */
-  sort?: ReadonlyArray<Comparator<T>> | null;
+  sort?: ReadonlyArray<Comparator<T>>;
   /**
    * The zero-based index of the first id in the full list of results
    * to return.
@@ -1018,7 +1018,7 @@ export type QueryArguments<T extends Obj, Filter extends Obj = T> = {
    * the `anchorOffset` argument to determine the index of the first
    * result to return
    */
-  anchor?: string | null;
+  anchor?: string;
   /**
    * The index of the first result to return relative to the index of
    * the anchor, if an anchor is given.  This MAY be negative.  For
@@ -1035,7 +1035,7 @@ export type QueryArguments<T extends Obj, Filter extends Obj = T> = {
    * value is given, the call MUST be rejected with an
    * `invalidArguments` error.
    */
-  limit?: number | null;
+  limit?: number;
   /**
    * Does the client wish to know the total number of results in the
    * query?  This may be slow and expensive for servers to calculate,
@@ -1141,11 +1141,11 @@ export type QueryChangesArguments<T extends Obj, Filter extends Obj> = {
   /**
    * The filter argument that was used with "T/query".
    */
-  filter: FilterOperator<Filter> | FilterCondition<Filter> | null;
+  filter?: FilterOperator<Filter> | FilterCondition<Filter>;
   /**
    * The sort argument that was used with "T/query".
    */
-  sort: ReadonlyArray<Comparator<T>> | null;
+  sort?: ReadonlyArray<Comparator<T>>;
   /**
    * The current state of the query in the client.  This is the string
    * that was returned as the `queryState` argument in the "T/query"
@@ -1157,7 +1157,7 @@ export type QueryChangesArguments<T extends Obj, Filter extends Obj> = {
    * The maximum number of changes to return in the response.  See
    * error descriptions below for more details.
    */
-  maxChanges: number | null;
+  maxChanges?: number;
   /**
    * The last (highest-index) id the client currently has cached from
    * the query results.  When there are a large number of results, in a
@@ -1168,7 +1168,7 @@ export type QueryChangesArguments<T extends Obj, Filter extends Obj> = {
    * significantly increase efficiency.  If they are not immutable,
    * this argument is ignored.
    */
-  upToId: ID | null;
+  upToId?: ID;
   /**
    * Does the client wish to know the total number of results now in
    * the query?  This may be slow and expensive for servers to
@@ -1491,7 +1491,7 @@ export type PushSubscription = {
    * a push message, and the client updates the PushSubscription object
    * with the code; see Section 7.2.2 for details.
    */
-  verificationCode?: string | null;
+  verificationCode?: string;
   /**
    * The time this push subscription expires.  If specified, the JMAP
    * server MUST NOT make further requests to this resource after this
@@ -1502,7 +1502,7 @@ export type PushSubscription = {
    * client or modify the expiry time given by the client to a shorter
    * duration.
    */
-  expires?: UTCDate | null;
+  expires?: UTCDate;
   /**
    * A list of types the client is interested in (using the same names
    * as the keys in the TypeState object defined in the previous
@@ -1511,7 +1511,7 @@ export type PushSubscription = {
    * the TypeState object.  If null, changes will be pushed for all
    * types.
    */
-  types?: string[] | null;
+  types?: string[];
 };
 
 /**

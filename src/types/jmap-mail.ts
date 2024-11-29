@@ -961,7 +961,7 @@ export type EmailSubmission = {
   /**
    * Information for use when sending via SMTP.
    */
-  envelope: Envelope | null;
+  envelope?: Envelope;
   /**
    * The date the submission was/will be released for delivery.  If the
    * client successfully used FUTURERELEASE [RFC4865] with the
@@ -1044,7 +1044,7 @@ export type EmailSubmissionAddress = {
    * (see [RFC3461] and [RFC6533]) and JSON string encoding is
    * applied.
    */
-  parameters: Record<string, unknown> | null;
+  parameters?: Record<string, unknown>;
 };
 
 /**
