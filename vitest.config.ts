@@ -3,8 +3,8 @@ import { defineConfig } from "vitest/config";
 export default defineConfig({
   test: {
     typecheck: {
-      enabled: true,
+      enabled: true
     },
-    includeSource: ["src/**/*.ts"],
-  },
+    includeSource: ["src/**/*.ts"]
+  }
 });
