@@ -13,9 +13,7 @@
     "outDir": "dist",
     "declarationMap": true,
     "noUnusedLocals": true,
-    "types": [
-      "vitest/importMeta"
-    ]
+    "types": ["vitest/importMeta"]
   },
   "include": ["src/**/*"]
 }

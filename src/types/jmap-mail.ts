@@ -32,6 +32,9 @@ export type Entity = keyof Entities;
 export type Mailbox = {
   /**
    * The id of the Mailbox
+   *
+   * @kind immutable
+   * @kind server-set
    */
   id: ID;
   /**
@@ -69,20 +72,28 @@ export type Mailbox = {
   sortOrder: number;
   /**
    * The number of Emails in this Mailbox.
+   *
+   * @kind server-set
    */
   totalEmails: number;
   /**
    * The number of Emails in this Mailbox that have neither the "$seen"
    * keyword nor the "$draft" keyword.
+   *
+   * @kind server-set
    */
   unreadEmails: number;
   /**
    * The number of Threads where at least one Email in the Thread is in
    * this Mailbox.
+   *
+   * @kind server-set
    */
   totalThreads: number;
   /**
    * An indication of the number of "unread" Threads in the Mailbox.
+   *
+   * @kind server-set
    */
   unreadThreads: number;
   /**
@@ -94,6 +105,8 @@ export type Mailbox = {
    * The set of rights (Access Control Lists (ACLs)) the user has in
    * relation to this Mailbox.  These are backwards compatible with
    * IMAP ACLs, as defined in [rfc4314](https://datatracker.ietf.org/doc/html/rfc4314).
+   *
+   * @kind server-set
    */
   myRights: {
     /**
@@ -157,6 +170,17 @@ export type Mailbox = {
   };
 };
 
+export type MailboxCreate = Omit<
+  Mailbox,
+  // Fields set by server
+  | "id"
+  | "totalEmails"
+  | "unreadEmails"
+  | "totalThreads"
+  | "unreadThreads"
+  | "myRights"
+>;
+
 /**
  * [rfc8621 § 2.3](https://datatracker.ietf.org/doc/html/rfc8621#section-2.3)
  */
@@ -182,6 +206,9 @@ export type MailboxFilterCondition = {
 export type Thread = {
   /**
    * The id of the Thread.
+   *
+   * @kind immutable
+   * @kind server-set
    */
   id: ID;
   /**
@@ -189,6 +216,8 @@ export type Thread = {
    * date of the Email, oldest first.  If two Emails have an identical
    * date, the sort is server dependent but MUST be stable (sorting by
    * id is recommended).
+   *
+   * @kind server-set
    */
   emailIds: ID[];
 };
@@ -208,6 +237,20 @@ export type Email = EmailMetadataFields &
   EmailHeaderFields &
   EmailBodyPartFields;
 
+// TODO: Support exclusive patterns described in [rfc8621 § 4.6](https://datatracker.ietf.org/doc/html/rfc8621#section-4.6)
+export type EmailCreate = Partial<
+  Omit<
+    Email,
+    | "id"
+    | "blobId"
+    | "threadId"
+    | "size"
+    | "hasAttachment"
+    | "preview"
+    | "headers"
+  >
+>;
+
 /**
  * [rfc8621 § 4.1.1](https://datatracker.ietf.org/doc/html/rfc8621#section-4.1.1)
  *
@@ -218,16 +261,25 @@ type EmailMetadataFields = {
   /**
    * The id of the Email object.  Note that this is the JMAP object id,
    * NOT the Message-ID header field value of the message [rfc5322](https://datatracker.ietf.org/doc/html/rfc5322).
+   *
+   * @kind immutable
+   * @kind server-set
    */
   id: ID;
   /**
    * The id representing the raw octets of the message [rfc5322](https://datatracker.ietf.org/doc/html/rfc5322) for
    * this Email.  This may be used to download the raw original message
    * or to attach it directly to another Email, etc.
+   *
+   * @kind immutable
+   * @kind server-set
    */
   blobId: ID;
   /**
    * The id of the Thread to which this Email belongs.
+   *
+   * @kind immutable
+   * @kind server-set
    */
   threadId: ID;
   /**
@@ -269,11 +321,16 @@ type EmailMetadataFields = {
    * The size, in octets, of the raw data for the message [rfc5322](https://datatracker.ietf.org/doc/html/rfc5322) (as
    * referenced by the "blobId", i.e., the number of octets in the file
    * the user would download).
+   *
+   * @kind immutable
+   * @kind server-set
    */
   size: number;
   /**
    * A UTC Date – The date the Email was received by the message store.  This is the
    * "internal date" in IMAP [rfc3501](https://datatracker.ietf.org/doc/html/rfc3501).
+   *
+   * @kind immutable
    */
   receivedAt: string;
 };
@@ -309,7 +366,7 @@ export type ForbiddenKeywordCharacters =
  * [rfc8621 § 4.1.2.3](https://datatracker.ietf.org/doc/html/rfc8621#section-4.1.2.3)
  */
 export type EmailAddress = {
-  name: string | null;
+  name?: string;
   email: string;
 };
 
@@ -317,7 +374,7 @@ export type EmailAddress = {
  * [rfc8621 § 4.1.2.4](https://datatracker.ietf.org/doc/html/rfc8621#section-4.1.2.4)
  */
 export type EmailAddressGroup = {
-  name: string | null;
+  name?: string;
   addresses: EmailAddress[];
 };
 
@@ -384,11 +441,11 @@ export type HeaderParsedForm = {
    * or folding white space (CFWS) and surrounding angle brackets ("<>")
    * are removed.  If parsing fails, the value is null.
    */
-  MessageIds: string[] | null;
+  MessageIds?: string[];
   /**
    * [rfc8621 § 4.1.2.6](https://datatracker.ietf.org/doc/html/rfc8621#section-4.1.2.6)
    */
-  Date: string | null;
+  Date?: string;
   /**
    * [rfc8621 § 4.1.2.7](https://datatracker.ietf.org/doc/html/rfc8721#section-4.1.2.6)
    *
@@ -397,7 +454,7 @@ export type HeaderParsedForm = {
    * surrounding angle brackets or any comments in the header field with
    * the URLs.  If parsing fails, the value is null.
    */
-  URLs: string[] | null;
+  URLs?: string[];
 };
 
 /**
@@ -441,6 +498,8 @@ export type EmailHeader = {
 
 /**
  * [rfc8621 § 4.1.3](https://datatracker.ietf.org/doc/html/rfc8621#section-4.1.3)
+ *
+ * @kind immutable
  */
 type EmailHeaderFields = {
   /**
@@ -452,47 +511,47 @@ type EmailHeaderFields = {
    * The value is identical to the value of `header:Message-ID:asMessageIds`.
    * For messages conforming to RFC 5322, this will be an array with a single entry.
    */
-  messageId: string[] | null;
+  messageId?: string[];
   /**
    * The value is identical to the value of `header:In-Reply-To:asMessageIds`.
    */
-  inReplyTo: string[] | null;
+  inReplyTo?: string[];
   /**
    * The value is identical to the value of `header:References:asMessageIds`.
    */
-  references: string[] | null;
+  references?: string[];
   /**
    * The value is identical to the value of `header:Sender:asAddresses`.
    */
-  sender: EmailAddress[] | null;
+  sender?: EmailAddress[];
   /**
    * The value is identical to the value of `header:From:asAddresses`.
    */
-  from: EmailAddress[] | null;
+  from?: EmailAddress[];
   /**
    * The value is identical to the value of `header:To:asAddresses`.
    */
-  to: EmailAddress[] | null;
+  to?: EmailAddress[];
   /**
    * The value is identical to the value of `header:Cc:asAddresses`.
    */
-  cc: EmailAddress[] | null;
+  cc?: EmailAddress[];
   /**
    * The value is identical to the value of `header:Bcc:asAddresses`.
    */
-  bcc: EmailAddress[] | null;
+  bcc?: EmailAddress[];
   /**
    * The value is identical to the value of `header:Reply-To:asAddresses`.
    */
-  replyTo: EmailAddress[] | null;
+  replyTo?: EmailAddress[];
   /**
    * The value is identical to the value of `header:Subject:asText`.
    */
-  subject: string | null;
+  subject?: string;
   /**
    * The value is identical to the value of `header:Date:asDate`.
    */
-  sentAt: string | null;
+  sentAt?: string;
 };
 
 /**
@@ -505,7 +564,7 @@ export type EmailBodyPart = {
    * representation.  This is null if, and only if, the part is of type
    * `multipart/*`.
    */
-  partId: ID | null;
+  partId?: ID;
   /**
    * The id representing the raw octets of the contents of the part,
    * after decoding any known Content-Transfer-Encoding (as defined in
@@ -516,7 +575,7 @@ export type EmailBodyPart = {
    * the blob id.  If the transfer encoding is unknown, it is treated
    * as though it had no transfer encoding.
    */
-  blobId: ID | null;
+  blobId?: ID;
   /**
    * The size, in octets, of the raw data after content transfer
    * decoding (as referenced by the `blobId`, i.e., the number of
@@ -534,7 +593,7 @@ export type EmailBodyPart = {
    * existing systems) if not present, then it's the decoded `name`
    * parameter of the Content-Type header field per [RFC2047].
    */
-  name: string | null;
+  name?: string;
   /**
    * The value of the Content-Type header field of the part, if
    * present; otherwise, the implicit type as per the MIME standard
@@ -549,13 +608,13 @@ export type EmailBodyPart = {
    * exists and is of type `text/*` but has no charset parameter, this
    * is the implicit charset as per the MIME standard: `us-ascii`.
    */
-  charset: string | null;
+  charset?: string;
   /**
    * The value of the Content-Disposition header field of the part, if
    * present; otherwise, it's null.  CFWS is removed and any parameters
    * are stripped.
    */
-  disposition: string | null;
+  disposition?: string;
   /**
    * The value of the Content-Id header field of the part, if present;
    * otherwise, it's null.  CFWS and surrounding angle brackets ("<>")
@@ -563,22 +622,22 @@ export type EmailBodyPart = {
    * within a "text/html" body part [HTML](https://datatracker.ietf.org/doc/html/rfc8621#ref-HTML) using the "cid:" protocol,
    * as defined in [RFC2392].
    */
-  cid: string | null;
+  cid?: string;
   /**
    * The list of language tags, as defined in [RFC3282], in the
    * Content-Language header field of the part, if present.
    */
-  language: string[] | null;
+  language?: string[];
   /**
    * The URI, as defined in [RFC2557], in the Content-Location header
    * field of the part, if present.
    */
-  location: string | null;
+  location?: string;
   /**
    * If the type is "multipart/*", this contains the body parts of each
    * child.
    */
-  subParts: EmailBodyPart[] | null;
+  subParts?: EmailBodyPart[];
 };
 
 /**
@@ -590,6 +649,8 @@ type EmailBodyPartFields = {
    * recursing into `message/rfc822` or `message/global` parts.  Note
    * that EmailBodyParts may have subParts if they are of type
    * `multipart/*`.
+   *
+   * @kind immutable
    */
   bodyStructure: EmailBodyPart;
   /**
@@ -597,6 +658,8 @@ type EmailBodyPartFields = {
    * some, or all `text/*` parts.  Which parts are included and whether
    * the value is truncated is determined by various arguments to
    * `Email/get` and `Email/parse`.
+   *
+   * @kind immutable
    */
   bodyValues: Record<ID, EmailBodyValue>;
   /**
@@ -604,6 +667,8 @@ type EmailBodyPartFields = {
    * `video/*` parts to display (sequentially) as the message body,
    * with a preference for `text/plain` when alternative versions are
    * available.
+   *
+   * @kind immutable
    */
   textBody: EmailBodyPart[];
   /**
@@ -611,6 +676,8 @@ type EmailBodyPartFields = {
    * `video/*` parts to display (sequentially) as the message body,
    * with a preference for `text/html` when alternative versions are
    * available.
+   *
+   * @kind immutable
    */
   htmlBody: EmailBodyPart[];
   /**
@@ -627,6 +694,8 @@ type EmailBodyPartFields = {
    * Note that a `text/html` body part [HTML] may reference image parts
    * in attachments by using `cid:` links to reference the Content-Id,
    * as defined in [RFC2392], or by referencing the Content-Location.
+   *
+   * @kind immutable
    */
   attachments: EmailBodyPart[];
   /**
@@ -637,6 +706,9 @@ type EmailBodyPartFields = {
    * server MAY ignore parts in this list that are processed
    * automatically in some way or are referenced as embedded images in
    * one of the `text/html` parts of the message.
+   *
+   * @kind immutable
+   * @kind server-set
    */
   hasAttachment: boolean;
   /**
@@ -655,6 +727,9 @@ type EmailBodyPartFields = {
    * the previous value is not considered incorrect, and the change
    * SHOULD NOT cause the Email object to be considered as changed by
    * the server.
+   *
+   * @kind immutable
+   * @kind server-set
    */
   preview: string;
 };
@@ -858,7 +933,7 @@ export type SearchSnippet = {
    * If the subject does not match text from the filter, this property
    * is null.
    */
-  subject: string | null;
+  subject?: string;
   /**
    * If text from the filter matches the plaintext or HTML body, this
    * is the relevant section of the body (converted to plaintext if
@@ -867,7 +942,7 @@ export type SearchSnippet = {
    * body does not contain a match for the text from the filter, this
    * property is null.
    */
-  preview: string | null;
+  preview?: string;
 };
 
 // =================================
@@ -883,6 +958,9 @@ export type SearchSnippet = {
 export type Identity = {
   /**
    * The id of the Identity.
+   *
+   * @kind immutable
+   * @kind server-set
    */
   id: ID;
   /**
@@ -896,18 +974,20 @@ export type Identity = {
    * (the section before the `@`) is the single character `*` (e.g.,
    * `*@example.com`), the client may use any valid address ending in
    * that domain (e.g., `foo@example.com`).
+   *
+   * @kind immutable
    */
   email: string;
   /**
    * The Reply-To value the client SHOULD set when creating a new Email
    * from this Identity.
    */
-  replyTo: EmailAddress[] | null;
+  replyTo?: EmailAddress[];
   /**
    * The Bcc value the client SHOULD set when creating a new Email from
    * this Identity.
    */
-  bcc: EmailAddress[] | null;
+  bcc?: EmailAddress[];
   /**
    * A signature the client SHOULD insert into new plaintext messages
    * that will be sent from this Identity.  Clients MAY ignore this
@@ -927,9 +1007,13 @@ export type Identity = {
    * set this to false for the user's username or other default
    * address.  Attempts to destroy an Identity with "mayDelete: false"
    * will be rejected with a standard "forbidden" SetError.
+   *
+   * @kind server-set
    */
   mayDelete: boolean;
 };
+
+export type IdentityCreate = Omit<Identity, "id" | "mayDelete">;
 
 // =================================
 // Email Submission
@@ -941,33 +1025,48 @@ export type Identity = {
 export type EmailSubmission = {
   /**
    * The id of the EmailSubmission.
+   *
+   * @kind immutable
+   * @kind server-set
    */
   id: ID;
   /**
    * The id of the Identity to associate with this submission.
+   *
+   * @kind immutable
    */
   identityId: ID;
   /**
    * The id of the Email to send.  The Email being sent does not have
    * to be a draft, for example, when "redirecting" an existing Email
    * to a different address.
+   *
+   * @kind immutable
    */
   emailId: ID;
   /**
    * The Thread id of the Email to send.  This is set by the server to
    * the `threadId` property of the Email referenced by the `emailId`.
+   *
+   * @kind immutable
+   * @kind server-set
    */
   threadId: ID;
   /**
    * Information for use when sending via SMTP.
+   *
+   * @kind immutable
    */
-  envelope: Envelope | null;
+  envelope?: Envelope;
   /**
    * The date the submission was/will be released for delivery.  If the
    * client successfully used FUTURERELEASE [RFC4865] with the
    * submission, this MUST be the time when the server will release the
    * message; otherwise, it MUST be the time the EmailSubmission was
    * created.
+   *
+   * @kind immutable
+   * @kind server-set
    */
   sendAt: UTCDate;
   /**
@@ -985,13 +1084,17 @@ export type EmailSubmission = {
    *
    * This value is a map from the email address of each recipient to a
    * DeliveryStatus object.
+   *
+   * @kind server-set
    */
-  deliveryStatus: Record<string, DeliveryStatus> | null;
+  deliveryStatus?: Record<string, DeliveryStatus>;
   /**
    * A list of blob ids for DSNs [RFC3464] received for this
    * submission, in order of receipt, oldest first.  The blob is the
    * whole MIME message (with a top-level content-type of "multipart/
    * report"), as received.
+   *
+   * @kind server-set
    */
   dsnBlobIds: ID[];
   /**
@@ -999,9 +1102,16 @@ export type EmailSubmission = {
    * submission, in order of receipt, oldest first.  The blob is the
    * whole MIME message (with a top-level content-type of "multipart/
    * report"), as received.
+   *
+   * @kind server-set
    */
   mdnBlobIds: ID[];
 };
+
+export type EmailSubmissionCreate = Omit<
+  EmailSubmission,
+  "id" | "threadId" | "sendAt" | "deliveryStatus" | "dsnBlobIds" | "mdnBlobIds"
+>;
 
 /**
  * Information for use when sending via SMTP.
@@ -1044,7 +1154,7 @@ export type EmailSubmissionAddress = {
    * (see [RFC3461] and [RFC6533]) and JSON string encoding is
    * applied.
    */
-  parameters: Record<string, unknown> | null;
+  parameters?: Record<string, unknown>;
 };
 
 /**
@@ -1198,6 +1308,9 @@ export type VacationResponse = {
   /**
    * The id of the object.  There is only ever one VacationResponse
    * object, and its id is `singleton`.
+   *
+   * @kind immutable
+   * @kind server-set
    */
   id: "singleton";
   /**
@@ -1211,20 +1324,20 @@ export type VacationResponse = {
    * user's vacation response.  If null, the vacation response is
    * effective immediately.
    */
-  fromDate: UTCDate | null;
+  fromDate?: UTCDate;
   /**
    * If `isEnabled` is true, messages that arrive before this date-time
    * (but on or after the `fromDate` if defined) should receive the
    * user's vacation response.  If null, the vacation response is
    * effective indefinitely.
    */
-  toDate: UTCDate | null;
+  toDate?: UTCDate;
   /**
    * The subject that will be used by the message sent in response to
    * messages when the vacation response is enabled.  If null, an
    * appropriate subject SHOULD be set by the server.
    */
-  subject: string | null;
+  subject?: string;
   /**
    * The plaintext body to send in response to messages when the
    * vacation response is enabled.  If this is null, the server SHOULD
@@ -1233,7 +1346,7 @@ export type VacationResponse = {
    * only.  If both "textBody" and "htmlBody" are null, an appropriate
    * default body SHOULD be generated for responses by the server.
    */
-  textBody: string | null;
+  textBody?: string;
   /**
    * The HTML body to send in response to messages when the vacation
    * response is enabled.  If this is null, the server MAY choose to
@@ -1241,5 +1354,7 @@ export type VacationResponse = {
    * vacation responses or MAY choose to send the response as plaintext
    * only.
    */
-  htmlBody: string | null;
+  htmlBody?: string;
 };
+
+export type VacationResponseCreate = Omit<VacationResponse, "id">;
