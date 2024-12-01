@@ -680,9 +680,7 @@ export type SetArguments<T extends object> = {
  *
  * TODO: Support more correct types for PatchObject
  */
-export type PatchObject<T> = {
-  [key in ExtendedJSONPointer | keyof T]: Partial<T>;
-};
+export type PatchObject<T> = Partial<T> | { [K in ExtendedJSONPointer]: any };
 
 export type SetResponse<T> = {
   /**

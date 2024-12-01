@@ -1,4 +1,3 @@
-import type { OmitDeep } from "type-fest";
 import type { FilterCondition, ID, UTCDate } from "./jmap.ts";
 
 /**
@@ -367,7 +366,7 @@ export type ForbiddenKeywordCharacters =
  * [rfc8621 § 4.1.2.3](https://datatracker.ietf.org/doc/html/rfc8621#section-4.1.2.3)
  */
 export type EmailAddress = {
-  name: string | null;
+  name?: string;
   email: string;
 };
 
@@ -375,7 +374,7 @@ export type EmailAddress = {
  * [rfc8621 § 4.1.2.4](https://datatracker.ietf.org/doc/html/rfc8621#section-4.1.2.4)
  */
 export type EmailAddressGroup = {
-  name: string | null;
+  name?: string;
   addresses: EmailAddress[];
 };
 
@@ -442,11 +441,11 @@ export type HeaderParsedForm = {
    * or folding white space (CFWS) and surrounding angle brackets ("<>")
    * are removed.  If parsing fails, the value is null.
    */
-  MessageIds: string[] | null;
+  MessageIds?: string[];
   /**
    * [rfc8621 § 4.1.2.6](https://datatracker.ietf.org/doc/html/rfc8621#section-4.1.2.6)
    */
-  Date: string | null;
+  Date?: string;
   /**
    * [rfc8621 § 4.1.2.7](https://datatracker.ietf.org/doc/html/rfc8721#section-4.1.2.6)
    *
@@ -455,7 +454,7 @@ export type HeaderParsedForm = {
    * surrounding angle brackets or any comments in the header field with
    * the URLs.  If parsing fails, the value is null.
    */
-  URLs: string[] | null;
+  URLs?: string[];
 };
 
 /**
@@ -512,47 +511,47 @@ type EmailHeaderFields = {
    * The value is identical to the value of `header:Message-ID:asMessageIds`.
    * For messages conforming to RFC 5322, this will be an array with a single entry.
    */
-  messageId: string[] | null;
+  messageId?: string[];
   /**
    * The value is identical to the value of `header:In-Reply-To:asMessageIds`.
    */
-  inReplyTo: string[] | null;
+  inReplyTo?: string[];
   /**
    * The value is identical to the value of `header:References:asMessageIds`.
    */
-  references: string[] | null;
+  references?: string[];
   /**
    * The value is identical to the value of `header:Sender:asAddresses`.
    */
-  sender: EmailAddress[] | null;
+  sender?: EmailAddress[];
   /**
    * The value is identical to the value of `header:From:asAddresses`.
    */
-  from: EmailAddress[] | null;
+  from?: EmailAddress[];
   /**
    * The value is identical to the value of `header:To:asAddresses`.
    */
-  to: EmailAddress[] | null;
+  to?: EmailAddress[];
   /**
    * The value is identical to the value of `header:Cc:asAddresses`.
    */
-  cc: EmailAddress[] | null;
+  cc?: EmailAddress[];
   /**
    * The value is identical to the value of `header:Bcc:asAddresses`.
    */
-  bcc: EmailAddress[] | null;
+  bcc?: EmailAddress[];
   /**
    * The value is identical to the value of `header:Reply-To:asAddresses`.
    */
-  replyTo: EmailAddress[] | null;
+  replyTo?: EmailAddress[];
   /**
    * The value is identical to the value of `header:Subject:asText`.
    */
-  subject: string | null;
+  subject?: string;
   /**
    * The value is identical to the value of `header:Date:asDate`.
    */
-  sentAt: string | null;
+  sentAt?: string;
 };
 
 /**
@@ -565,7 +564,7 @@ export type EmailBodyPart = {
    * representation.  This is null if, and only if, the part is of type
    * `multipart/*`.
    */
-  partId: ID | null;
+  partId?: ID;
   /**
    * The id representing the raw octets of the contents of the part,
    * after decoding any known Content-Transfer-Encoding (as defined in
@@ -576,7 +575,7 @@ export type EmailBodyPart = {
    * the blob id.  If the transfer encoding is unknown, it is treated
    * as though it had no transfer encoding.
    */
-  blobId: ID | null;
+  blobId?: ID;
   /**
    * The size, in octets, of the raw data after content transfer
    * decoding (as referenced by the `blobId`, i.e., the number of
@@ -594,7 +593,7 @@ export type EmailBodyPart = {
    * existing systems) if not present, then it's the decoded `name`
    * parameter of the Content-Type header field per [RFC2047].
    */
-  name: string | null;
+  name?: string;
   /**
    * The value of the Content-Type header field of the part, if
    * present; otherwise, the implicit type as per the MIME standard
@@ -609,13 +608,13 @@ export type EmailBodyPart = {
    * exists and is of type `text/*` but has no charset parameter, this
    * is the implicit charset as per the MIME standard: `us-ascii`.
    */
-  charset: string | null;
+  charset?: string;
   /**
    * The value of the Content-Disposition header field of the part, if
    * present; otherwise, it's null.  CFWS is removed and any parameters
    * are stripped.
    */
-  disposition: string | null;
+  disposition?: string;
   /**
    * The value of the Content-Id header field of the part, if present;
    * otherwise, it's null.  CFWS and surrounding angle brackets ("<>")
@@ -623,22 +622,22 @@ export type EmailBodyPart = {
    * within a "text/html" body part [HTML](https://datatracker.ietf.org/doc/html/rfc8621#ref-HTML) using the "cid:" protocol,
    * as defined in [RFC2392].
    */
-  cid: string | null;
+  cid?: string;
   /**
    * The list of language tags, as defined in [RFC3282], in the
    * Content-Language header field of the part, if present.
    */
-  language: string[] | null;
+  language?: string[];
   /**
    * The URI, as defined in [RFC2557], in the Content-Location header
    * field of the part, if present.
    */
-  location: string | null;
+  location?: string;
   /**
    * If the type is "multipart/*", this contains the body parts of each
    * child.
    */
-  subParts: EmailBodyPart[] | null;
+  subParts?: EmailBodyPart[];
 };
 
 /**
@@ -934,7 +933,7 @@ export type SearchSnippet = {
    * If the subject does not match text from the filter, this property
    * is null.
    */
-  subject: string | null;
+  subject?: string;
   /**
    * If text from the filter matches the plaintext or HTML body, this
    * is the relevant section of the body (converted to plaintext if
@@ -943,7 +942,7 @@ export type SearchSnippet = {
    * body does not contain a match for the text from the filter, this
    * property is null.
    */
-  preview: string | null;
+  preview?: string;
 };
 
 // =================================
@@ -983,12 +982,12 @@ export type Identity = {
    * The Reply-To value the client SHOULD set when creating a new Email
    * from this Identity.
    */
-  replyTo: EmailAddress[] | null;
+  replyTo?: EmailAddress[];
   /**
    * The Bcc value the client SHOULD set when creating a new Email from
    * this Identity.
    */
-  bcc: EmailAddress[] | null;
+  bcc?: EmailAddress[];
   /**
    * A signature the client SHOULD insert into new plaintext messages
    * that will be sent from this Identity.  Clients MAY ignore this
@@ -1088,7 +1087,7 @@ export type EmailSubmission = {
    *
    * @kind server-set
    */
-  deliveryStatus: Record<string, DeliveryStatus> | null;
+  deliveryStatus?: Record<string, DeliveryStatus>;
   /**
    * A list of blob ids for DSNs [RFC3464] received for this
    * submission, in order of receipt, oldest first.  The blob is the
@@ -1325,20 +1324,20 @@ export type VacationResponse = {
    * user's vacation response.  If null, the vacation response is
    * effective immediately.
    */
-  fromDate: UTCDate | null;
+  fromDate?: UTCDate;
   /**
    * If `isEnabled` is true, messages that arrive before this date-time
    * (but on or after the `fromDate` if defined) should receive the
    * user's vacation response.  If null, the vacation response is
    * effective indefinitely.
    */
-  toDate: UTCDate | null;
+  toDate?: UTCDate;
   /**
    * The subject that will be used by the message sent in response to
    * messages when the vacation response is enabled.  If null, an
    * appropriate subject SHOULD be set by the server.
    */
-  subject: string | null;
+  subject?: string;
   /**
    * The plaintext body to send in response to messages when the
    * vacation response is enabled.  If this is null, the server SHOULD
@@ -1347,7 +1346,7 @@ export type VacationResponse = {
    * only.  If both "textBody" and "htmlBody" are null, an appropriate
    * default body SHOULD be generated for responses by the server.
    */
-  textBody: string | null;
+  textBody?: string;
   /**
    * The HTML body to send in response to messages when the vacation
    * response is enabled.  If this is null, the server MAY choose to
@@ -1355,7 +1354,7 @@ export type VacationResponse = {
    * vacation responses or MAY choose to send the response as plaintext
    * only.
    */
-  htmlBody: string | null;
+  htmlBody?: string;
 };
 
 export type VacationResponseCreate = Omit<VacationResponse, "id">;
