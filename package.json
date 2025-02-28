@@ -22,7 +22,7 @@
     "build": "tsup",
     "dev": "vitest dev",
     "test": "vitest run",
-    "lint": "biome check",
+    "lint": "biome ci",
     "lint:fix": "biome check --write ."
   },
   "dependencies": {
