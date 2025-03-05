@@ -1,12 +1,18 @@
 {
   "name": "jmap-jam",
-  "version": "0.8.0",
+  "version": "0.9.0",
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": "./dist/index.js",
   "sideEffects": false,
-  "files": ["dist", "src", "package.json", "LICENSE.txt", "README.md"],
+  "files": [
+    "dist",
+    "src",
+    "package.json",
+    "LICENSE.txt",
+    "README.md"
+  ],
   "license": "MIT",
   "description": "A JMAP client library for Node.js and the browser.",
   "repository": {
