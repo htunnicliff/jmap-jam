@@ -6,7 +6,13 @@
   "types": "./dist/index.d.ts",
   "exports": "./dist/index.js",
   "sideEffects": false,
-  "files": ["dist", "src", "package.json", "LICENSE.txt", "README.md"],
+  "files": [
+    "dist",
+    "src",
+    "package.json",
+    "LICENSE.txt",
+    "README.md"
+  ],
   "license": "MIT",
   "description": "A JMAP client library for Node.js and the browser.",
   "repository": {
@@ -35,5 +41,5 @@
     "typescript": "5.6.3",
     "vitest": "3.0.7"
   },
-  "packageManager": "npm@10.9.0+sha512.65a9c38a8172948f617a53619762cd77e12b9950fe1f9239debcb8d62c652f2081824b986fee7c0af6c0a7df615becebe4bf56e17ec27214a87aa29d9e038b4b"
+  "packageManager": "npm@11.2.0+sha512.3dc9c50ba813a3d54393155a435fe66404b72685ab0e3008f9ae9ed8d81f6104860f07ed2656dd5748c1322d95f3140fa9b19c59a6bba7750fd12285f81866da"
 }
