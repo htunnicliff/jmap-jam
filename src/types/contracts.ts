@@ -150,7 +150,7 @@ export type Responses<A> = HasAllKeysOfRelated<
       "state" | "accountId"
     >;
     "PushSubscription/set": Omit<
-      SetResponse<PushSubscription>,
+      SetResponse<PushSubscription, A>,
       "accountId" | "oldState" | "newState"
     >;
     // Mailbox --------------------------------
@@ -160,7 +160,7 @@ export type Responses<A> = HasAllKeysOfRelated<
     };
     "Mailbox/query": QueryResponse;
     "Mailbox/queryChanges": QueryChangesResponse;
-    "Mailbox/set": SetResponse<Mailbox>;
+    "Mailbox/set": SetResponse<Mailbox, A>;
     // Thread ---------------------------------
     "Thread/get": GetResponse<Thread, A>;
     "Thread/changes": ChangesResponse;
@@ -169,7 +169,7 @@ export type Responses<A> = HasAllKeysOfRelated<
     "Email/changes": ChangesResponse;
     "Email/query": QueryResponse;
     "Email/queryChanges": QueryChangesResponse;
-    "Email/set": SetResponse<Email>;
+    "Email/set": SetResponse<Email, A>;
     "Email/copy": CopyResponse<Email>;
     "Email/import": {
       accountId: ID;
@@ -193,16 +193,16 @@ export type Responses<A> = HasAllKeysOfRelated<
     // Identity -------------------------------
     "Identity/get": GetResponse<Identity, A>;
     "Identity/changes": ChangesResponse;
-    "Identity/set": SetResponse<Identity>;
+    "Identity/set": SetResponse<Identity, A>;
     // Email Submission -----------------------
     "EmailSubmission/get": GetResponse<EmailSubmission, A>;
     "EmailSubmission/changes": ChangesResponse;
     "EmailSubmission/query": QueryResponse;
     "EmailSubmission/queryChanges": QueryChangesResponse;
-    "EmailSubmission/set": SetResponse<EmailSubmission>;
+    "EmailSubmission/set": SetResponse<EmailSubmission, A>;
     // Vacation Response ----------------------
     "VacationResponse/get": GetResponse<VacationResponse, A>;
-    "VacationResponse/set": SetResponse<VacationResponse>;
+    "VacationResponse/set": SetResponse<VacationResponse, A>;
   }
 >;
 
