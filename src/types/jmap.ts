@@ -1,4 +1,4 @@
-import type { Except } from "type-fest";
+import type { Except, RequireAtLeastOne } from "type-fest";
 import type { Obj } from "../helpers.ts";
 
 /**
@@ -658,7 +658,7 @@ export type SetArguments<T extends object> = {
    * The client MUST omit any properties that may only be set by the
    * server (for example, the `id` property on most object types).
    */
-  create?: Record<CreationID, T>;
+  create?: Record<CreationID, RequireAtLeastOne<T>>;
   /**
    * A map of an id to a PatchObject to apply to the current `T`
    * object with that id, or null if no objects are to be updated.
