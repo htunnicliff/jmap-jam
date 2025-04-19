@@ -663,7 +663,7 @@ export type SetArguments<T extends object> = {
    * A map of an id to a PatchObject to apply to the current `T`
    * object with that id, or null if no objects are to be updated.
    */
-  update?: PatchObject<T>;
+  update?: Record<ID, PatchObject<T>>;
   destroy?: ID[];
 };
 
