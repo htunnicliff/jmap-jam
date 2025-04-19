@@ -100,7 +100,7 @@ export type Mailbox = {
    * Has the user indicated they wish to see this Mailbox in their
    * client?
    */
-  iSubscribed: boolean;
+  isSubscribed: boolean;
   /**
    * The set of rights (Access Control Lists (ACLs)) the user has in
    * relation to this Mailbox.  These are backwards compatible with
