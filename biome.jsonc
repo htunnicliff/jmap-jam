@@ -6,8 +6,8 @@
     "useIgnoreFile": false
   },
   "files": {
-    "ignoreUnknown": false,
-    "ignore": []
+    "ignoreUnknown": true,
+    "ignore": ["dist"]
   },
   "formatter": {
     "enabled": true,
@@ -36,6 +36,11 @@
     "formatter": {
       "quoteStyle": "double",
       "trailingCommas": "none"
+    }
+  },
+  "json": {
+    "formatter": {
+      "lineWidth": 60
     }
   }
 }

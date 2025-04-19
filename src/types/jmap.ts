@@ -634,38 +634,41 @@ export enum ChangesRequestErrorType {
 /**
  * [rfc8620 § 5.3](https://datatracker.ietf.org/doc/html/rfc8620#section-5.3)
  */
-export type SetArguments<T extends object> = {
-  /**
-   * The id of the account to use.
-   */
-  accountId: ID;
-  /**
-   * This is a state string as returned by the "T/get" method
-   * (representing the state of all objects of this type in the
-   * account).  If supplied, the string must match the current state;
-   * otherwise, the method will be aborted and a "stateMismatch" error
-   * returned.  If null, any changes will be applied to the current
-   * state.
-   */
-  ifInState?: string;
-  /**
-   * A map of a *creation id* (a temporary id set by the client) to `T`
-   * objects, or null if no objects are to be created.
-   *
-   * The `T` object type definition may define default values for
-   * properties.  Any such property may be omitted by the client.
-   *
-   * The client MUST omit any properties that may only be set by the
-   * server (for example, the `id` property on most object types).
-   */
-  create?: Record<CreationID, RequireAtLeastOne<T>>;
-  /**
-   * A map of an id to a PatchObject to apply to the current `T`
-   * object with that id, or null if no objects are to be updated.
-   */
-  update?: PatchObject<T>;
-  destroy?: ID[];
-};
+export type SetArguments<T extends object> = RequireAtLeastOne<
+  {
+    /**
+     * The id of the account to use.
+     */
+    accountId: ID;
+    /**
+     * This is a state string as returned by the "T/get" method
+     * (representing the state of all objects of this type in the
+     * account).  If supplied, the string must match the current state;
+     * otherwise, the method will be aborted and a "stateMismatch" error
+     * returned.  If null, any changes will be applied to the current
+     * state.
+     */
+    ifInState?: string;
+    /**
+     * A map of a *creation id* (a temporary id set by the client) to `T`
+     * objects, or null if no objects are to be created.
+     *
+     * The `T` object type definition may define default values for
+     * properties.  Any such property may be omitted by the client.
+     *
+     * The client MUST omit any properties that may only be set by the
+     * server (for example, the `id` property on most object types).
+     */
+    create?: Record<CreationID, RequireAtLeastOne<T>>;
+    /**
+     * A map of an id to a PatchObject to apply to the current `T`
+     * object with that id, or null if no objects are to be updated.
+     */
+    update?: Record<ID, PatchObject<T>>;
+    destroy?: ID[];
+  },
+  "create" | "update" | "destroy"
+>;
 
 /**
  * A *PatchObject* is of type "String[*]" and represents an unordered
@@ -682,64 +685,76 @@ export type SetArguments<T extends object> = {
  */
 export type PatchObject<T> = Partial<T> | { [K in ExtendedJSONPointer]: any };
 
-export type SetResponse<T> = {
-  /**
-   * The id of the account used for the call.
-   */
-  accountId: ID;
-  /**
-   * The state string that would have been returned by "T/get" before
-   * making the requested changes, or null if the server doesn't know
-   * what the previous state string was.
-   */
-  oldState: string | null;
-  /**
-   * The state string that will now be returned by "T/get".
-   */
-  newState: string;
-  /**
-   * A map of the creation id to an object containing any properties of
-   * the created `T` object that were not sent by the client.  This
-   * includes all server-set properties (such as the `id` in most
-   * object types) and any properties that were omitted by the client
-   * and thus set to a default by the server.
-   *
-   * This argument is null if no `T` objects were successfully created.
-   */
-  created: Record<ID, T> | null;
-  /**
-   * The keys in this map are the ids of all `T` objects that were
-   * successfully updated.
-   *
-   * The value for each id is a `T` object containing any property that
-   * changed in a way *not* explicitly requested by the PatchObject
-   * sent to the server, or null if none.  This lets the client know of
-   * any changes to server-set or computed properties.
-   *
-   * This argument is null if no `T` objects were successfully updated.
-   */
-  updated: Record<ID, T | null> | null;
-  /**
-   * A list of `T` ids for records that were successfully destroyed, or
-   * null if none.
-   */
-  destroyed: ID[] | null;
-  /**
-   * A map of the creation id to a SetError object for each record that
-   * failed to be created, or null if all successful.
-   */
-  notCreated: Record<ID, SetError> | null;
-  /**
-   * A map of the `T` id to a SetError object for each record that
-   * failed to be updated, or null if all successful.
-   */
-  notUpdated: Record<ID, SetError> | null;
-  /**
-   * A map of the `T` id to a SetError object for each record that
-   * failed to be destroyed, or null if all successful.
-   */
-  notDestroyed: Record<ID, SetError> | null;
-};
+export type SetResponse<T extends object, Args> = Args extends SetArguments<T>
+  ? {
+      /**
+       * The id of the account used for the call.
+       */
+      accountId: ID;
+      /**
+       * The state string that would have been returned by "T/get" before
+       * making the requested changes, or null if the server doesn't know
+       * what the previous state string was.
+       */
+      oldState: string | null;
+      /**
+       * The state string that will now be returned by "T/get".
+       */
+      newState: string;
+      /**
+       * A map of the creation id to an object containing any properties of
+       * the created `T` object that were not sent by the client.  This
+       * includes all server-set properties (such as the `id` in most
+       * object types) and any properties that were omitted by the client
+       * and thus set to a default by the server.
+       *
+       * This argument is null if no `T` objects were successfully created.
+       */
+      created: Args["create"] extends object
+        ? { [K in keyof Args["create"]]?: T }
+        : null;
+      /**
+       * The keys in this map are the ids of all `T` objects that were
+       * successfully updated.
+       *
+       * The value for each id is a `T` object containing any property that
+       * changed in a way *not* explicitly requested by the PatchObject
+       * sent to the server, or null if none.  This lets the client know of
+       * any changes to server-set or computed properties.
+       *
+       * This argument is null if no `T` objects were successfully updated.
+       */
+      updated: Args["update"] extends object
+        ? { [K in keyof Args["update"]]?: T | null }
+        : null;
+      /**
+       * A list of `T` ids for records that were successfully destroyed, or
+       * null if none.
+       */
+      destroyed: Args["destroy"] extends string[] ? ID[] | null : null;
+      /**
+       * A map of the creation id to a SetError object for each record that
+       * failed to be created, or null if all successful.
+       */
+      notCreated: Args["create"] extends object
+        ? { [K in keyof Args["create"]]?: SetError } | null
+        : null;
+      /**
+       * A map of the `T` id to a SetError object for each record that
+       * failed to be updated, or null if all successful.
+       */
+      notUpdated: Args["update"] extends object
+        ? { [K in keyof Args["update"]]?: SetError } | null
+        : null;
+      /**
+       * A map of the `T` id to a SetError object for each record that
+       * failed to be destroyed, or null if all successful.
+       */
+      notDestroyed: Args["destroy"] extends string[]
+        ? Record<ID, SetError> | null
+        : null;
+    }
+  : never;
 
 export type SetError<T extends Obj = {}> = {
   /**
