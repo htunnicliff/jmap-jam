@@ -504,47 +504,48 @@ export type GetArguments<T> = {
   properties?: ReadonlyArray<keyof T>;
 };
 
-export type GetResponse<T, Args> = Args extends GetArguments<T>
-  ? {
-      /**
-       * The id of the account used for the call.
-       */
-      accountId: ID;
-      /**
-       * A (preferably short) string representing the state on the server
-       * for *all* the data of this type in the account (not just the
-       * objects returned in this call).  If the data changes, this string
-       * MUST change.  If the `T` data is unchanged, servers SHOULD return
-       * the same state string on subsequent requests for this data type.
-       * When a client receives a response with a different state string to
-       * a previous call, it MUST either throw away all currently cached
-       * objects for the type or call "T/changes" to get the exact
-       * changes.
-       */
-      state: string;
-      /**
-       * An array of the `T` objects requested.  This is the *empty array*
-       * if no objects were found or if the `ids` argument passed in was
-       * also an empty array.  The results MAY be in a different order to
-       * the `ids` in the request arguments.  If an identical id is
-       * included more than once in the request, the server MUST only
-       * include it once in either the `list` or the `notFound` argument of
-       * the response.
-       */
-      list: ReadonlyArray<
-        Args["properties"] extends Array<infer P extends keyof T>
-          ? Pick<T, P>
-          : T
-      >;
-      /**
-       * This array contains the ids passed to the method for records that
-       * do not exist.  The array is empty if all requested ids were found
-       * or if the `ids` argument passed in was either null or an empty
-       * array.
-       */
-      notFound: ReadonlyArray<ID>;
-    }
-  : never;
+export type GetResponse<T, Args> =
+  Args extends GetArguments<T>
+    ? {
+        /**
+         * The id of the account used for the call.
+         */
+        accountId: ID;
+        /**
+         * A (preferably short) string representing the state on the server
+         * for *all* the data of this type in the account (not just the
+         * objects returned in this call).  If the data changes, this string
+         * MUST change.  If the `T` data is unchanged, servers SHOULD return
+         * the same state string on subsequent requests for this data type.
+         * When a client receives a response with a different state string to
+         * a previous call, it MUST either throw away all currently cached
+         * objects for the type or call "T/changes" to get the exact
+         * changes.
+         */
+        state: string;
+        /**
+         * An array of the `T` objects requested.  This is the *empty array*
+         * if no objects were found or if the `ids` argument passed in was
+         * also an empty array.  The results MAY be in a different order to
+         * the `ids` in the request arguments.  If an identical id is
+         * included more than once in the request, the server MUST only
+         * include it once in either the `list` or the `notFound` argument of
+         * the response.
+         */
+        list: ReadonlyArray<
+          Args["properties"] extends Array<infer P extends keyof T>
+            ? Pick<T, P>
+            : T
+        >;
+        /**
+         * This array contains the ids passed to the method for records that
+         * do not exist.  The array is empty if all requested ids were found
+         * or if the `ids` argument passed in was either null or an empty
+         * array.
+         */
+        notFound: ReadonlyArray<ID>;
+      }
+    : never;
 
 export enum GetRequestErrorType {
   /**
@@ -685,78 +686,79 @@ export type SetArguments<T extends object> = RequireAtLeastOne<
  */
 export type PatchObject<T> = Partial<T> | { [K in ExtendedJSONPointer]: any };
 
-export type SetResponse<T extends object, Args> = Args extends SetArguments<T>
-  ? {
-      /**
-       * The id of the account used for the call.
-       */
-      accountId: ID;
-      /**
-       * The state string that would have been returned by "T/get" before
-       * making the requested changes, or null if the server doesn't know
-       * what the previous state string was.
-       */
-      oldState: string | null;
-      /**
-       * The state string that will now be returned by "T/get".
-       */
-      newState: string;
-      /**
-       * A map of the creation id to an object containing any properties of
-       * the created `T` object that were not sent by the client.  This
-       * includes all server-set properties (such as the `id` in most
-       * object types) and any properties that were omitted by the client
-       * and thus set to a default by the server.
-       *
-       * This argument is null if no `T` objects were successfully created.
-       */
-      created: Args["create"] extends object
-        ? { [K in keyof Args["create"]]?: T }
-        : null;
-      /**
-       * The keys in this map are the ids of all `T` objects that were
-       * successfully updated.
-       *
-       * The value for each id is a `T` object containing any property that
-       * changed in a way *not* explicitly requested by the PatchObject
-       * sent to the server, or null if none.  This lets the client know of
-       * any changes to server-set or computed properties.
-       *
-       * This argument is null if no `T` objects were successfully updated.
-       */
-      updated: Args["update"] extends object
-        ? { [K in keyof Args["update"]]?: T | null }
-        : null;
-      /**
-       * A list of `T` ids for records that were successfully destroyed, or
-       * null if none.
-       */
-      destroyed: Args["destroy"] extends string[] ? ID[] | null : null;
-      /**
-       * A map of the creation id to a SetError object for each record that
-       * failed to be created, or null if all successful.
-       */
-      notCreated: Args["create"] extends object
-        ? { [K in keyof Args["create"]]?: SetError } | null
-        : null;
-      /**
-       * A map of the `T` id to a SetError object for each record that
-       * failed to be updated, or null if all successful.
-       */
-      notUpdated: Args["update"] extends object
-        ? { [K in keyof Args["update"]]?: SetError } | null
-        : null;
-      /**
-       * A map of the `T` id to a SetError object for each record that
-       * failed to be destroyed, or null if all successful.
-       */
-      notDestroyed: Args["destroy"] extends string[]
-        ? Record<ID, SetError> | null
-        : null;
-    }
-  : never;
+export type SetResponse<T extends object, Args> =
+  Args extends SetArguments<T>
+    ? {
+        /**
+         * The id of the account used for the call.
+         */
+        accountId: ID;
+        /**
+         * The state string that would have been returned by "T/get" before
+         * making the requested changes, or null if the server doesn't know
+         * what the previous state string was.
+         */
+        oldState: string | null;
+        /**
+         * The state string that will now be returned by "T/get".
+         */
+        newState: string;
+        /**
+         * A map of the creation id to an object containing any properties of
+         * the created `T` object that were not sent by the client.  This
+         * includes all server-set properties (such as the `id` in most
+         * object types) and any properties that were omitted by the client
+         * and thus set to a default by the server.
+         *
+         * This argument is null if no `T` objects were successfully created.
+         */
+        created: Args["create"] extends object
+          ? { [K in keyof Args["create"]]?: T }
+          : null;
+        /**
+         * The keys in this map are the ids of all `T` objects that were
+         * successfully updated.
+         *
+         * The value for each id is a `T` object containing any property that
+         * changed in a way *not* explicitly requested by the PatchObject
+         * sent to the server, or null if none.  This lets the client know of
+         * any changes to server-set or computed properties.
+         *
+         * This argument is null if no `T` objects were successfully updated.
+         */
+        updated: Args["update"] extends object
+          ? { [K in keyof Args["update"]]?: T | null }
+          : null;
+        /**
+         * A list of `T` ids for records that were successfully destroyed, or
+         * null if none.
+         */
+        destroyed: Args["destroy"] extends string[] ? ID[] | null : null;
+        /**
+         * A map of the creation id to a SetError object for each record that
+         * failed to be created, or null if all successful.
+         */
+        notCreated: Args["create"] extends object
+          ? { [K in keyof Args["create"]]?: SetError } | null
+          : null;
+        /**
+         * A map of the `T` id to a SetError object for each record that
+         * failed to be updated, or null if all successful.
+         */
+        notUpdated: Args["update"] extends object
+          ? { [K in keyof Args["update"]]?: SetError } | null
+          : null;
+        /**
+         * A map of the `T` id to a SetError object for each record that
+         * failed to be destroyed, or null if all successful.
+         */
+        notDestroyed: Args["destroy"] extends string[]
+          ? Record<ID, SetError> | null
+          : null;
+      }
+    : never;
 
-export type SetError<T extends Obj = {}> = {
+export type SetError<T extends Obj = Obj> = {
   /**
    * The type of error.
    */
@@ -957,7 +959,7 @@ export type CopyResponse<T> = {
   notCreated: Record<ID, CopySetError> | null;
 };
 
-export type CopySetError<T extends Obj = {}> = Except<SetError<T>, "type"> & {
+export type CopySetError<T extends Obj = Obj> = Except<SetError<T>, "type"> & {
   type: SetError<T>["type"] | CopySetErrorType;
 };
 
@@ -1422,7 +1424,7 @@ export type BlobCopyResponse = {
   notCopied: Record<ID, BlobCopySetError> | null;
 };
 
-export type BlobCopySetError<T extends Obj = {}> = Except<
+export type BlobCopySetError<T extends Obj = Obj> = Except<
   SetError<T>,
   "type"
 > & {

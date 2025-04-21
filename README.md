@@ -75,7 +75,7 @@ import JamClient from "jmap-jam";
 
 const jam = new JamClient({
   sessionUrl: "https://jmap.example.com/.well-known/jmap",
-  bearerToken: "super-secret-token",
+  bearerToken: "super-secret-token"
 });
 ```
 
@@ -261,7 +261,7 @@ import JamClient from "jmap-jam";
 
 const jam = new JamClient({
   bearerToken: "<bearer-token>",
-  sessionUrl: "<server-session-url>",
+  sessionUrl: "<server-session-url>"
 });
 ```
 
@@ -275,13 +275,13 @@ A convenience pattern for making individual JMAP requests that uses the [`reques
 
 ```js
 const [mailboxes] = await jam.api.Mailbox.get({
-  accountId,
+  accountId
 });
 
 const [emails] = await jam.api.Email.get({
   accountId,
   ids: ["email-123"],
-  properties: ["subject"],
+  properties: ["subject"]
 });
 ```
 
@@ -297,8 +297,8 @@ const [emails] = await jam.request([
   {
     accountId,
     ids: ["email-123"],
-    properties: ["subject"],
-  },
+    properties: ["subject"]
+  }
 ]);
 ```
 
@@ -311,14 +311,14 @@ const [{ emailIds, emails }] = await jam.requestMany((r) => {
   const emailIds = r.Email.query({
     accountId,
     filter: {
-      inMailbox: mailboxId,
-    },
+      inMailbox: mailboxId
+    }
   });
 
   const emails = r.Email.get({
     accountId,
     ids: emailIds.$ref("/ids"),
-    properties: ["id", "htmlBody"],
+    properties: ["id", "htmlBody"]
   });
 
   return { emailIds, emails };

@@ -21,6 +21,9 @@ jobs:
       - name: Lint
         run: npm run lint
 
+      - name: Lint
+        run: npm run format:check
+
   test:
     name: Test
     runs-on: ubuntu-latest

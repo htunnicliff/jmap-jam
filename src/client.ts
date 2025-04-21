@@ -261,7 +261,7 @@ export class JamClient<Config extends ClientConfig = ClientConfig> {
     }
 
     return [
-      // @ts-expect-error TODO
+      // @ts-expect-error TODO: Fix these types
       getResultsForMethodCalls(methodResponses, { returnErrors: false }),
       meta
     ];
