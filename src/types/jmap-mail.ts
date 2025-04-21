@@ -52,18 +52,7 @@ export type Mailbox = {
    * the "inbox"), regardless of the "name" property (which may be
    * localised).
    */
-  role:
-    | "all"
-    | "archive"
-    | "drafts"
-    | "flagged"
-    | "important"
-    | "inbox"
-    | "junk"
-    | "sent"
-    | "subscribed"
-    | "trash"
-    | null;
+  role: MailboxRole | null;
   /**
    * Defines the sort order of Mailboxes when presented in the client's
    * UI, so it is consistent between devices. The number MUST be an
@@ -170,6 +159,18 @@ export type Mailbox = {
   };
 };
 
+export type MailboxRole =
+  | "all"
+  | "archive"
+  | "drafts"
+  | "flagged"
+  | "important"
+  | "inbox"
+  | "junk"
+  | "sent"
+  | "subscribed"
+  | "trash";
+
 export type MailboxCreate = Omit<
   Mailbox,
   // Fields set by server
@@ -187,7 +188,7 @@ export type MailboxCreate = Omit<
 export type MailboxFilterCondition = {
   parentId: ID | null;
   name: string;
-  role: string | null;
+  role: MailboxRole | null;
   hasAnyRole: boolean;
   isSubscribed: boolean;
 };
