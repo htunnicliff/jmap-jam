@@ -13,7 +13,7 @@ jobs:
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
 
-      - uses: jdx/mise-action@5083fe46898c414b2475087cc79da59e7da859e8 # v2
+      - uses: jdx/mise-action@c94f0bf9e520b150e34c017db785461f7e71c5fb # v2
 
       - name: Install dependencies
         run: npm ci
@@ -30,7 +30,7 @@ jobs:
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
 
-      - uses: jdx/mise-action@5083fe46898c414b2475087cc79da59e7da859e8 # v2
+      - uses: jdx/mise-action@c94f0bf9e520b150e34c017db785461f7e71c5fb # v2
 
       - name: Install dependencies
         run: npm ci
@@ -44,7 +44,7 @@ jobs:
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
 
-      - uses: jdx/mise-action@5083fe46898c414b2475087cc79da59e7da859e8 # v2
+      - uses: jdx/mise-action@c94f0bf9e520b150e34c017db785461f7e71c5fb # v2
 
       - name: Install dependencies
         run: npm ci
