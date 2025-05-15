@@ -43,7 +43,7 @@ jobs:
         uses: changesets/action@v1
         with:
           version: pnpm run version
-          publish: pnpm exec changeset publish
+          publish: pnpm build && pnpm exec changeset publish
           commit: "Release"
           title: "Release"
         env:
