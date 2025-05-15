@@ -10,7 +10,8 @@
     "test": "pnpm -r test",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "version": "pnpm run build && changeset version && pnpm install"
+    "version": "pnpm run build && changeset version && pnpm install",
+    "publish": "pnpm run build && pnpm publish --recursive --access public"
   },
   "devDependencies": {
     "@changesets/cli": "2.29.4",
