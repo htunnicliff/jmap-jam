@@ -1,5 +1,5 @@
 <div align="center">
-  <img alt="Jam Illustration" src="../../JMAP-Jam.png" height="100" />
+  <img alt="Jam Illustration" src="/JMAP-Jam.png" height="100" />
   <h1 align="center">Jam: A JMAP Client</h1>
 </div>
 
