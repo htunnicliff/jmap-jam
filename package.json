@@ -1,53 +1,17 @@
 {
-  "name": "jmap-jam",
-  "version": "0.10.0",
-  "type": "module",
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
-  "exports": "./dist/index.js",
-  "sideEffects": false,
-  "files": [
-    "dist",
-    "src",
-    "package.json",
-    "LICENSE.txt",
-    "README.md"
-  ],
-  "license": "MIT",
-  "description": "A JMAP client library for Node.js and the browser.",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/htunnicliff/jmap-jam.git"
-  },
-  "author": {
-    "name": "Hunter Tunnicliff",
-    "url": "https://github.com/htunnicliff"
-  },
-  "scripts": {
-    "preversion": "tsup",
-    "build": "tsup",
-    "dev": "vitest dev",
-    "test": "vitest run",
-    "lint": "eslint .",
-    "format": "prettier --write .",
-    "format:check": "prettier --check ."
-  },
-  "dependencies": {
-    "type-fest": "4"
-  },
-  "devDependencies": {
-    "@eslint/js": "9.25.0",
-    "@types/node": "22.7.5",
-    "eslint": "9.25.0",
-    "eslint-config-prettier": "10.1.5",
-    "prettier": "3.5.3",
-    "tsup": "8.3.0",
-    "typescript": "5.6.3",
-    "typescript-eslint": "8.30.1",
-    "vitest": "3.0.7"
-  },
+  "private": true,
+  "packageManager": "pnpm@10.11.0+sha512.6540583f41cc5f628eb3d9773ecee802f4f9ef9923cc45b69890fb47991d4b092964694ec3a4f738a420c918a333062c8b925d312f42e4f0c263eb603551f977",
   "prettier": {
     "trailingComma": "none"
   },
-  "packageManager": "npm@10.9.0+sha512.65a9c38a8172948f617a53619762cd77e12b9950fe1f9239debcb8d62c652f2081824b986fee7c0af6c0a7df615becebe4bf56e17ec27214a87aa29d9e038b4b"
+  "scripts": {
+    "build": "pnpm -r build",
+    "lint": "pnpm -r lint",
+    "test": "pnpm -r test",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
+  },
+  "devDependencies": {
+    "prettier": "3.5.3"
+  }
 }
