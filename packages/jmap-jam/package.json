@@ -1,0 +1,46 @@
+{
+  "name": "jmap-jam",
+  "version": "0.10.0",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": "./dist/index.js",
+  "sideEffects": false,
+  "files": [
+    "dist",
+    "src",
+    "package.json",
+    "LICENSE.txt",
+    "README.md"
+  ],
+  "license": "MIT",
+  "description": "A JMAP client library for Node.js and the browser.",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/htunnicliff/jmap-jam.git"
+  },
+  "author": {
+    "name": "Hunter Tunnicliff",
+    "url": "https://github.com/htunnicliff"
+  },
+  "scripts": {
+    "preversion": "tsup",
+    "build": "tsup",
+    "dev": "vitest dev",
+    "test": "vitest run",
+    "lint": "eslint ."
+  },
+  "dependencies": {
+    "type-fest": "4"
+  },
+  "devDependencies": {
+    "@eslint/js": "9.25.0",
+    "@types/node": "22.7.5",
+    "eslint": "9.25.0",
+    "eslint-config-prettier": "10.1.5",
+    "tsup": "8.3.0",
+    "typescript": "5.6.3",
+    "typescript-eslint": "8.30.1",
+    "vitest": "3.0.7"
+  }
+}

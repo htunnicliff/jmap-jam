@@ -1,0 +1,18 @@
+# Subdirectories that contain packages
+packages:
+  - packages/*
+
+# Dependencies that may be built
+onlyBuiltDependencies:
+  - esbuild
+
+# Scripts needed in each individual package
+requiredScripts:
+  - lint
+  - test
+
+# Ensure all peer dependencies are installed and correct
+strictPeerDependencies: true
+
+# Save all dependencies using exact versions
+savePrefix: ""
