@@ -7,8 +7,8 @@
   <a href="https://bundlephobia.com/package/jmap-jam@latest">
     <img alt="bundle size" src="https://img.shields.io/bundlephobia/minzip/jmap-jam">
   </a>
-  <a href="https://jsr.io/@htunnicliff/jmap-jam">
-    <img alt="JSR" src="https://jsr.io/badges/@htunnicliff/jmap-jam" />
+  <a href="https://www.npmjs.com/package/jmap-jam">
+    <img alt="NPM Version" src="https://img.shields.io/npm/v/jmap-jam">
   </a>
   <a href="https://github.com/htunnicliff/jmap-jam/blob/main/LICENSE.txt">
     <img alt="License" src="https://img.shields.io/npm/l/jmap-jam">
