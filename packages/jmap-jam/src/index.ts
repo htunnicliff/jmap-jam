@@ -2,9 +2,6 @@
 export * from "./client.ts";
 export { JamClient as default } from "./client.ts";
 
-// Utils
-export * from "./utils.ts";
-
 // -------------------------------------------------
 // Types
 // -------------------------------------------------
