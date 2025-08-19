@@ -2,6 +2,7 @@ import type { Exact } from "type-fest";
 import type { HasAllKeysOfRelated } from "../helpers.ts";
 import type {
   Email,
+  EmailBodyPart,
   EmailCreate,
   EmailFilterCondition,
   EmailImport,
@@ -287,7 +288,7 @@ export type GetEmailArguments = {
   accountId: ID;
   ids?: ReadonlyArray<ID> | null;
   properties?: ReadonlyArray<keyof Email | HeaderFieldKey> | null;
-  bodyProperties?: Array<keyof Email>;
+  bodyProperties?: Array<keyof EmailBodyPart>;
   fetchTextBodyValues?: boolean;
   fetchHTMLBodyValues?: boolean;
   fetchAllBodyValues?: boolean;
