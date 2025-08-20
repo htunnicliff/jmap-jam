@@ -50,5 +50,6 @@ jobs:
           publish: pnpm run publish
           commit: "Release"
           title: "Release"
+          createGithubReleases: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
