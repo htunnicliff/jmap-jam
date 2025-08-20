@@ -6,8 +6,7 @@ import type { SetError } from "../jmap.ts";
 
 const jam = new JamClient({
   bearerToken: "example",
-  sessionUrl: "https://example.com/jmap",
-  automaticAccountId: false
+  sessionUrl: "https://example.com/jmap"
 });
 
 describe("set creation", () => {
