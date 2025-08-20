@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/only-throw-error */
 import {
   getCapabilitiesForMethodCalls,
   knownCapabilities
@@ -104,7 +105,7 @@ export class JamClient<Config extends ClientConfig = ClientConfig> {
         Accept: "application/json"
       },
       cache: "no-cache"
-    }).then((res) => res.json());
+    }).then((res) => res.json()) as Promise<Session>;
   }
 
   /**
@@ -281,7 +282,7 @@ export class JamClient<Config extends ClientConfig = ClientConfig> {
    * Get the ID of the primary mail account for the current session
    */
   async getPrimaryAccount(): Promise<string> {
-    return (await this.session).primaryAccounts?.["urn:ietf:params:jmap:mail"];
+    return (await this.session).primaryAccounts["urn:ietf:params:jmap:mail"];
   }
 
   /**

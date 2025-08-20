@@ -14,5 +14,6 @@
     "declarationMap": true,
     "noUnusedLocals": true,
     "types": ["vitest/importMeta"]
-  }
+  },
+  "include": ["src", "eslint.config.js", "vitest.config.ts", "tsup.config.js"]
 }
