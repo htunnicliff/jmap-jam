@@ -23,8 +23,18 @@ import type {
   ProxyAPI,
   RequestOptions
 } from "./types/contracts.ts";
-import type * as JMAPMail from "./types/jmap-mail.ts";
-import type * as JMAP from "./types/jmap.ts";
+import type { Entity } from "./types/jmap-mail.ts";
+import type {
+  BlobDownloadParams,
+  BlobUploadParams,
+  BlobUploadResponse,
+  EventSourceArguments,
+  Invocation,
+  ProblemDetails,
+  Request as JMAPRequest,
+  Response as JMAPResponse,
+  Session
+} from "./types/jmap.ts";
 
 export type ClientConfig = {
   /**
@@ -68,7 +78,7 @@ export class JamClient<Config extends ClientConfig = ClientConfig> {
   /**
    * An immediately fetched session promise
    */
-  session: Promise<JMAP.Session>;
+  session: Promise<Session>;
 
   constructor(config: Config) {
     this.authHeader = `Bearer ${config.bearerToken}`;
@@ -87,7 +97,7 @@ export class JamClient<Config extends ClientConfig = ClientConfig> {
   static async loadSession(
     sessionUrl: string,
     authHeader: string
-  ): Promise<JMAP.Session> {
+  ): Promise<Session> {
     return fetch(sessionUrl, {
       headers: {
         Authorization: authHeader,
@@ -115,10 +125,10 @@ export class JamClient<Config extends ClientConfig = ClientConfig> {
     } = options ?? {};
 
     // Assemble method call
-    const invocation: JMAP.Invocation<Args> = [method, args, "r1"];
+    const invocation: Invocation<Args> = [method, args, "r1"];
 
     // Build request
-    const body: JMAP.Request<[JMAP.Invocation<Args>]> = {
+    const body: JMAPRequest<[Invocation<Args>]> = {
       using: [
         ...getCapabilitiesForMethodCalls({
           methodNames: [method],
@@ -147,9 +157,9 @@ export class JamClient<Config extends ClientConfig = ClientConfig> {
 
     // Handle 4xx-5xx errors
     if (!response.ok) {
-      let error: string | JMAP.ProblemDetails;
+      let error: string | ProblemDetails;
       if (response.headers.get("Content-Type")?.includes("json")) {
-        error = (await response.json()) as JMAP.ProblemDetails;
+        error = (await response.json()) as ProblemDetails;
       } else {
         error = await response.text();
       }
@@ -161,7 +171,7 @@ export class JamClient<Config extends ClientConfig = ClientConfig> {
       methodResponses: [methodResponse],
       sessionState,
       createdIds
-    } = (await response.json()) as JMAP.Response<[JMAP.Invocation<Data>]>;
+    } = (await response.json()) as JMAPResponse<[Invocation<Data>]>;
 
     const error = getErrorFromInvocation(methodResponse);
     if (error) {
@@ -202,7 +212,7 @@ export class JamClient<Config extends ClientConfig = ClientConfig> {
     const { methodCalls, methodNames } = buildRequestsFromDrafts(draftsFn);
 
     // Build request
-    const body: JMAP.Request = {
+    const body: JMAPRequest = {
       using: [
         ...getCapabilitiesForMethodCalls({
           methodNames,
@@ -231,10 +241,10 @@ export class JamClient<Config extends ClientConfig = ClientConfig> {
 
     // Handle 4xx-5xx errors
     if (!response.ok) {
-      let error: string | JMAP.ProblemDetails;
+      let error: string | ProblemDetails;
 
       if (response.headers.get("Content-Type")?.includes("json")) {
-        error = (await response.json()) as JMAP.ProblemDetails;
+        error = (await response.json()) as ProblemDetails;
       } else {
         error = await response.text();
       }
@@ -244,7 +254,7 @@ export class JamClient<Config extends ClientConfig = ClientConfig> {
 
     // Handle success
     const { methodResponses, sessionState, createdIds } =
-      (await response.json()) as JMAP.Response;
+      (await response.json()) as JMAPResponse;
 
     const meta: Meta = {
       sessionState,
@@ -278,13 +288,13 @@ export class JamClient<Config extends ClientConfig = ClientConfig> {
    * Upload a blob
    */
   async uploadBlob(
-    accountId: JMAP.BlobUploadParams["accountId"],
+    accountId: BlobUploadParams["accountId"],
     body: BodyInit,
     fetchInit: RequestInit = {}
-  ): Promise<JMAP.BlobUploadResponse> {
+  ): Promise<BlobUploadResponse> {
     const { uploadUrl } = await this.session;
 
-    const params: JMAP.BlobUploadParams = {
+    const params: BlobUploadParams = {
       accountId
     };
 
@@ -303,12 +313,12 @@ export class JamClient<Config extends ClientConfig = ClientConfig> {
 
       if (!response.ok) {
         if (response.headers.get("Content-Type")?.includes("json")) {
-          throw (await response.json()) as JMAP.ProblemDetails;
+          throw (await response.json()) as ProblemDetails;
         }
         throw await response.text();
       }
 
-      return (await response.json()) as JMAP.BlobUploadResponse;
+      return (await response.json()) as BlobUploadResponse;
     } catch (cause) {
       throw new Error("Failed to upload blob", { cause });
     }
@@ -319,16 +329,16 @@ export class JamClient<Config extends ClientConfig = ClientConfig> {
    */
   async downloadBlob(
     options: {
-      accountId: JMAP.BlobDownloadParams["accountId"];
-      blobId: JMAP.BlobDownloadParams["blobId"];
-      mimeType: JMAP.BlobDownloadParams["type"];
-      fileName: JMAP.BlobDownloadParams["name"];
+      accountId: BlobDownloadParams["accountId"];
+      blobId: BlobDownloadParams["blobId"];
+      mimeType: BlobDownloadParams["type"];
+      fileName: BlobDownloadParams["name"];
     },
     fetchInit: RequestInit = {}
   ): Promise<Response> {
     const { downloadUrl } = await this.session;
 
-    const params: JMAP.BlobDownloadParams = {
+    const params: BlobDownloadParams = {
       accountId: options.accountId,
       blobId: options.blobId,
       type: options.mimeType,
@@ -348,7 +358,7 @@ export class JamClient<Config extends ClientConfig = ClientConfig> {
 
       if (!response.ok) {
         if (response.headers.get("Content-Type")?.includes("json")) {
-          throw (await response.json()) as JMAP.ProblemDetails;
+          throw (await response.json()) as ProblemDetails;
         }
         throw await response.text();
       }
@@ -363,11 +373,11 @@ export class JamClient<Config extends ClientConfig = ClientConfig> {
    * Initiate an event source to subscribe to server-sent events
    */
   async connectEventSource(options: {
-    types: "*" | Array<JMAPMail.Entity>;
+    types: "*" | Array<Entity>;
     ping: number;
-    closeafter?: JMAP.EventSourceArguments["closeafter"];
+    closeafter?: EventSourceArguments["closeafter"];
   }): Promise<EventSource> {
-    const params: JMAP.EventSourceArguments = {
+    const params: EventSourceArguments = {
       types: options.types === "*" ? "*" : options.types.join(","),
       closeafter: options.closeafter ?? "no",
       ping: `${options.ping}`
@@ -415,7 +425,7 @@ export class JamClient<Config extends ClientConfig = ClientConfig> {
     });
   }
 
-  static isProblemDetails(value: unknown): value is JMAP.ProblemDetails {
+  static isProblemDetails(value: unknown): value is ProblemDetails {
     return typeof value === "object" && value !== null && "type" in value;
   }
 }
