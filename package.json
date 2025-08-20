@@ -14,7 +14,7 @@
     "publish": "pnpm run build && pnpm publish --recursive --access public"
   },
   "devDependencies": {
-    "@changesets/cli": "2.29.4",
+    "@changesets/cli": "2.29.6",
     "prettier": "3.6.2"
   }
 }
