@@ -9,8 +9,6 @@ import type {
   EmailSubmission,
   EmailSubmissionCreate,
   EmailSubmissionFilterCondition,
-  GetValueFromHeaderKey,
-  HeaderFieldKey,
   Identity,
   IdentityCreate,
   Mailbox,
@@ -19,7 +17,8 @@ import type {
   SearchSnippet,
   Thread,
   VacationResponse,
-  VacationResponseCreate
+  VacationResponseCreate,
+  WithoutHeaders
 } from "./jmap-mail.ts";
 import type {
   BlobCopyArguments,
@@ -287,7 +286,7 @@ export type ProxyAPI = {
 export type GetEmailArguments = {
   accountId: ID;
   ids?: ReadonlyArray<ID> | null;
-  properties?: ReadonlyArray<keyof Email | HeaderFieldKey> | null;
+  properties?: ReadonlyArray<keyof Email> | null;
   bodyProperties?: Array<keyof EmailBodyPart>;
   fetchTextBodyValues?: boolean;
   fetchHTMLBodyValues?: boolean;
@@ -295,21 +294,20 @@ export type GetEmailArguments = {
   maxBodyValueBytes?: number;
 };
 
+type FilterEmailProperties<Properties extends GetEmailArguments["properties"]> =
+  ReadonlyArray<
+    Properties extends ReadonlyArray<infer Prop extends string>
+      ? {
+          [Key in Prop]: Key extends keyof Email ? Email[Key] : never;
+        }
+      : WithoutHeaders<Email>
+  >;
+
 export type GetEmailResponse<Args> = Args extends GetEmailArguments
   ? {
       accountId: ID;
       state: string;
-      list: ReadonlyArray<
-        Args["properties"] extends Array<infer P extends string>
-          ? {
-              [Key in P]: Key extends HeaderFieldKey
-                ? GetValueFromHeaderKey<Key>
-                : Key extends keyof Email
-                  ? Email[Key]
-                  : never;
-            }
-          : Email
-      >;
+      list: FilterEmailProperties<Args["properties"]>;
       notFound: ReadonlyArray<ID>;
     }
   : never;

@@ -1,3 +1,4 @@
+import type { Simplify } from "type-fest";
 import type { FilterCondition, ID, UTCDate } from "./jmap.ts";
 
 /**
@@ -234,9 +235,14 @@ export type Thread = {
  * allows clients to avoid the complexities of MIME parsing, transfer
  * encoding, and character encoding.
  */
-export type Email = EmailMetadataFields &
-  EmailHeaderFields &
-  EmailBodyPartFields;
+export type Email = Simplify<
+  EmailMetadataFields &
+    EmailAutomaticallyParsedHeaderFields &
+    EmailBodyPartFields &
+    PossibleHeaderFields
+>;
+
+export type WithoutHeaders<T> = Omit<T, `header:${string}`>;
 
 // TODO: Support exclusive patterns described in [rfc8621 § 4.6](https://datatracker.ietf.org/doc/html/rfc8621#section-4.6)
 export type EmailCreate = Partial<
@@ -458,29 +464,89 @@ export type HeaderParsedForm = {
   URLs?: string[];
 };
 
+type _AllowedHeadersByParsedForm<
+  T extends Record<Exclude<keyof HeaderParsedForm, "Raw">, string>
+> = T;
+
+export type AllowedHeadersByParsedForm = _AllowedHeadersByParsedForm<{
+  /**
+   * [rfc8621 § 4.1.2.2](https://datatracker.ietf.org/doc/html/rfc8621#section-4.1.2.2)
+   */
+  Text: "Subject" | "Comments" | "Keywords" | "List-Id";
+  /**
+   * [rfc8621 § 4.1.2.3](https://datatracker.ietf.org/doc/html/rfc8621#section-4.1.2.3)
+   */
+  Addresses:
+    | "From"
+    | "Sender"
+    | "Reply-To"
+    | "To"
+    | "Cc"
+    | "Bcc"
+    | "Resent-From"
+    | "Resent-Sender"
+    | "Resent-Reply-To"
+    | "Resent-To"
+    | "Resent-Cc"
+    | "Resent-Bcc";
+  /**
+   * [rfc8621 § 4.1.2.4](https://datatracker.ietf.org/doc/html/rfc8621#section-4.1.2.4)
+   */
+  GroupedAddresses: AllowedHeadersByParsedForm["Addresses"];
+  /**
+   * [rfc8621 § 4.1.2.5](https://datatracker.ietf.org/doc/html/rfc8621#section-4.1.2.5)
+   */
+  MessageIds: "Message-ID" | "In-Reply-To" | "References" | "Resent-Message-ID";
+  /**
+   * [rfc8621 § 4.1.2.6](https://datatracker.ietf.org/doc/html/rfc8621#section-4.1.2.6)
+   */
+  Date: "Date" | "Resent-Date";
+  /**
+   * [rfc8621 § 4.1.2.7](https://datatracker.ietf.org/doc/html/rfc8621#section-4.1.2.7)
+   */
+  URLs:
+    | "List-Help"
+    | "List-Unsubscribe"
+    | "List-Subscribe"
+    | "List-Post"
+    | "List-Owner"
+    | "List-Archive";
+}>;
+
+export type KnownHeaders =
+  AllowedHeadersByParsedForm[keyof AllowedHeadersByParsedForm];
+
+export type IsValidHeader<FullHeader extends string> = FullHeader extends
+  | `header:${infer Header}:as${infer ParsedForm extends keyof HeaderParsedForm}`
+  | `header:${infer Header}:as${infer ParsedForm extends keyof HeaderParsedForm}:all`
+  ? "Raw" extends ParsedForm
+    ? "raw" // ✅ Raw is always valid
+    : Header extends KnownHeaders
+      ? ParsedForm extends keyof AllowedHeadersByParsedForm
+        ? Header extends AllowedHeadersByParsedForm[ParsedForm]
+          ? "valid" // ✅ Valid combination
+          : "invalid" // ❌ Invalid combination
+        : never // ❌ Not possible but required by TS
+      : "unknown" // ✅ Unknown headers are always valid
+  : "broken"; // ❌ Invalid header structure
+
 /**
  * [rfc8621 § 4.1.3](https://datatracker.ietf.org/doc/html/rfc8621#section-4.1.3)
  */
-export type HeaderFieldKey =
-  | `header:${string}:as${keyof HeaderParsedForm}:all`
-  | `header:${string}:as${keyof HeaderParsedForm}`
-  | `header:${string}:all`
-  | `header:${string}`;
+export type HeaderField<
+  Name extends string,
+  Form extends keyof HeaderParsedForm,
+  Options extends { all: boolean } = { all: false }
+> = Options["all"] extends true
+  ? `header:${Name}:as${Form}:all`
+  : `header:${Name}:as${Form}`;
 
-export type GetValueFromHeaderKey<K extends HeaderFieldKey> =
-  K extends `header:${string}:as${infer Form extends keyof HeaderParsedForm}:all`
-    ? HeaderParsedForm[Form] extends Array<infer _>
-      ? HeaderParsedForm[Form]
-      : Array<HeaderParsedForm[Form]>
-    : K extends `header:${string}:as${infer Form extends keyof HeaderParsedForm}`
-      ? HeaderParsedForm[Form]
-      : K extends `header:${string}:all`
-        ? string[]
-        : K extends `header:${infer Name extends string}`
-          ? Name extends `:${string}` | `${string}:` | `:${string}:`
-            ? never
-            : string
-          : never;
+export type HeaderFieldValue<T> =
+  T extends `header:${infer _Name}:as${infer ParsedForm extends keyof HeaderParsedForm}:all`
+    ? Simplify<Array<HeaderParsedForm[ParsedForm]>>
+    : T extends `header:${infer _Name}:as${infer ParsedForm extends keyof HeaderParsedForm}`
+      ? Simplify<HeaderParsedForm[ParsedForm]>
+      : never;
 
 /**
  * [rfc8621 § 4.1.3](https://datatracker.ietf.org/doc/html/rfc8621#section-4.1.3)
@@ -502,7 +568,7 @@ export type EmailHeader = {
  *
  * @kind immutable
  */
-type EmailHeaderFields = {
+type EmailAutomaticallyParsedHeaderFields = {
   /**
    * This is a list of all header fields [RFC5322], in the same order
    * they appear in the message.
@@ -555,6 +621,42 @@ type EmailHeaderFields = {
   sentAt?: string;
 };
 
+type PossibleHeaderFields = Simplify<
+  {
+    [Key in keyof AllowedHeadersByParsedForm as HeaderField<
+      AllowedHeadersByParsedForm[Key],
+      Key,
+      { all: true }
+    >]: HeaderFieldValue<
+      HeaderField<AllowedHeadersByParsedForm[Key], Key, { all: true }>
+    >;
+  } & {
+    [Key in `header:${KnownHeaders}:asRaw`]: HeaderFieldValue<Key>;
+  } & {
+    [Key in keyof AllowedHeadersByParsedForm as HeaderField<
+      AllowedHeadersByParsedForm[Key],
+      Key,
+      { all: false }
+    >]: HeaderFieldValue<
+      HeaderField<AllowedHeadersByParsedForm[Key], Key, { all: false }>
+    >;
+  } & {
+    [Key in `header:${KnownHeaders}:asRaw:all`]: HeaderFieldValue<Key>;
+  } & {
+    [Key in HeaderField<
+      string,
+      keyof HeaderParsedForm,
+      { all: false }
+    >]: HeaderFieldValue<Key>;
+  } & {
+    [Key in HeaderField<
+      string,
+      keyof HeaderParsedForm,
+      { all: true }
+    >]: HeaderFieldValue<Key>;
+  }
+>;
+
 /**
  * [rfc8621 § 4.1.4](https://datatracker.ietf.org/doc/html/rfc8621#section-4.1.4)
  */
@@ -587,7 +689,7 @@ export type EmailBodyPart = {
    * This is a list of all header fields in the part, in the order they
    * appear in the message.  The values are in Raw form.
    */
-  headers: EmailHeader[];
+  headers?: EmailHeader[];
   /**
    * This is the decoded "filename" parameter of the Content-Disposition
    * header field per [RFC2231], or (for compatibility with
