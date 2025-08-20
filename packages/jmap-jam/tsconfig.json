@@ -15,5 +15,5 @@
     "noUnusedLocals": true,
     "types": ["vitest/importMeta"]
   },
-  "include": ["src/**/*"]
+  "include": ["src", "eslint.config.js", "vitest.config.ts", "tsup.config.js"]
 }

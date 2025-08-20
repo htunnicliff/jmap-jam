@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-floating-promises */
 import { describe } from "node:test";
 import { expectTypeOf, it } from "vitest";
 import { JamClient } from "../../client.ts";
