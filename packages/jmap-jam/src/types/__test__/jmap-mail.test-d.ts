@@ -14,8 +14,7 @@ import {
 
 const jam = new JamClient({
   bearerToken: "example",
-  sessionUrl: "https://example.com/jmap",
-  automaticAccountId: false
+  sessionUrl: "https://example.com/jmap"
 });
 
 describe("Email", () => {
