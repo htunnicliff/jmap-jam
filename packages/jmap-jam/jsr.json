@@ -1,5 +1,0 @@
-{
-  "name": "@htunnicliff/jmap-jam",
-  "version": "0.10.0",
-  "exports": "./src/index.ts"
-}
