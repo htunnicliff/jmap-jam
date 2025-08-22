@@ -35,9 +35,9 @@
     "type-fest": "4"
   },
   "devDependencies": {
-    "@eslint/js": "9.33.0",
+    "@eslint/js": "9.34.0",
     "@types/node": "22.17.2",
-    "eslint": "9.33.0",
+    "eslint": "9.34.0",
     "eslint-config-prettier": "10.1.8",
     "tsup": "8.5.0",
     "typescript": "5.9.2",
