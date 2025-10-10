@@ -1,5 +1,4 @@
-import { describe } from "node:test";
-import { expectTypeOf, it } from "vitest";
+import { describe, expectTypeOf, it } from "vitest";
 import { JamClient } from "../../client.ts";
 import type { Mailbox } from "../jmap-mail.ts";
 import type { SetError } from "../jmap.ts";
@@ -9,7 +8,7 @@ const jam = new JamClient({
   sessionUrl: "https://example.com/jmap"
 });
 
-void describe("set creation", () => {
+describe("set creation", () => {
   it("response includes client ids", async () => {
     const [result] = await jam.api.Mailbox.set({
       accountId: "123",

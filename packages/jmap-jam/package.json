@@ -28,8 +28,7 @@
     "preversion": "tsdown",
     "build": "tsdown",
     "dev": "vitest dev",
-    "test": "vitest run",
-    "lint": "eslint ."
+    "test": "vitest run"
   },
   "dependencies": {
     "type-fest": "4"
@@ -38,11 +37,8 @@
     "@arethetypeswrong/core": "0.18.2",
     "@eslint/js": "9.33.0",
     "@types/node": "22.17.2",
-    "eslint": "9.33.0",
-    "eslint-config-prettier": "10.1.8",
     "tsdown": "^0.15.6",
     "typescript": "5.9.2",
-    "typescript-eslint": "8.40.0",
     "vitest": "3.2.4"
   }
 }
