@@ -94,10 +94,7 @@ export class JamClient<Config extends ClientConfig = ClientConfig> {
   /**
    * Retrieve fresh session data
    */
-  static async loadSession(
-    sessionUrl: string,
-    authHeader: string
-  ): Promise<Session> {
+  static loadSession(sessionUrl: string, authHeader: string): Promise<Session> {
     return fetch(sessionUrl, {
       headers: {
         Authorization: authHeader,
@@ -110,6 +107,7 @@ export class JamClient<Config extends ClientConfig = ClientConfig> {
   /**
    * Send a JMAP request containing a single method call
    */
+  // oxlint-disable-next-line max-lines-per-function
   async request<
     Method extends Methods,
     Args extends GetArgs<Method, Args>,
@@ -188,6 +186,7 @@ export class JamClient<Config extends ClientConfig = ClientConfig> {
     ];
   }
 
+  // oxlint-disable-next-line max-lines-per-function
   async requestMany<
     DraftsFn extends (b: DraftsProxy) => { [id: string]: InvocationDraft },
     Returning extends ReturnType<DraftsFn>
@@ -263,7 +262,7 @@ export class JamClient<Config extends ClientConfig = ClientConfig> {
     };
 
     const errors = methodResponses
-      .map(getErrorFromInvocation)
+      .map((r) => getErrorFromInvocation(r))
       .filter((e): e is NonNullable<typeof e> => e !== null);
 
     if (errors.length > 0) {
@@ -414,7 +413,7 @@ export class JamClient<Config extends ClientConfig = ClientConfig> {
           {},
           {
             get: (__, operation: string) => {
-              return async (args: any, options?: RequestOptions) => {
+              return (args: any, options?: RequestOptions) => {
                 const method = `${entity}/${operation}` as Methods;
 
                 return this.request([method, args], options);
