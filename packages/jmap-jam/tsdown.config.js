@@ -1,5 +1,4 @@
-import { execSync } from "node:child_process";
-import { defineConfig } from "tsup";
+import { defineConfig } from "tsdown";
 
 export default defineConfig({
   entry: ["src/index.ts"],
@@ -10,7 +9,5 @@ export default defineConfig({
   minifySyntax: true,
   target: ["es2018"],
   sourcemap: true,
-  async onSuccess() {
-    execSync("tsc --project tsconfig.build.json");
-  }
+  dts: true
 });
