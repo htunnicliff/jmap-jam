@@ -2,7 +2,10 @@
   "private": true,
   "packageManager": "pnpm@10.15.0+sha512.486ebc259d3e999a4e8691ce03b5cac4a71cbeca39372a9b762cb500cfdf0873e2cb16abe3d951b1ee2cf012503f027b98b6584e4df22524e0c7450d9ec7aa7b",
   "prettier": {
-    "trailingComma": "none"
+    "trailingComma": "none",
+    "plugins": [
+      "@prettier/plugin-oxc"
+    ]
   },
   "scripts": {
     "build": "pnpm -r build",
@@ -15,6 +18,7 @@
   },
   "devDependencies": {
     "@changesets/cli": "2.29.6",
+    "@prettier/plugin-oxc": "0.0.4",
     "oxlint": "1.22.0",
     "prettier": "3.6.2"
   }
