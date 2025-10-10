@@ -6,7 +6,7 @@
   },
   "scripts": {
     "build": "pnpm -r build",
-    "lint": "pnpm -r lint",
+    "lint": "oxlint",
     "test": "pnpm -r test",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
