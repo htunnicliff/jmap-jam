@@ -9,7 +9,7 @@
   },
   "scripts": {
     "build": "pnpm -r build",
-    "lint": "oxlint",
+    "lint": "oxlint --type-aware",
     "test": "pnpm -r test",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
@@ -20,6 +20,7 @@
     "@changesets/cli": "2.29.6",
     "@prettier/plugin-oxc": "0.0.4",
     "oxlint": "1.22.0",
+    "oxlint-tsgolint": "0.2.0",
     "prettier": "3.6.2"
   }
 }
