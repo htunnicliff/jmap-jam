@@ -17,7 +17,7 @@
     "publish": "pnpm run build && pnpm publish --recursive --access public"
   },
   "devDependencies": {
-    "@changesets/cli": "2.29.6",
+    "@changesets/cli": "2.29.7",
     "@prettier/plugin-oxc": "0.0.4",
     "oxlint": "1.22.0",
     "oxlint-tsgolint": "0.2.0",
