@@ -44,7 +44,7 @@ export function getErrorFromInvocation<T extends Invocation>(
  * with a matching ID, no duplicates, etc. if the status code is 2xx)
  */
 export function getResultsForMethodCalls(
-  methodCallResponses: Array<Invocation<any>>,
+  methodCallResponses: Array<Invocation>,
   { returnErrors }: { returnErrors: boolean }
 ) {
   return Object.fromEntries(

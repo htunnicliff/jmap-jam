@@ -320,10 +320,7 @@ type EmailMetadataFields = {
    * the `totalEmails`, `unreadEmails`, `totalThreads`, and
    * `unreadThreads` Mailbox properties).
    */
-  keywords: Record<
-    Exclude<string, ForbiddenKeywordCharacters> | JMAPKeyword,
-    boolean
-  >;
+  keywords: Record<string, boolean>;
   /**
    * The size, in octets, of the raw data for the message [rfc5322](https://datatracker.ietf.org/doc/html/rfc5322) (as
    * referenced by the "blobId", i.e., the number of octets in the file
@@ -358,16 +355,6 @@ export type JMAPKeyword =
   | "$phishing"
   | "$junk"
   | "$notjunk";
-
-export type ForbiddenKeywordCharacters =
-  | "("
-  | ")"
-  | "{"
-  | "]"
-  | "%"
-  | "*"
-  | '"'
-  | "\\";
 
 /**
  * [rfc8621 § 4.1.2.3](https://datatracker.ietf.org/doc/html/rfc8621#section-4.1.2.3)
@@ -635,19 +622,12 @@ type PossibleHeaderFields = Simplify<
   } & {
     [Key in keyof AllowedHeadersByParsedForm as HeaderField<
       AllowedHeadersByParsedForm[Key],
-      Key,
-      { all: false }
-    >]: HeaderFieldValue<
-      HeaderField<AllowedHeadersByParsedForm[Key], Key, { all: false }>
-    >;
+      Key
+    >]: HeaderFieldValue<HeaderField<AllowedHeadersByParsedForm[Key], Key>>;
   } & {
     [Key in `header:${KnownHeaders}:asRaw:all`]: HeaderFieldValue<Key>;
   } & {
-    [Key in HeaderField<
-      string,
-      keyof HeaderParsedForm,
-      { all: false }
-    >]: HeaderFieldValue<Key>;
+    [Key in HeaderField<string, keyof HeaderParsedForm>]: HeaderFieldValue<Key>;
   } & {
     [Key in HeaderField<
       string,
@@ -997,7 +977,7 @@ export type EmailImport = {
   /**
    * The keywords to apply to the Email.
    */
-  keywords: Record<Exclude<string, ForbiddenKeywordCharacters>, boolean>;
+  keywords: Record<string, boolean>;
   /**
    * The `receivedAt` date to set on the Email.
    */

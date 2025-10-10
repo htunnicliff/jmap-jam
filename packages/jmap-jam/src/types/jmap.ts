@@ -1567,7 +1567,7 @@ export type EventSourceArguments = {
    *
    *   - The single character: `*`.  Changes to all types are pushed.
    */
-  types: "*" | string;
+  types: string;
   closeafter: EventSourceCloseAfterType | `${EventSourceCloseAfterType}`;
   /**
    * A positive integer value representing a length of time in

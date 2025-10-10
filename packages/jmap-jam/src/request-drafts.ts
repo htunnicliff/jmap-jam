@@ -126,7 +126,7 @@ export type DraftsProxy = {
 };
 
 export function buildRequestsFromDrafts<
-  R extends Record<string, InvocationDraft<unknown>>
+  R extends Record<string, InvocationDraft>
 >(draftsFn: (p: DraftsProxy) => R) {
   // Create a proxy to intercept {entity}.{operation} calls
   const draftsProxy = new Proxy({} as DraftsProxy, {

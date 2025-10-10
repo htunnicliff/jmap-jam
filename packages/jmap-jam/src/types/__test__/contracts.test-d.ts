@@ -9,7 +9,7 @@ const jam = new JamClient({
   sessionUrl: "https://example.com/jmap"
 });
 
-describe("set creation", () => {
+void describe("set creation", () => {
   it("response includes client ids", async () => {
     const [result] = await jam.api.Mailbox.set({
       accountId: "123",

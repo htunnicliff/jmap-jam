@@ -14,7 +14,9 @@
     // Use `type` instead of `interface`
     "typescript/consistent-type-definitions": ["error", "type"],
     // No limit on dependency count
-    "import/max-dependencies": "allow"
+    "import/max-dependencies": "allow",
+    // TOOD: Fix these gradually
+    "typescript/no-unsafe-type-assertion": "warn"
   },
   "overrides": [
     // Permit longer functions in test files
@@ -22,6 +24,13 @@
       "files": ["**/__test__/**"],
       "rules": {
         "max-lines-per-function": "allow"
+      }
+    },
+    // Permit duplicate types for testing purposes
+    {
+      "files": ["*.test-d.ts"],
+      "rules": {
+        "typescript/no-duplicate-type-constituents": "allow"
       }
     }
   ],
