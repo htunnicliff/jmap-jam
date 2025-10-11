@@ -1,5 +1,18 @@
 # jmap-jam
 
+## 0.12.0
+
+### Minor Changes
+
+- 2ffeb7b: Move JMAP types into separate package
+
+### Patch Changes
+
+- fb8d17b: Fix lint errors
+- 97a4e87: Modify typescript config
+- Updated dependencies [2ffeb7b]
+  - jmap-rfc-types@0.0.1
+
 ## 0.11.0
 
 ### Minor Changes
