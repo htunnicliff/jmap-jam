@@ -33,9 +33,6 @@ importers:
       '@arethetypeswrong/core':
         specifier: 0.18.2
         version: 0.18.2
-      '@eslint/js':
-        specifier: 9.33.0
-        version: 9.33.0
       '@types/node':
         specifier: 22.17.2
         version: 22.17.2
@@ -299,10 +296,6 @@ packages:
     engines: {node: '>=18'}
     cpu: [x64]
     os: [win32]
-
-  '@eslint/js@9.33.0':
-    resolution: {integrity: sha512-5K1/mKhWaMfreBGJTwval43JJmkip0RmM+3+IuqupeSKNC/Th2Kc7ucaq5ovTSra/OOKB9c58CGSz3QMVbWt0A==}
-    engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
 
   '@inquirer/external-editor@1.0.1':
     resolution: {integrity: sha512-Oau4yL24d2B5IL4ma4UpbQigkVhzPDXLoqy1ggK4gnHg/stmkffJE4oOXHXF3uz0UEpywG68KcyXsyYpA1Re/Q==}
@@ -1729,8 +1722,6 @@ snapshots:
 
   '@esbuild/win32-x64@0.25.4':
     optional: true
-
-  '@eslint/js@9.33.0': {}
 
   '@inquirer/external-editor@1.0.1(@types/node@22.17.2)':
     dependencies:
