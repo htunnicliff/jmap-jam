@@ -1,19 +1,19 @@
+import type {
+  BlobDownloadParams,
+  BlobUploadParams,
+  BlobUploadResponse,
+  Entity,
+  EventSourceArguments,
+  Invocation,
+  Request as JMAPRequest,
+  Response as JMAPResponse,
+  ProblemDetails,
+  Session
+} from "jmap-rfc-types";
 import {
   getCapabilitiesForMethodCalls,
   knownCapabilities
 } from "./capabilities.ts";
-import {
-  expandURITemplate,
-  getErrorFromInvocation,
-  getResultsForMethodCalls
-} from "./helpers.ts";
-import {
-  type DraftsProxy,
-  type InvocationDraft,
-  type WithRefValues,
-  type WithoutRefValues,
-  buildRequestsFromDrafts
-} from "./request-drafts.ts";
 import type {
   GetArgs,
   GetResponseData,
@@ -22,19 +22,19 @@ import type {
   Methods,
   ProxyAPI,
   RequestOptions
-} from "./types/contracts.ts";
-import type { Entity } from "./types/jmap-mail.ts";
+} from "./contracts.ts";
+import {
+  expandURITemplate,
+  getErrorFromInvocation,
+  getResultsForMethodCalls
+} from "./helpers.ts";
 import type {
-  BlobDownloadParams,
-  BlobUploadParams,
-  BlobUploadResponse,
-  EventSourceArguments,
-  Invocation,
-  ProblemDetails,
-  Request as JMAPRequest,
-  Response as JMAPResponse,
-  Session
-} from "./types/jmap.ts";
+  DraftsProxy,
+  InvocationDraft,
+  WithRefValues,
+  WithoutRefValues
+} from "./request-drafts.ts";
+import { buildRequestsFromDrafts } from "./request-drafts.ts";
 
 export type ClientConfig = {
   /**

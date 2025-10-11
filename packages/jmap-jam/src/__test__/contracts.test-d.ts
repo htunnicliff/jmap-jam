@@ -1,7 +1,6 @@
+import type { Mailbox, SetError } from "jmap-rfc-types";
 import { describe, expectTypeOf, it } from "vitest";
-import { JamClient } from "../../client.ts";
-import type { Mailbox } from "../jmap-mail.ts";
-import type { SetError } from "../jmap.ts";
+import { JamClient } from "../client.ts";
 
 const jam = new JamClient({
   bearerToken: "example",

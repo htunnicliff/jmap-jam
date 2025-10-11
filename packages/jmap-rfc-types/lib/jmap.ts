@@ -1,5 +1,4 @@
 import type { Except, RequireAtLeastOne } from "type-fest";
-import type { Obj } from "../helpers.ts";
 
 /**
  * JMAP
@@ -1608,3 +1607,5 @@ export enum EventSourceCloseAfterType {
    */
   No = "no"
 }
+
+type Obj = Record<string, unknown>;

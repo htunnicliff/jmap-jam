@@ -1,4 +1,4 @@
-import type { Invocation, ProblemDetails } from "./types/jmap.ts";
+import type { Invocation, ProblemDetails } from "jmap-rfc-types";
 
 /**
  * Expands a URI template with the given parameters.

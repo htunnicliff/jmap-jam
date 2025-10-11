@@ -1,6 +1,10 @@
-import type { Exact } from "type-fest";
-import type { HasAllKeysOfRelated } from "../helpers.ts";
 import type {
+  BlobCopyArguments,
+  BlobCopyResponse,
+  ChangesArguments,
+  ChangesResponse,
+  CopyArguments,
+  CopyResponse,
   Email,
   EmailBodyPart,
   EmailCreate,
@@ -9,31 +13,18 @@ import type {
   EmailSubmission,
   EmailSubmissionCreate,
   EmailSubmissionFilterCondition,
-  Identity,
-  IdentityCreate,
-  Mailbox,
-  MailboxCreate,
-  MailboxFilterCondition,
-  SearchSnippet,
-  Thread,
-  VacationResponse,
-  VacationResponseCreate,
-  WithoutHeaders
-} from "./jmap-mail.ts";
-import type {
-  BlobCopyArguments,
-  BlobCopyResponse,
-  ChangesArguments,
-  ChangesResponse,
-  CopyArguments,
-  CopyResponse,
   FilterCondition,
   FilterOperator,
   GetArguments,
   GetResponse,
   ID,
+  Identity,
+  IdentityCreate,
   Request as JMAPRequest,
   Response as JMAPResponse,
+  Mailbox,
+  MailboxCreate,
+  MailboxFilterCondition,
   ProblemDetails,
   PushSubscription,
   PushSubscriptionCreate,
@@ -41,10 +32,17 @@ import type {
   QueryChangesArguments,
   QueryChangesResponse,
   QueryResponse,
+  SearchSnippet,
   SetArguments,
   SetError,
-  SetResponse
-} from "./jmap.ts";
+  SetResponse,
+  Thread,
+  VacationResponse,
+  VacationResponseCreate,
+  WithoutHeaders
+} from "jmap-rfc-types";
+import type { Exact } from "type-fest";
+import type { HasAllKeysOfRelated } from "./helpers.ts";
 
 export type Requests = {
   // Core -----------------------------------
