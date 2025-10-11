@@ -1,3 +1,4 @@
+import { execSync } from "node:child_process";
 import { defineConfig } from "tsdown";
 
 export default defineConfig({
@@ -7,5 +8,9 @@ export default defineConfig({
   attw: {
     profile: "esmOnly"
   },
-  minify: true
+  dts: true,
+  minify: true,
+  onSuccess: () => {
+    execSync("pnpm check:types", { stdio: "inherit" });
+  }
 });
