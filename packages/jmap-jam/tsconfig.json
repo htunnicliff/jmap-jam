@@ -11,6 +11,7 @@
     "declaration": true,
     "declarationMap": true,
     "noUnusedLocals": true,
+    "verbatimModuleSyntax": true,
     "types": ["vitest/importMeta"]
   },
   "include": ["src/**/*"]

@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "lib": ["ESNext", "DOM"],
+    "module": "Node16",
+    "target": "ES2018",
+    "moduleResolution": "Node16",
+    "strict": true,
+    "rewriteRelativeImportExtensions": true,
+    "noEmit": true,
+    "skipLibCheck": true,
+    "noUnusedLocals": true
+  },
+  "include": ["lib/**/*"]
+}

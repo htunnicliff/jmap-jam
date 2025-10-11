@@ -1,10 +1,10 @@
-import type { ExcludeValue, IncludeValue } from "./helpers.ts";
-import type { LocalInvocation, Methods, Requests } from "./types/contracts.ts";
 import type {
   ExtendedJSONPointer,
   Invocation,
   ResultReference
-} from "./types/jmap.ts";
+} from "jmap-rfc-types";
+import type { LocalInvocation, Methods, Requests } from "./contracts.ts";
+import type { ExcludeValue, IncludeValue } from "./helpers.ts";
 
 /**
  * Symbol used to identify arguments that need to be transformed

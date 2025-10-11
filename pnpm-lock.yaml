@@ -29,6 +29,9 @@ importers:
 
   packages/jmap-jam:
     dependencies:
+      jmap-rfc-types:
+        specifier: workspace:*
+        version: link:../jmap-rfc-types
       type-fest:
         specifier: '4'
         version: 4.41.0
@@ -36,12 +39,22 @@ importers:
       '@arethetypeswrong/core':
         specifier: ~0.18.2
         version: 0.18.2
-      '@types/node':
-        specifier: ~22.18.10
-        version: 22.18.10
       tsdown:
         specifier: ~0.15.6
         version: 0.15.6(@arethetypeswrong/core@0.18.2)(typescript@5.9.3)
+      typescript:
+        specifier: ~5.9.3
+        version: 5.9.3
+      vitest:
+        specifier: ~3.2.4
+        version: 3.2.4(@types/node@22.18.10)(jiti@2.6.1)
+
+  packages/jmap-rfc-types:
+    dependencies:
+      type-fest:
+        specifier: '4'
+        version: 4.41.0
+    devDependencies:
       typescript:
         specifier: ~5.9.3
         version: 5.9.3
