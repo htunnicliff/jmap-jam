@@ -8,7 +8,7 @@ onlyBuiltDependencies:
 
 # Scripts needed in each individual package
 requiredScripts:
-  - lint
+  - build
   - test
 
 # Ensure all peer dependencies are installed and correct
