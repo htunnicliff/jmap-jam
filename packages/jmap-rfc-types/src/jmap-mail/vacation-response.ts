@@ -1,7 +1,7 @@
 import type { UTCDate } from "../jmap/primitives.ts";
 
 declare module "../jmap/augmented.ts" {
-  interface Entities {
+  interface $Entities {
     VacationResponse: true;
   }
 }

@@ -1,7 +1,7 @@
 import type { ID } from "../jmap/primitives.ts";
 
 declare module "../jmap/augmented.ts" {
-  interface Entities {
+  interface $Entities {
     Mailbox: true;
   }
 }

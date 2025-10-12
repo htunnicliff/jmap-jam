@@ -1,5 +1,5 @@
 declare module "../augmented.ts" {
-  interface Entities {
+  interface $Entities {
     Core: true;
   }
 }

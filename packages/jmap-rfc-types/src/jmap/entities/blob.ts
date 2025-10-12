@@ -1,7 +1,7 @@
 import type { ID } from "../primitives.ts";
 
 declare module "../augmented.ts" {
-  interface Entities {
+  interface $Entities {
     Blob: true;
   }
 }

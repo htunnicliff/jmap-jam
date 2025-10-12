@@ -1,7 +1,7 @@
 import type { ID, UTCDate } from "../primitives.ts";
 
 declare module "../augmented.ts" {
-  interface Entities {
+  interface $Entities {
     PushSubscription: true;
   }
 }

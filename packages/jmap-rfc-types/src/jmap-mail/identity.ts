@@ -2,7 +2,7 @@ import type { ID } from "../jmap/primitives.ts";
 import type { EmailAddress } from "./email.ts";
 
 declare module "../jmap/augmented.ts" {
-  interface Entities {
+  interface $Entities {
     Identity: true;
   }
 }

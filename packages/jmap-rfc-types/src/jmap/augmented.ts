@@ -4,11 +4,11 @@
  *
  * ```ts
  * declare module 'jmap-rfc-types' {
- *   interface Entities {
- *     MyEntity: true;
+ *   interface $Entities {
+ *     MyEntity: "uri:my:entity:capability";
  *   }
  * }
  */
-export interface Entities {}
+export interface $Entities {}
 
-export type Entity = keyof Entities;
+export type Entity = keyof $Entities;

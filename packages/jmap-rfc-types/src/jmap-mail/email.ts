@@ -3,7 +3,7 @@ import type { ID, UTCDate } from "../jmap/primitives.ts";
 import type { FilterCondition } from "../jmap/filters.ts";
 
 declare module "../jmap/augmented.ts" {
-  interface Entities {
+  interface $Entities {
     Email: true;
   }
 }
