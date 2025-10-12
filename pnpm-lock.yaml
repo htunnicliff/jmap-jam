@@ -57,10 +57,19 @@ importers:
 
   packages/jmap-rfc-types:
     dependencies:
+      free-types:
+        specifier: 0.12.0
+        version: 0.12.0
       type-fest:
         specifier: '5'
         version: 5.2.0
     devDependencies:
+      '@arethetypeswrong/core':
+        specifier: 0.18.2
+        version: 0.18.2
+      tsdown:
+        specifier: 0.16.4
+        version: 0.16.4(@arethetypeswrong/core@0.18.2)(ms@2.1.3)(typescript@5.9.3)
       typescript:
         specifier: 5.9.3
         version: 5.9.3
@@ -1331,6 +1340,12 @@ packages:
 
   flatted@3.3.3:
     resolution: {integrity: sha512-GX+ysw4PBCz0PzosHDepZGANEuFCMLrnRTiEy9McGjmkCQYwRq4A/X786G/fjM/+OjsWSU1ZrY5qyARZmO/uwg==}
+
+  free-types-core@0.8.5:
+    resolution: {integrity: sha512-RxAcBBmtAIpIRfWsMDKtaBW8cENHbRH3vrXT05IbpmSx6Mrm2FtRA6tHhHgWoXrrFnXe0SzAZOb/WyN2BNIZ3w==}
+
+  free-types@0.12.0:
+    resolution: {integrity: sha512-lLTvJNRfqTnqEoNHTnd2gz82yJINVdaX6bmSzMrtHc/+BxxP0CAPwcBgdJw4bKXWNuhCV9JtdCN83VNGUH0qKQ==}
 
   fs-extra@7.0.1:
     resolution: {integrity: sha512-YJDaCJZEnBmcbw13fvdAM9AwNOJwOzrE4pqMqBq5nFiEqXUqHwlK4B+3pUw6JNvfSPtX05xFHtYy/1ni01eGCw==}
@@ -3021,6 +3036,12 @@ snapshots:
       path-exists: 4.0.0
 
   flatted@3.3.3: {}
+
+  free-types-core@0.8.5: {}
+
+  free-types@0.12.0:
+    dependencies:
+      free-types-core: 0.8.5
 
   fs-extra@7.0.1:
     dependencies:
