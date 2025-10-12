@@ -1,5 +1,5 @@
 import { describe, expectTypeOf, it } from "vitest";
-import {
+import type {
   AllowedHeadersByParsedForm,
   EmailAddress,
   EmailAddressGroup,
@@ -8,7 +8,7 @@ import {
   IsValidHeader,
   KnownHeaders,
   WithoutHeaders
-} from "../jmap-mail.ts";
+} from "../jmap-mail/email.ts";
 
 describe("WithoutHeaders", () => {
   it("removes all `header:` fields", () => {
