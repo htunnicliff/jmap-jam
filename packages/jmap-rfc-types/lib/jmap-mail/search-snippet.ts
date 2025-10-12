@@ -8,7 +8,7 @@ import type { ID } from "../jmap/primitives.ts";
  * preview and to highlight any matching terms in both this and the
  * subject of the Email.  Search snippets represent this data.
  */
-export type SearchSnippet = {
+export interface SearchSnippet {
   /**
    * The Email id the snippet applies to.
    */
@@ -38,4 +38,4 @@ export type SearchSnippet = {
    * property is null.
    */
   preview?: string;
-};
+}

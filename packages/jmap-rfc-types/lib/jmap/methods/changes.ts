@@ -3,7 +3,7 @@ import type { ID } from "../primitives.ts";
 /**
  * [rfc8620 § 5.2](https://datatracker.ietf.org/doc/html/rfc8620#section-5.2)
  */
-export type ChangesArguments = {
+export interface ChangesArguments {
   /**
    *  The id of the account to use.
    */
@@ -25,9 +25,9 @@ export type ChangesArguments = {
    * `invalidArguments` error.
    */
   maxChanges?: number;
-};
+}
 
-export type ChangesResponse = {
+export interface ChangesResponse {
   /**
    * The id of the account used for the call.
    */
@@ -63,7 +63,7 @@ export type ChangesResponse = {
    * state.
    */
   destroyed: ID[];
-};
+}
 
 export enum ChangesRequestErrorType {
   /**

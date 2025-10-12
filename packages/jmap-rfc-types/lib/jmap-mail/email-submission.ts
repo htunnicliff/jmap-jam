@@ -3,7 +3,7 @@ import type { ID, UTCDate } from "../jmap/primitives.ts";
 /**
  * [rfc8621 § 7](https://datatracker.ietf.org/doc/html/rfc8621#section-7)
  */
-export type EmailSubmission = {
+export interface EmailSubmission {
   /**
    * The id of the EmailSubmission.
    *
@@ -87,7 +87,7 @@ export type EmailSubmission = {
    * @kind server-set
    */
   mdnBlobIds: ID[];
-};
+}
 
 export type EmailSubmissionCreate = Omit<
   EmailSubmission,
@@ -97,7 +97,7 @@ export type EmailSubmissionCreate = Omit<
 /**
  * Information for use when sending via SMTP.
  */
-export type Envelope = {
+export interface Envelope {
   /**
    * The email address to use as the return address in the SMTP
    * submission, plus any parameters to pass with the MAIL FROM
@@ -116,9 +116,9 @@ export type Envelope = {
    * parameters to pass with the recipient.
    */
   rcptTo: EmailSubmissionAddress[];
-};
+}
 
-export type EmailSubmissionAddress = {
+export interface EmailSubmissionAddress {
   /**
    * The email address being represented by the object.  This is a
    * `Mailbox` as used in the Reverse-path or Forward-path of the
@@ -136,13 +136,13 @@ export type EmailSubmissionAddress = {
    * applied.
    */
   parameters?: Record<string, unknown>;
-};
+}
 
 /**
  * This represents the delivery status for each of a submission's
  * recipients, if known.
  */
-export type DeliveryStatus = {
+export interface DeliveryStatus {
   /**
    * The SMTP reply string returned for this recipient when the
    * server last tried to relay the message, or in a later Delivery
@@ -163,7 +163,7 @@ export type DeliveryStatus = {
    * recipient.
    */
   displayed: "yes" | "unknown";
-};
+}
 
 /**
  * Represents whether a message has been successfully delivered
@@ -217,7 +217,7 @@ export enum DeliveryStatusDisplayed {
 /**
  * [rfc8621 § 7.3](https://datatracker.ietf.org/doc/html/rfc8621#section-7.3)
  */
-export type EmailSubmissionFilterCondition = {
+export interface EmailSubmissionFilterCondition {
   /**
    * The EmailSubmission `identityId` property must be in this list to
    * match the condition.
@@ -248,7 +248,7 @@ export type EmailSubmissionFilterCondition = {
    * same as or after this date-time to match the condition.
    */
   after: UTCDate;
-};
+}
 
 /**
  * This represents whether a submission may be canceled.

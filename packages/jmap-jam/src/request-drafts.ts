@@ -12,12 +12,12 @@ import type { ExcludeValue, IncludeValue } from "./helpers.ts";
  */
 const r = Symbol("Result Reference");
 
-export type Ref<I = unknown> = {
+export interface Ref<I = unknown> {
   [r]: {
     path: `/${string}`;
     invocation: I;
   };
-};
+}
 
 export type WithRefValues<T> = IncludeValue<T, Ref>;
 

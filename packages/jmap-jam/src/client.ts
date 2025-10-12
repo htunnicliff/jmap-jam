@@ -36,7 +36,7 @@ import type {
 } from "./request-drafts.ts";
 import { buildRequestsFromDrafts } from "./request-drafts.ts";
 
-export type ClientConfig = {
+export interface ClientConfig {
   /**
    * The bearer token used to authenticate all requests
    */
@@ -62,7 +62,7 @@ export type ClientConfig = {
    * ```
    */
   customCapabilities?: Record<string, string>;
-};
+}
 
 export class JamClient<Config extends ClientConfig = ClientConfig> {
   /**

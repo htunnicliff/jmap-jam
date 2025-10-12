@@ -8,7 +8,7 @@ import type { ID } from "./primitives.ts";
  * the Session object.  Clients MUST ignore any properties they are not
  * expecting.
  */
-export type Session<Capability extends string = string> = {
+export interface Session<Capability extends string = string> {
   /**
    * An object specifying the capabilities of this server.  Each key is
    * a URI for a capability supported by the server.  The value for
@@ -81,4 +81,4 @@ export type Session<Capability extends string = string> = {
    */
   state: string;
   [key: string]: unknown;
-};
+}

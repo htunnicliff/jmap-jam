@@ -10,7 +10,7 @@ import type { UTCDate } from "../jmap/primitives.ts";
  * The VacationResponse object represents the state of vacation-
  * response-related settings for an account.
  */
-export type VacationResponse = {
+export interface VacationResponse {
   /**
    * The id of the object.  There is only ever one VacationResponse
    * object, and its id is `singleton`.
@@ -61,6 +61,6 @@ export type VacationResponse = {
    * only.
    */
   htmlBody?: string;
-};
+}
 
 export type VacationResponseCreate = Omit<VacationResponse, "id">;

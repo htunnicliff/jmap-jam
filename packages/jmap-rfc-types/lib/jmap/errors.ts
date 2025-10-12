@@ -30,7 +30,7 @@ export enum RequestErrorProblemType {
 /**
  * [rfc7807 § 3](https://datatracker.ietf.org/doc/html/rfc7807#section-3)
  */
-export type ProblemDetails = {
+export interface ProblemDetails {
   /**
    * A URI reference [RFC3986] that identifies the
    * problem type.  This specification encourages that, when
@@ -58,7 +58,7 @@ export type ProblemDetails = {
   instance?: string;
   methodCallId?: string;
   limit?: string;
-};
+}
 
 /**
  * [rfc8620 § 3.6.2](https://datatracker.ietf.org/doc/html/rfc8620#section-3.6.2)

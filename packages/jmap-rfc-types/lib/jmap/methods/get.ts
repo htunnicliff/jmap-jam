@@ -3,7 +3,7 @@ import type { ID } from "../primitives.ts";
 /**
  * [rfc8620 § 5.1](https://datatracker.ietf.org/doc/html/rfc8620#section-5.1)
  */
-export type GetArguments<T> = {
+export interface GetArguments<T> {
   /**
    * The id of the account to use.
    */
@@ -24,7 +24,7 @@ export type GetArguments<T> = {
    * error.
    */
   properties?: ReadonlyArray<keyof T>;
-};
+}
 
 export type GetResponse<T, Args> =
   Args extends GetArguments<T>

@@ -5,7 +5,7 @@ import type { SetError } from "../methods/set.ts";
 /**
  * [rfc8620 § 6.3](https://datatracker.ietf.org/doc/html/rfc8620#section-6.3)
  */
-export type BlobCopyArguments = {
+export interface BlobCopyArguments {
   /**
    * The id of the account to copy blobs from.
    */
@@ -18,9 +18,9 @@ export type BlobCopyArguments = {
    *  A list of ids of blobs to copy to the other account.
    */
   blobIds: ID[];
-};
+}
 
-export type BlobCopyResponse = {
+export interface BlobCopyResponse {
   /**
    * The id of the account blobs were copied from.
    */
@@ -40,7 +40,7 @@ export type BlobCopyResponse = {
    * be copied, or null if none.
    */
   notCopied: Record<ID, BlobCopySetError> | null;
-};
+}
 
 export type BlobCopySetError<T extends Obj = Obj> = Except<
   SetError<T>,

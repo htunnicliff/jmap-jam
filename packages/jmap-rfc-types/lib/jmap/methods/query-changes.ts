@@ -8,7 +8,7 @@ import type { ID, Obj } from "../primitives.ts";
 /**
  * [rfc8620 § 5.6](https://datatracker.ietf.org/doc/html/rfc8620#section-5.6)
  */
-export type QueryChangesArguments<T extends Obj, Filter extends Obj> = {
+export interface QueryChangesArguments<T extends Obj, Filter extends Obj> {
   /**
    * The id of the account to use.
    */
@@ -51,9 +51,9 @@ export type QueryChangesArguments<T extends Obj, Filter extends Obj> = {
    * take care to only request the total when needed.
    */
   calculateTotal?: boolean;
-};
+}
 
-export type QueryChangesResponse = {
+export interface QueryChangesResponse {
   /**
    * The id of the account used for the call.
    */
@@ -100,7 +100,7 @@ export type QueryChangesResponse = {
    * property).
    */
   added: ReadonlyArray<QueryChangesAddedItem>;
-};
+}
 
 export enum QueryChangesRequestErrorType {
   /**
@@ -119,7 +119,7 @@ export enum QueryChangesRequestErrorType {
   CannotCalculateChanges = "cannotCalculateChanges"
 }
 
-export type QueryChangesAddedItem = {
+export interface QueryChangesAddedItem {
   id: ID;
   index: number;
-};
+}

@@ -7,7 +7,7 @@ import type { ID } from "../jmap/primitives.ts";
  * primary mechanism for organising messages within an account. It is
  * analogous to a folder or a label in other systems.
  */
-export type Mailbox = {
+export interface Mailbox {
   /**
    * The id of the Mailbox
    *
@@ -135,7 +135,7 @@ export type Mailbox = {
      */
     maySubmit: boolean;
   };
-};
+}
 
 export type MailboxRole =
   | "all"
@@ -163,10 +163,10 @@ export type MailboxCreate = Omit<
 /**
  * [rfc8621 § 2.3](https://datatracker.ietf.org/doc/html/rfc8621#section-2.3)
  */
-export type MailboxFilterCondition = {
+export interface MailboxFilterCondition {
   parentId: ID | null;
   name: string;
   role: MailboxRole | null;
   hasAnyRole: boolean;
   isSubscribed: boolean;
-};
+}

@@ -1,4 +1,4 @@
-export type Account<Capability extends string = string> = {
+export interface Account<Capability extends string = string> {
   /**
    * A user-friendly string to show when presenting content from
    * this account, e.g., the email address representing the owner of
@@ -39,4 +39,4 @@ export type Account<Capability extends string = string> = {
   accountCapabilities: {
     [Key in Capability]: unknown;
   };
-};
+}

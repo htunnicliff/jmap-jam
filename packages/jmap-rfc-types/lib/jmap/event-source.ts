@@ -1,7 +1,7 @@
 /**
  * [rfc8620 § 7.3](https://datatracker.ietf.org/doc/html/rfc8620#section-7.3)
  */
-export type EventSourceArguments = {
+export interface EventSourceArguments {
   /**
    * The `types` argument MUST be either:
    *
@@ -35,7 +35,7 @@ export type EventSourceArguments = {
    * closeafter mode may be required.
    */
   ping: string;
-};
+}
 
 export enum EventSourceCloseAfterType {
   /**

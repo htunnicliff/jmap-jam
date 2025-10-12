@@ -8,7 +8,7 @@ import type { ID, Obj } from "../primitives.ts";
 /**
  * [rfc8620 § 5.5](https://datatracker.ietf.org/doc/html/rfc8620#section-5.5)
  */
-export type QueryArguments<T extends Obj, Filter extends Obj = T> = {
+export interface QueryArguments<T extends Obj, Filter extends Obj = T> {
   /**
    * The id of the account to use.
    */
@@ -75,9 +75,9 @@ export type QueryArguments<T extends Obj, Filter extends Obj = T> = {
    * only request the total when needed.
    */
   calculateTotal?: boolean;
-};
+}
 
-export type QueryResponse = {
+export interface QueryResponse {
   /**
    * The id of the account used for the call.
    */
@@ -139,7 +139,7 @@ export type QueryResponse = {
    * used a different limit than that given in the request.
    */
   limit?: number;
-};
+}
 
 export enum QueryRequestErrorType {
   /**

@@ -5,7 +5,7 @@ import type { SetError } from "./set.ts";
 /**
  * [rfc8620 § 5.4](https://datatracker.ietf.org/doc/html/rfc8620#section-5.4)
  */
-export type CopyArguments<T extends { id: ID }> = {
+export interface CopyArguments<T extends { id: ID }> {
   /**
    * The id of the account to copy records from.
    */
@@ -55,9 +55,9 @@ export type CopyArguments<T extends { id: ID }> = {
    * destroy the originals that were successfully copied.
    */
   destroyFromIfInState?: string;
-};
+}
 
-export type CopyResponse<T> = {
+export interface CopyResponse<T> {
   /**
    * The id of the account records were copied from.
    */
@@ -92,7 +92,7 @@ export type CopyResponse<T> = {
    * failed to be copied, or null if none.
    */
   notCreated: Record<ID, CopySetError> | null;
-};
+}
 
 export type CopySetError<T extends Obj = Obj> = Except<SetError<T>, "type"> & {
   type: SetError<T>["type"] | CopySetErrorType;

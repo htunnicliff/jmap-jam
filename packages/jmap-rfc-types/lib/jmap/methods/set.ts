@@ -112,7 +112,7 @@ export type SetResponse<T extends object, Args> =
       }
     : never;
 
-export type SetError<T extends Obj = Obj> = {
+export interface SetError<T extends Obj = Obj> {
   /**
    * The type of error.
    */
@@ -125,7 +125,7 @@ export type SetError<T extends Obj = Obj> = {
   description: string | null;
   properties?: ReadonlyArray<keyof T>;
   existingId?: ID;
-};
+}
 
 /**
  * The following SetError types are defined and may be returned for set

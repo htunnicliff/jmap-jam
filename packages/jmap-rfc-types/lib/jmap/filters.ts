@@ -1,10 +1,10 @@
 import type { Except } from "type-fest";
 import type { Obj } from "./primitives.ts";
 
-export type FilterOperator<Filter extends Obj> = {
+export interface FilterOperator<Filter extends Obj> {
   operator: FilterOperatorType | `${FilterOperatorType}`;
   conditions: ReadonlyArray<FilterOperator<Filter> | FilterCondition<Filter>>;
-};
+}
 
 export enum FilterOperatorType {
   /**
@@ -31,7 +31,7 @@ export type FilterCondition<Filter extends Obj> = Except<
  * and how to compare them, to determine which comes first in a
  * sort.
  */
-export type Comparator<T extends Obj> = {
+export interface Comparator<T extends Obj> {
   /**
    * The name of the property on the `T` objects to compare.
    */
@@ -51,4 +51,4 @@ export type Comparator<T extends Obj> = {
    * If omitted, the default algorithm is server dependent,
    */
   collation?: string;
-};
+}

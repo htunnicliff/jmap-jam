@@ -3,17 +3,17 @@ import type { ID, UTCDate } from "../primitives.ts";
 /**
  * [rfc8620 § 7.1](https://datatracker.ietf.org/doc/html/rfc8620#section-7.1)
  */
-export type StateChange = {
+export interface StateChange {
   "@type": "StateChange";
   changed: Record<ID, TypeState>;
-};
+}
 
 export type TypeState = Record<string, string>;
 
 /**
  * [rfc8620 § 7.2](https://datatracker.ietf.org/doc/html/rfc8620#section-7.2)
  */
-export type PushSubscription = {
+export interface PushSubscription {
   /**
    * The id of the push subscription.
    *
@@ -98,15 +98,15 @@ export type PushSubscription = {
    * types.
    */
   types?: string[];
-};
+}
 
 export type PushSubscriptionCreate = Omit<PushSubscription, "id">;
 
 /**
  * [rfc8620 § 7.2.2](https://datatracker.ietf.org/doc/html/rfc8620#section-7.2.2)
  */
-export type PushVerification = {
+export interface PushVerification {
   "@type": "PushVerification";
   pushSubscriptionId: string;
   verificationCode: string;
-};
+}

@@ -7,7 +7,7 @@ import type { EmailAddress } from "./email.ts";
  * An Identity object stores information about an email address or
  * domain the user may send from.
  */
-export type Identity = {
+export interface Identity {
   /**
    * The id of the Identity.
    *
@@ -63,6 +63,6 @@ export type Identity = {
    * @kind server-set
    */
   mayDelete: boolean;
-};
+}
 
 export type IdentityCreate = Omit<Identity, "id" | "mayDelete">;

@@ -7,7 +7,7 @@ import type { ID } from "../jmap/primitives.ts";
  * Thread.  In JMAP, a Thread is simply a flat list of Emails, ordered
  * by date.
  */
-export type Thread = {
+export interface Thread {
   /**
    * The id of the Thread.
    *
@@ -24,4 +24,4 @@ export type Thread = {
    * @kind server-set
    */
   emailIds: ID[];
-};
+}

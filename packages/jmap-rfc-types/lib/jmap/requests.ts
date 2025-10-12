@@ -27,10 +27,10 @@ export type Invocation<T = unknown> = [
 /**
  * [rfc8620 § 3.3](https://datatracker.ietf.org/doc/html/rfc8620#section-3.3)
  */
-export type Request<
+export interface Request<
   T extends Invocation[] = Invocation[],
   Capability extends string = string
-> = {
+> {
   /**
    * The set of capabilities the client wishes to use.  The client MAY
    * include capability identifiers even if the method calls it makes
@@ -76,12 +76,12 @@ export type Request<
    * considerations.
    */
   createdIds?: Record<ID, string>;
-};
+}
 
 /**
  * [rfc8620 § 3.4](https://datatracker.ietf.org/doc/html/rfc8620#section-3.4)
  */
-export type Response<T extends Invocation[] = Invocation[]> = {
+export interface Response<T extends Invocation[] = Invocation[]> {
   /**
    * An array of responses, in the same format as the `methodCalls` on
    * the Request object.  The output of the methods MUST be added to
@@ -103,7 +103,7 @@ export type Response<T extends Invocation[] = Invocation[]> = {
    * object has changed and needs to be refetched.
    */
   sessionState: string;
-};
+}
 
 /**
  * [rfc8620 § 3.7](https://datatracker.ietf.org/doc/html/rfc8620#section-3.7)
@@ -123,7 +123,7 @@ export type Response<T extends Invocation[] = Invocation[]> = {
  * same argument name in normal and referenced form (e.g., `foo` and
  * `#foo`), the method MUST return an `invalidArguments` error.
  */
-export type ResultReference = {
+export interface ResultReference {
   /**
    * The method call id (see Section 3.2) of a previous method call in the current request.
    */
@@ -138,4 +138,4 @@ export type ResultReference = {
    * also allows the use of `*` to map through an array.
    */
   path: ExtendedJSONPointer;
-};
+}

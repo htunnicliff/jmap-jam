@@ -3,11 +3,11 @@ import type { ID } from "../primitives.ts";
 /**
  * [rfc8620 § 6.1](https://datatracker.ietf.org/doc/html/rfc8620#section-6.1)
  */
-export type BlobUploadParams = {
+export interface BlobUploadParams {
   accountId: ID;
-};
+}
 
-export type BlobUploadResponse = {
+export interface BlobUploadResponse {
   /**
    * The id of the account used for the call.
    */
@@ -28,12 +28,12 @@ export type BlobUploadResponse = {
    *  The size of the file in octets.
    */
   size: number;
-};
+}
 
 /**
  * [rfc8620 § 6.2](https://datatracker.ietf.org/doc/html/rfc8620#section-6.2)
  */
-export type BlobDownloadParams = {
+export interface BlobDownloadParams {
   /**
    * The id of the account to which the record with the `blobId` belongs
    */
@@ -53,4 +53,4 @@ export type BlobDownloadParams = {
    * filename if it sets a "Content-Disposition" header.
    */
   name: string;
-};
+}

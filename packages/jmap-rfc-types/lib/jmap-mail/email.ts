@@ -38,7 +38,7 @@ export type EmailCreate = Partial<
  * These properties represent metadata about the message in the mail
  * store and are not derived from parsing the message itself.
  */
-type EmailMetadataFields = {
+interface EmailMetadataFields {
   /**
    * The id of the Email object.  Note that this is the JMAP object id,
    * NOT the Message-ID header field value of the message [rfc5322](https://datatracker.ietf.org/doc/html/rfc5322).
@@ -111,7 +111,7 @@ type EmailMetadataFields = {
    * @kind immutable
    */
   receivedAt: string;
-};
+}
 
 /**
  *  The IANA "IMAP and JMAP Keywords" registry at
@@ -133,18 +133,18 @@ export type JMAPKeyword =
 /**
  * [rfc8621 § 4.1.2.3](https://datatracker.ietf.org/doc/html/rfc8621#section-4.1.2.3)
  */
-export type EmailAddress = {
+export interface EmailAddress {
   name?: string;
   email: string;
-};
+}
 
 /**
  * [rfc8621 § 4.1.2.4](https://datatracker.ietf.org/doc/html/rfc8621#section-4.1.2.4)
  */
-export type EmailAddressGroup = {
+export interface EmailAddressGroup {
   name?: string;
   addresses: EmailAddress[];
-};
+}
 
 /**
  * [rfc8621 § 4.1.2](https://datatracker.ietf.org/doc/html/rfc8621#section-4.1.2)
@@ -154,7 +154,7 @@ export type EmailAddressGroup = {
  * Some header fields may also be fetched in a parsed form.  The
  * structured form that may be fetched depends on the header.
  */
-export type HeaderParsedForm = {
+export interface HeaderParsedForm {
   /**
    * [rfc8621 § 4.1.2.1](https://datatracker.ietf.org/doc/html/rfc8621#section-4.1.2.1)
    *
@@ -223,7 +223,7 @@ export type HeaderParsedForm = {
    * the URLs.  If parsing fails, the value is null.
    */
   URLs?: string[];
-};
+}
 
 type _AllowedHeadersByParsedForm<
   T extends Record<Exclude<keyof HeaderParsedForm, "Raw">, string>
@@ -312,7 +312,7 @@ export type HeaderFieldValue<T> =
 /**
  * [rfc8621 § 4.1.3](https://datatracker.ietf.org/doc/html/rfc8621#section-4.1.3)
  */
-export type EmailHeader = {
+export interface EmailHeader {
   /**
    * The header "field name" as defined in [RFC5322], with the same
    * capitalization that it has in the message.
@@ -322,14 +322,14 @@ export type EmailHeader = {
    * The header "field value" as defined in [RFC5322], in Raw form.
    */
   value: string;
-};
+}
 
 /**
  * [rfc8621 § 4.1.3](https://datatracker.ietf.org/doc/html/rfc8621#section-4.1.3)
  *
  * @kind immutable
  */
-type EmailAutomaticallyParsedHeaderFields = {
+interface EmailAutomaticallyParsedHeaderFields {
   /**
    * This is a list of all header fields [RFC5322], in the same order
    * they appear in the message.
@@ -380,7 +380,7 @@ type EmailAutomaticallyParsedHeaderFields = {
    * The value is identical to the value of `header:Date:asDate`.
    */
   sentAt?: string;
-};
+}
 
 type PossibleHeaderFields = Simplify<
   {
@@ -414,7 +414,7 @@ type PossibleHeaderFields = Simplify<
 /**
  * [rfc8621 § 4.1.4](https://datatracker.ietf.org/doc/html/rfc8621#section-4.1.4)
  */
-export type EmailBodyPart = {
+export interface EmailBodyPart {
   /**
    * Identifies this part uniquely within the Email.  This is scoped to
    * the `emailId` and has no meaning outside of the JMAP Email object
@@ -495,12 +495,12 @@ export type EmailBodyPart = {
    * child.
    */
   subParts?: EmailBodyPart[];
-};
+}
 
 /**
  * [rfc8621 § 4.1.4](https://datatracker.ietf.org/doc/html/rfc8621#section-4.1.4)
  */
-type EmailBodyPartFields = {
+interface EmailBodyPartFields {
   /**
    * This is the full MIME structure of the message body, without
    * recursing into `message/rfc822` or `message/global` parts.  Note
@@ -589,12 +589,12 @@ type EmailBodyPartFields = {
    * @kind server-set
    */
   preview: string;
-};
+}
 
 /**
  * [rfc8621 § 4.1.4](https://datatracker.ietf.org/doc/html/rfc8621#section-4.1.4)
  */
-export type EmailBodyValue = {
+export interface EmailBodyValue {
   /**
    * The value of the body part after decoding Content-Transfer-
    * Encoding and the Content-Type charset, if both known to the
@@ -622,7 +622,7 @@ export type EmailBodyValue = {
    * This is true if the "value" has been truncated.
    */
   isTruncated: boolean;
-};
+}
 
 /**
  * [rfc8621 § 4.4.1](https://datatracker.ietf.org/doc/html/rfc8621#section-4.4.1)
@@ -738,7 +738,7 @@ export type EmailFilterCondition = FilterCondition<{
 /**
  * [rfc8621 § 4.8](https://datatracker.ietf.org/doc/html/rfc8621#section-4.8)
  */
-export type EmailImport = {
+export interface EmailImport {
   /**
    * The id of the blob containing the raw message [RFC5322].
    */
@@ -756,4 +756,4 @@ export type EmailImport = {
    * The `receivedAt` date to set on the Email.
    */
   receivedAt: UTCDate;
-};
+}
