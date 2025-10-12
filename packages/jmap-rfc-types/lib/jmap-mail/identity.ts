@@ -1,4 +1,4 @@
-import type { ID } from "../jmap.ts";
+import type { ID } from "../jmap/primitives.ts";
 import type { EmailAddress } from "./email.ts";
 
 /**

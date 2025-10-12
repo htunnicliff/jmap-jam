@@ -1,4 +1,4 @@
-import type { UTCDate } from "../jmap.ts";
+import type { UTCDate } from "../jmap/primitives.ts";
 
 /**
  * [rfc8621 § 8](https://datatracker.ietf.org/doc/html/rfc8621#section-8)

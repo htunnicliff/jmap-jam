@@ -1,4 +1,4 @@
-import type { ID } from "../jmap.ts";
+import type { ID } from "../jmap/primitives.ts";
 
 /**
  * [rfc8621 § 3](https://datatracker.ietf.org/doc/html/rfc8621#section-3)

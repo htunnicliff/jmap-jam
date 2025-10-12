@@ -2,11 +2,7 @@
   "name": "jmap-rfc-types",
   "version": "0.1.1",
   "type": "module",
-  "exports": {
-    ".": "./lib/index.ts",
-    "./jmap-mail": "./lib/jmap-mail.ts",
-    "./jmap": "./lib/jmap.ts"
-  },
+  "exports": "./lib/index.ts",
   "sideEffects": false,
   "license": "MIT",
   "description": "TypeScript types for JMAP RFCs",

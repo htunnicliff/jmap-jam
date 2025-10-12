@@ -1,5 +1,6 @@
 import type { Simplify } from "type-fest";
-import type { FilterCondition, ID, UTCDate } from "../jmap.ts";
+import type { ID, UTCDate } from "../jmap/primitives.ts";
+import type { FilterCondition } from "../jmap/filters.ts";
 
 /**
  * [rfc8621 § 4](https://datatracker.ietf.org/doc/html/rfc8621#section-4)
