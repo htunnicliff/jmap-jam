@@ -2,6 +2,12 @@ import type { Simplify } from "type-fest";
 import type { ID, UTCDate } from "../jmap/primitives.ts";
 import type { FilterCondition } from "../jmap/filters.ts";
 
+declare module "../jmap/augmented.ts" {
+  interface Entities {
+    Email: true;
+  }
+}
+
 /**
  * [rfc8621 § 4](https://datatracker.ietf.org/doc/html/rfc8621#section-4)
  *

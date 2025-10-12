@@ -1,5 +1,11 @@
 import type { ID } from "../jmap/primitives.ts";
 
+declare module "../jmap/augmented.ts" {
+  interface Entities {
+    Mailbox: true;
+  }
+}
+
 /**
  * [rfc8621 § 2](https://datatracker.ietf.org/doc/html/rfc8621#section-2)
  *

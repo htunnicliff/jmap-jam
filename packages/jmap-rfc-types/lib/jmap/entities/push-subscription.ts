@@ -1,5 +1,11 @@
 import type { ID, UTCDate } from "../primitives.ts";
 
+declare module "../augmented.ts" {
+  interface Entities {
+    PushSubscription: true;
+  }
+}
+
 /**
  * [rfc8620 § 7.1](https://datatracker.ietf.org/doc/html/rfc8620#section-7.1)
  */

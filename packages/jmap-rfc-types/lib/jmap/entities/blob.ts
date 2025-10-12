@@ -1,5 +1,11 @@
 import type { ID } from "../primitives.ts";
 
+declare module "../augmented.ts" {
+  interface Entities {
+    Blob: true;
+  }
+}
+
 /**
  * [rfc8620 § 6.1](https://datatracker.ietf.org/doc/html/rfc8620#section-6.1)
  */

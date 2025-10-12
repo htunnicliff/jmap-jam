@@ -1,4 +1,5 @@
 export * from "./account.ts";
+export * from "./augmented.ts";
 export * from "./entities/index.ts";
 export * from "./entity-methods/index.ts";
 export * from "./errors.ts";

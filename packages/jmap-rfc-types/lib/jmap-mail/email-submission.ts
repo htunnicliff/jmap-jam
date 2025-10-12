@@ -1,5 +1,11 @@
 import type { ID, UTCDate } from "../jmap/primitives.ts";
 
+declare module "../jmap/augmented.ts" {
+  interface Entities {
+    EmailSubmission: true;
+  }
+}
+
 /**
  * [rfc8621 § 7](https://datatracker.ietf.org/doc/html/rfc8621#section-7)
  */

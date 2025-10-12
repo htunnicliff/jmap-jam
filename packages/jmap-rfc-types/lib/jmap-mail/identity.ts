@@ -1,6 +1,12 @@
 import type { ID } from "../jmap/primitives.ts";
 import type { EmailAddress } from "./email.ts";
 
+declare module "../jmap/augmented.ts" {
+  interface Entities {
+    Identity: true;
+  }
+}
+
 /**
  * [rfc8621 § 6](https://datatracker.ietf.org/doc/html/rfc8621#section-6)
  *
