@@ -1,17 +1,23 @@
 import type { LocalContext } from "../../context";
 
-interface FooCommandFlags {
-    // ...
+type FooCommandFlags = {
+  // ...
+};
+
+export async function foo(
+  this: LocalContext,
+  flags: FooCommandFlags
+): Promise<void> {
+  // ...
 }
 
-export async function foo(this: LocalContext, flags: FooCommandFlags): Promise<void> {
-    // ...
-}
+type BarCommandFlags = {
+  // ...
+};
 
-interface BarCommandFlags {
-    // ...
-}
-
-export async function bar(this: LocalContext, flags: BarCommandFlags): Promise<void> {
-    // ...
+export async function bar(
+  this: LocalContext,
+  flags: BarCommandFlags
+): Promise<void> {
+  // ...
 }

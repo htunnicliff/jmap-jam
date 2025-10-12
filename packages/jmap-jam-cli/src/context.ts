@@ -4,16 +4,17 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 
-export interface LocalContext extends CommandContext, StricliAutoCompleteContext {
-    readonly process: NodeJS.Process;
-    // ...
-}
+export type LocalContext = {
+  readonly process: NodeJS.Process;
+  // ...
+} & CommandContext &
+  StricliAutoCompleteContext;
 
 export function buildContext(process: NodeJS.Process): LocalContext {
-    return {
-        process,
-        os,
-        fs,
-        path,
-    };
+  return {
+    process,
+    os,
+    fs,
+    path
+  };
 }
