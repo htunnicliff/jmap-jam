@@ -8,12 +8,6 @@
     "./jmap": "./lib/jmap.ts"
   },
   "sideEffects": false,
-  "files": [
-    "lib",
-    "package.json",
-    "LICENSE.txt",
-    "README.md"
-  ],
   "license": "MIT",
   "description": "TypeScript types for JMAP RFCs",
   "repository": {

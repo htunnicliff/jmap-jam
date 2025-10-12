@@ -6,13 +6,6 @@
   "types": "./dist/index.d.ts",
   "exports": "./dist/index.js",
   "sideEffects": false,
-  "files": [
-    "dist",
-    "src",
-    "package.json",
-    "LICENSE.txt",
-    "README.md"
-  ],
   "license": "MIT",
   "description": "A JMAP client library for Node.js and the browser.",
   "repository": {
