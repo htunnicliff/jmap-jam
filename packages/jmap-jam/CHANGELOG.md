@@ -1,5 +1,13 @@
 # jmap-jam
 
+## 0.12.1
+
+### Patch Changes
+
+- 7e2e394: Add .npmignore
+- Updated dependencies [7e2e394]
+  - jmap-rfc-types@0.1.1
+
 ## 0.12.0
 
 ### Minor Changes
