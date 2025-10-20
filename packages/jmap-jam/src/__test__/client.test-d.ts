@@ -1,6 +1,7 @@
 import type { Email, EmailAddress, WithoutHeaders } from "jmap-rfc-types";
 import { describe, expectTypeOf, it } from "vitest";
 import { JamClient } from "../client.ts";
+import { knownCapabilities } from "../capabilities.ts";
 
 const jam = new JamClient({
   bearerToken: "example",
@@ -104,5 +105,14 @@ describe("Email", () => {
       expectTypeOf(textBody).toEqualTypeOf<FilteredEmailBodyPart[]>();
       expectTypeOf(htmlBody).toEqualTypeOf<FilteredEmailBodyPart[]>();
     } */
+  });
+
+  it("allows passing RequestOptions to API methods", () => {
+    jam.api.Email.get(
+      {
+        accountId: "123"
+      },
+      { using: [knownCapabilities.Core] }
+    );
   });
 });

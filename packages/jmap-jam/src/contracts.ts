@@ -276,7 +276,8 @@ export type ProxyAPI = {
     [Method in Entity as Method extends `${string}/${infer MethodName}`
       ? MethodName
       : never]: <A extends Requests[Method]>(
-      args: A
+      args: A,
+      options?: RequestOptions
     ) => Promise<[Responses<A>[Method], Meta]>;
   };
 };
