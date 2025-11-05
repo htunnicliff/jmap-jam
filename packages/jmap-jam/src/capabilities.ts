@@ -46,5 +46,12 @@ export function getCapabilitiesForMethodCalls({
     }
   }
 
+  // Ensure the Core capability is present when any other capability is required.
+  // Some JMAP servers (for example Fastmail) require the core capability
+  // to be included whenever other capabilities (like mail) are requested.
+  if (capabilities.size > 0) {
+    capabilities.add(knownCapabilities.Core);
+  }
+
   return capabilities;
 }
