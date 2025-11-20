@@ -18,10 +18,10 @@
   },
   "devDependencies": {
     "@changesets/cli": "2.29.7",
-    "@prettier/plugin-oxc": "0.0.4",
+    "@prettier/plugin-oxc": "0.0.5",
     "@types/node": "24.10.1",
-    "oxlint-tsgolint": "0.2.0",
-    "oxlint": "1.28.0",
+    "oxlint": "1.29.0",
+    "oxlint-tsgolint": "0.7.3",
     "prettier": "3.6.2"
   }
 }
