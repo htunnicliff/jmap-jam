@@ -44,7 +44,7 @@ import type {
 import type { Exact } from "type-fest";
 import type { HasAllKeysOfRelated } from "./helpers.ts";
 
-export type Requests = {
+export interface Requests {
   // Core -----------------------------------
   "Core/echo": Record<string, any>;
   // Blob -----------------------------------
@@ -131,7 +131,7 @@ export type Requests = {
   // Vacation Response ----------------------
   "VacationResponse/get": GetArguments<VacationResponse>;
   "VacationResponse/set": SetArguments<VacationResponseCreate>;
-};
+}
 
 export type Methods = keyof Requests;
 
@@ -217,22 +217,22 @@ export type GetResponseData<
   Args
 > = Responses<Args>[Method];
 
-export type RequestOptions = {
+export interface RequestOptions {
   fetchInit?: RequestInit;
   using?: JMAPRequest["using"];
   createdIds?: JMAPRequest["createdIds"];
-};
+}
 
 export type LocalInvocation<
   Method extends Methods,
   Args extends Exact<Requests[Method], Args>
 > = [Method, Args];
 
-export type Meta = {
+export interface Meta {
   sessionState: JMAPResponse["sessionState"];
   createdIds: JMAPResponse["createdIds"];
   response: Response;
-};
+}
 
 export type GetResult<
   Data,
@@ -282,7 +282,7 @@ export type ProxyAPI = {
   };
 };
 
-export type GetEmailArguments = {
+export interface GetEmailArguments {
   accountId: ID;
   ids?: ReadonlyArray<ID> | null;
   properties?: ReadonlyArray<keyof Email> | null;
@@ -291,7 +291,7 @@ export type GetEmailArguments = {
   fetchHTMLBodyValues?: boolean;
   fetchAllBodyValues?: boolean;
   maxBodyValueBytes?: number;
-};
+}
 
 type FilterEmailProperties<Properties extends GetEmailArguments["properties"]> =
   ReadonlyArray<

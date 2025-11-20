@@ -1,5 +1,5 @@
 import { describe, expectTypeOf, it } from "vitest";
-import {
+import type {
   AllowedHeadersByParsedForm,
   EmailAddress,
   EmailAddressGroup,
@@ -8,25 +8,25 @@ import {
   IsValidHeader,
   KnownHeaders,
   WithoutHeaders
-} from "../jmap-mail.ts";
+} from "../jmap-mail/email.ts";
 
 describe("WithoutHeaders", () => {
   it("removes all `header:` fields", () => {
-    type Input = {
+    interface Input {
       foo: string;
       bar: number[];
       "header:From:asRaw": string;
       "header:To:asAddresses": Array<EmailAddress>;
       "header:Subject:asText": string;
       "header:234231245@!@#$!#%": unknown;
-    };
+    }
 
     type Result = WithoutHeaders<Input>;
 
-    type Expected = {
+    interface Expected {
       foo: string;
       bar: number[];
-    };
+    }
 
     expectTypeOf<Result>().toEqualTypeOf<Expected>();
   });

@@ -1,9 +1,9 @@
 import type {
   ExtendedJSONPointer,
   Invocation,
-  ResultReference
+  ResultReference,
+  Entities
 } from "jmap-rfc-types";
-import type { LocalInvocation, Methods, Requests } from "./contracts.ts";
 import type { ExcludeValue, IncludeValue } from "./helpers.ts";
 
 /**
@@ -12,12 +12,12 @@ import type { ExcludeValue, IncludeValue } from "./helpers.ts";
  */
 const r = Symbol("Result Reference");
 
-export type Ref<I = unknown> = {
+export interface Ref<I = unknown> {
   [r]: {
     path: `/${string}`;
     invocation: I;
   };
-};
+}
 
 export type WithRefValues<T> = IncludeValue<T, Ref>;
 
@@ -73,10 +73,7 @@ export class InvocationDraft<I = unknown> {
     const invocationToId = new Map<unknown, string>();
 
     const methodCalls = Object.entries(drafts).map(([id, draft]) => {
-      const [method, inputArgs] = draft.#invocation as LocalInvocation<
-        any,
-        any
-      >;
+      const [method, inputArgs] = draft.#invocation as [any, any];
 
       invocationToId.set(draft.#invocation, id);
       methodNames.add(method);
@@ -110,7 +107,7 @@ export class InvocationDraft<I = unknown> {
 }
 
 export type DraftsProxy = {
-  [Entity in keyof Requests as Entity extends `${infer EntityName}/${string}`
+  [Entity in Entities as Entity extends `${infer EntityName}/${string}`
     ? EntityName
     : never]: {
     [Method in Entity as Method extends `${string}/${infer MethodName}`
