@@ -13,6 +13,7 @@
     "test": "pnpm -r test",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
+    "spelling:check": "cspell .",
     "version": "pnpm run build && changeset version && pnpm install",
     "publish": "pnpm run build && pnpm publish --recursive --access public"
   },
@@ -20,6 +21,7 @@
     "@changesets/cli": "2.29.7",
     "@prettier/plugin-oxc": "0.0.5",
     "@types/node": "24.10.1",
+    "cspell": "9.3.2",
     "oxlint": "1.29.0",
     "oxlint-tsgolint": "0.7.3",
     "prettier": "3.6.2"

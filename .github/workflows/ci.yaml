@@ -33,6 +33,9 @@ jobs:
       - name: Lint
         run: pnpm lint
 
+      - name: Check spelling
+        run: pnpm spelling:check
+
       - name: Format
         run: pnpm format:check
 
