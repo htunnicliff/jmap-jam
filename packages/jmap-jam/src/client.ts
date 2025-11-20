@@ -54,7 +54,7 @@ export type ClientConfig = {
    * ```
    * const client = createClient({
    *   customCapabilities: {
-   *     "Sandwich": "urn:bigco:params:jmap:sandwich",
+   *     "Sandwich": "urn:bigcompany:params:jmap:sandwich",
    *     "TextMessage": "foo:bar:jmap:sms",
    *     "Spaceship": "myspaceship-jmap-urn",
    *   },

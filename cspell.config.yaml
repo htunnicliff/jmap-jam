@@ -1,0 +1,14 @@
+version: "0.2"
+language: en
+useGitignore: true
+ignorePaths:
+  - pnpm-lock.yaml # Lockfile
+  - packages/jmap-rfc-types/lib/* # Comments are from RFCs
+allowCompoundWords: true
+words:
+  - jmap
+  - Tunnicliff
+  - oxlint
+  - attw
+  - esbuild
+  - tsgolint
