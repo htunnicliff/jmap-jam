@@ -10,7 +10,7 @@
   <a href="https://www.npmjs.com/package/jmap-jam">
     <img alt="NPM Version" src="https://img.shields.io/npm/v/jmap-jam">
   </a>
-  <a href="https://github.com/htunnicliff/jmap-jam/blob/main/LICENSE.txt">
+  <a href="https://github.com/htunnicliff/jmap-jam/blob/main/packages/jmap-jam/LICENSE.txt">
     <img alt="License" src="https://img.shields.io/npm/l/jmap-jam">
   </a>
 </p>
