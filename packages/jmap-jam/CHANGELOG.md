@@ -1,5 +1,11 @@
 # jmap-jam
 
+## 0.13.0
+
+### Minor Changes
+
+- 0147bf5: All requests will now include the `urn:ietf:params:jmap:core` capability
+
 ## 0.12.1
 
 ### Patch Changes
