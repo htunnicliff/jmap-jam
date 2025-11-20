@@ -1,12 +1,21 @@
 import type { Simplify } from "type-fest";
-import type { ID, UTCDate } from "../jmap/primitives.ts";
 import type { FilterCondition } from "../jmap/filters.ts";
-
-declare module "../jmap/augmented.ts" {
-  interface $Entities {
-    Email: true;
-  }
-}
+import type { ID, UTCDate } from "../jmap/primitives.ts";
+import type {
+  ChangesArguments,
+  ChangesResponse
+} from "../jmap/methods/changes.ts";
+import type { CopyArguments, CopyResponse } from "../jmap/methods/copy.ts";
+import type { QueryArguments, QueryResponse } from "../jmap/methods/query.ts";
+import type {
+  QueryChangesArguments,
+  QueryChangesResponse
+} from "../jmap/methods/query-changes.ts";
+import type {
+  SetArguments,
+  SetError,
+  SetResponse
+} from "../jmap/methods/set.ts";
 
 /**
  * [rfc8621 § 4](https://datatracker.ietf.org/doc/html/rfc8621#section-4)
@@ -762,4 +771,116 @@ export interface EmailImport {
    * The `receivedAt` date to set on the Email.
    */
   receivedAt: UTCDate;
+}
+
+export namespace EmailContracts {
+  export interface GetArgs {
+    accountId: ID;
+    ids?: ReadonlyArray<ID> | null;
+    properties?: ReadonlyArray<keyof Email> | null;
+    bodyProperties?: Array<keyof EmailBodyPart>;
+    fetchTextBodyValues?: boolean;
+    fetchHTMLBodyValues?: boolean;
+    fetchAllBodyValues?: boolean;
+    maxBodyValueBytes?: number;
+  }
+
+  type FilterEmailProperties<Properties extends GetArgs["properties"]> =
+    ReadonlyArray<
+      Properties extends ReadonlyArray<infer Prop extends string>
+        ? { [Key in Prop]: Key extends keyof Email ? Email[Key] : never }
+        : WithoutHeaders<Email>
+    >;
+
+  export type GetResponse<Args> = Args extends GetArgs
+    ? {
+        accountId: ID;
+        state: string;
+        list: FilterEmailProperties<Args["properties"]>;
+        notFound: ReadonlyArray<ID>;
+      }
+    : never;
+
+  export type CopyArgs = CopyArguments<
+    Pick<Email, "id" | "mailboxIds" | "keywords" | "receivedAt">
+  >;
+
+  export interface ImportArgs {
+    accountId: ID;
+    ifInState?: string | null;
+    emails: Record<ID, EmailImport>;
+  }
+
+  export interface ParseArgs {
+    accountId: ID;
+    blobIds: ID[];
+    properties?: Array<keyof Email>;
+    bodyProperties?: Array<keyof Email>;
+    fetchTextBodyValues?: boolean;
+    fetchHTMLBodyValues?: boolean;
+    fetchAllBodyValues?: boolean;
+    maxBodyValueBytes?: number;
+  }
+
+  export interface QueryArgs
+    extends QueryArguments<Email, EmailFilterCondition> {
+    collapseThreads?: boolean;
+  }
+
+  export interface QueryChangesArgs
+    extends QueryChangesArguments<Email, EmailFilterCondition> {
+    collapseThreads?: boolean;
+  }
+
+  export interface ImportResponse {
+    accountId: ID;
+    oldState: string | null;
+    newState: string;
+    created: Record<ID, Email> | null;
+    notCreated: Record<ID, SetError> | null;
+  }
+
+  export interface ParseResponse {
+    accountId: ID;
+    parsed: Record<ID, Email> | null;
+    notParsable: ID[] | null;
+    notFound: ID[] | null;
+  }
+}
+
+declare module "../jmap/augmented.ts" {
+  interface Operations<Args> {
+    "Email/changes": {
+      args: ChangesArguments;
+      response: ChangesResponse;
+    };
+    "Email/copy": {
+      args: EmailContracts.CopyArgs;
+      response: CopyResponse<Email>;
+    };
+    "Email/get": {
+      args: EmailContracts.GetArgs;
+      response: EmailContracts.GetResponse<Args>;
+    };
+    "Email/import": {
+      args: EmailContracts.ImportArgs;
+      response: EmailContracts.ImportResponse;
+    };
+    "Email/parse": {
+      args: EmailContracts.ParseArgs;
+      response: EmailContracts.ParseResponse;
+    };
+    "Email/query": {
+      args: EmailContracts.QueryArgs;
+      response: QueryResponse;
+    };
+    "Email/queryChanges": {
+      args: EmailContracts.QueryChangesArgs;
+      response: QueryChangesResponse;
+    };
+    "Email/set": {
+      args: SetArguments<EmailCreate>;
+      response: SetResponse<Email, Args>;
+    };
+  }
 }
