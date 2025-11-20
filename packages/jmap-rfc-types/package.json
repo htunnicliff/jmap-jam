@@ -21,6 +21,7 @@
   },
   "scripts": {
     "check:types": "tsc --noEmit",
+    "build": "pnpm check:types",
     "dev": "vitest dev",
     "test": "vitest run"
   },
