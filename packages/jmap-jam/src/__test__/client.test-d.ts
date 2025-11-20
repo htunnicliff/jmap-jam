@@ -107,8 +107,8 @@ describe("Email", () => {
     } */
   });
 
-  it("allows passing RequestOptions to API methods", () => {
-    jam.api.Email.get(
+  it("allows passing RequestOptions to API methods", async () => {
+    await jam.api.Email.get(
       {
         accountId: "123"
       },
