@@ -32,6 +32,11 @@ jobs:
       - name: Check spelling
         run: pnpm spelling:check
 
+      - name: Check for README changes
+        run: |
+          pnpm run sync:readme
+          git diff --exit-code README.md
+
       - name: Format
         run: pnpm format:check
 

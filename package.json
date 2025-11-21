@@ -15,7 +15,8 @@
     "format:check": "prettier --check .",
     "spelling:check": "cspell .",
     "version": "pnpm run build && changeset version && pnpm install",
-    "publish": "pnpm run build && pnpm publish --recursive --access public"
+    "publish": "pnpm run build && pnpm publish --recursive --access public",
+    "sync:readme": "cp packages/jmap-jam/README.md README.md"
   },
   "devDependencies": {
     "@changesets/cli": "2.29.7",

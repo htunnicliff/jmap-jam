@@ -1,1 +1,0 @@
-packages/jmap-jam/README.md
