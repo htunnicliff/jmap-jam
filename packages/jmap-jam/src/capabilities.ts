@@ -30,7 +30,7 @@ export function getCapabilitiesForMethodCalls({
   methodNames: Iterable<string>;
   availableCapabilities: ReadonlyMap<string, string>;
 }) {
-  const capabilities = new Set<string>(knownCapabilities.Core);
+  const capabilities = new Set<string>([knownCapabilities.Core]);
 
   // For each method
   for (const method of methodNames) {
