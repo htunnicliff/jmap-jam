@@ -1,5 +1,11 @@
 # jmap-rfc-types
 
+## 0.1.2
+
+### Patch Changes
+
+- a00c349: Added badges to README
+
 ## 0.1.1
 
 ### Patch Changes

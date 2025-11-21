@@ -1,5 +1,14 @@
 # jmap-jam
 
+## 0.13.1
+
+### Patch Changes
+
+- c652799: Fix license badge link
+- 1a5f48e: Added missing array to capabilities Set
+- Updated dependencies [a00c349]
+  - jmap-rfc-types@0.1.2
+
 ## 0.13.0
 
 ### Minor Changes
