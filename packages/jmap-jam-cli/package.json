@@ -1,0 +1,46 @@
+{
+  "name": "jmap-jam-cli",
+  "author": "",
+  "description": "Stricli command line application",
+  "license": "MIT",
+  "type": "module",
+  "version": "0.0.0",
+  "files": [
+    "dist"
+  ],
+  "bin": {
+    "jam": "dist/cli.js",
+    "__jam_bash_complete": "dist/bash-complete.js"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "prebuild": "tsc -p src/tsconfig.json",
+    "build": "tsdown",
+    "prepublishOnly": "npm run build",
+    "postinstall": "jam install"
+  },
+  "tsdown": {
+    "entry": [
+      "src/bin/cli.ts",
+      "src/bin/bash-complete.ts"
+    ],
+    "format": [
+      "esm"
+    ],
+    "tsconfig": "src/tsconfig.json",
+    "clean": true,
+    "splitting": true,
+    "minify": true
+  },
+  "dependencies": {
+    "@stricli/core": "^1.2.0",
+    "@stricli/auto-complete": "^1.2.0"
+  },
+  "devDependencies": {
+    "@types/node": "22.x",
+    "tsdown": "0.15.x",
+    "typescript": "5.6.x"
+  }
+}
