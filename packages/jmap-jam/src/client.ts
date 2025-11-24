@@ -8,7 +8,8 @@ import type {
   Request as JMAPRequest,
   Response as JMAPResponse,
   ProblemDetails,
-  Session
+  Session,
+  Operations
 } from "jmap-rfc-types";
 import {
   getCapabilitiesForMethodCalls,
@@ -36,7 +37,7 @@ import type {
 } from "./request-drafts.ts";
 import { buildRequestsFromDrafts } from "./request-drafts.ts";
 
-export type ClientConfig = {
+export interface ClientConfig {
   /**
    * The bearer token used to authenticate all requests
    */
@@ -62,7 +63,7 @@ export type ClientConfig = {
    * ```
    */
   customCapabilities?: Record<string, string>;
-};
+}
 
 export class JamClient<Config extends ClientConfig = ClientConfig> {
   /**
@@ -109,13 +110,13 @@ export class JamClient<Config extends ClientConfig = ClientConfig> {
    */
   // oxlint-disable-next-line max-lines-per-function
   async request<
-    Method extends Methods,
-    Args extends GetArgs<Method, Args>,
-    Data extends GetResponseData<Method, Args>
+    Operation extends keyof Operations<unknown>,
+    Args extends Operations<unknown>[Operation]["args"],
+    Response extends Operations<Args>[Operation]["response"]
   >(
-    [method, args]: LocalInvocation<Method, Args>,
+    [method, args]: [Operation, Args],
     options?: RequestOptions
-  ): Promise<[Data, Meta]> {
+  ): Promise<[Response, Meta]> {
     const {
       using = [],
       fetchInit,
@@ -169,7 +170,7 @@ export class JamClient<Config extends ClientConfig = ClientConfig> {
       methodResponses: [methodResponse],
       sessionState,
       createdIds
-    } = (await response.json()) as JMAPResponse<[Invocation<Data>]>;
+    } = (await response.json()) as JMAPResponse<[Invocation<Response>]>;
 
     const error = getErrorFromInvocation(methodResponse);
     if (error) {

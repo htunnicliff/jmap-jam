@@ -2,11 +2,8 @@
   "name": "jmap-rfc-types",
   "version": "0.1.2",
   "type": "module",
-  "exports": {
-    ".": "./lib/index.ts",
-    "./jmap-mail": "./lib/jmap-mail.ts",
-    "./jmap": "./lib/jmap.ts"
-  },
+  "exports": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "sideEffects": false,
   "license": "MIT",
   "description": "TypeScript types for JMAP RFCs",
@@ -20,15 +17,20 @@
     "url": "https://github.com/htunnicliff"
   },
   "scripts": {
+    "preversion": "tsdown",
+    "build": "tsdown",
     "check:types": "tsc --noEmit",
     "build": "pnpm check:types",
     "dev": "vitest dev",
     "test": "vitest run"
   },
   "dependencies": {
+    "free-types": "0.12.0",
     "type-fest": "5"
   },
   "devDependencies": {
+    "@arethetypeswrong/core": "0.18.2",
+    "tsdown": "0.16.4",
     "typescript": "5.9.3",
     "vitest": "4.0.9"
   }
