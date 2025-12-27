@@ -30,7 +30,7 @@
   },
   "devDependencies": {
     "@arethetypeswrong/core": "0.18.2",
-    "tsdown": "0.16.4",
+    "tsdown": "0.18.3",
     "typescript": "5.9.3",
     "vitest": "4.0.9"
   }
