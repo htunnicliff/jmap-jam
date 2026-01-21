@@ -8,6 +8,7 @@ allowCompoundWords: true
 words:
   - jmap
   - Tunnicliff
+  - htunnicliff
   - oxlint
   - attw
   - esbuild
