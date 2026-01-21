@@ -1,16 +1,20 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": [
-    "config:best-practices",
-    ":approveMajorUpdates",
-    ":automergeMinor",
-    ":automergePatch",
-    ":automergeDigest",
-    ":automergeRequireAllStatusChecks",
-    ":maintainLockFilesMonthly",
-    ":separateMajorReleases",
-    "schedule:automergeEarlyMondays",
-    "group:allNonMajor"
-  ],
-  "branchConcurrentLimit": 12
+  "extends": ["config:best-practices"],
+  "branchConcurrentLimit": 12,
+  "automergeStrategy": "rebase",
+  "timezone": "America/Los_Angeles",
+  "lockFileMaintenance": {
+    "enabled": true,
+    "extends": ["schedule:weekly"]
+  },
+  "packageRules": [
+    {
+      "description": "Merge minor and patch dev dependencies",
+      "groupName": "Minor and patch dev dependencies",
+      "matchDepTypes": ["devDependencies"],
+      "matchUpdateTypes": ["minor", "patch", "pinDigest"],
+      "automerge": true
+    }
+  ]
 }
