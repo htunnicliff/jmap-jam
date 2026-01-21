@@ -9,6 +9,7 @@
     ":automergeRequireAllStatusChecks",
     ":maintainLockFilesMonthly",
     ":separateMajorReleases",
-    "schedule:automergeEarlyMondays"
+    "schedule:automergeEarlyMondays",
+    "group:allNonMajor"
   ]
 }
