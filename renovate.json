@@ -1,4 +1,14 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["config:best-practices"]
+  "extends": [
+    "config:best-practices",
+    ":approveMajorUpdates",
+    ":automergeMinor",
+    ":automergePatch",
+    ":automergeDigest",
+    ":automergeRequireAllStatusChecks",
+    ":maintainLockFilesMonthly",
+    ":separateMajorReleases",
+    "schedule:automergeEarlyMondays"
+  ]
 }
