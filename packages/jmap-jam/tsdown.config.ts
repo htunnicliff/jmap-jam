@@ -6,7 +6,7 @@ export default defineConfig({
   target: ["esnext", "node18"],
   platform: "neutral",
   attw: {
-    profile: "esmOnly"
+    profile: "esm-only"
   },
   dts: true,
   minify: true,
