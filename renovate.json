@@ -4,17 +4,23 @@
   "branchConcurrentLimit": 12,
   "automergeStrategy": "rebase",
   "timezone": "America/Los_Angeles",
+  "ignoreTests": false,
   "lockFileMaintenance": {
     "enabled": true,
     "extends": ["schedule:weekly"]
   },
+  "automerge": true,
   "packageRules": [
     {
-      "description": "Merge minor and patch dev dependencies",
-      "groupName": "Minor and patch dev dependencies",
-      "matchDepTypes": ["devDependencies"],
-      "matchUpdateTypes": ["minor", "patch", "pinDigest"],
-      "automerge": true
+      "description": "Major dependencies",
+      "matchUpdateTypes": ["major"],
+      "automerge": false
+    },
+    {
+      "description": "Dependencies",
+      "matchDatasources": ["npm"],
+      "matchDepTypes": ["dependencies"],
+      "automerge": false
     }
   ]
 }
