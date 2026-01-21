@@ -11,5 +11,6 @@
     ":separateMajorReleases",
     "schedule:automergeEarlyMondays",
     "group:allNonMajor"
-  ]
+  ],
+  "prConcurrentLimit": 12
 }
