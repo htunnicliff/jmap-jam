@@ -1,26 +1,4 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["config:best-practices"],
-  "branchConcurrentLimit": 12,
-  "automergeStrategy": "rebase",
-  "timezone": "America/Los_Angeles",
-  "ignoreTests": false,
-  "lockFileMaintenance": {
-    "enabled": true,
-    "extends": ["schedule:weekly"]
-  },
-  "automerge": true,
-  "packageRules": [
-    {
-      "description": "Major dependencies",
-      "matchUpdateTypes": ["major"],
-      "automerge": false
-    },
-    {
-      "description": "Dependencies",
-      "matchDatasources": ["npm"],
-      "matchDepTypes": ["dependencies"],
-      "automerge": false
-    }
-  ]
+  "extends": ["github>htunnicliff/renovate"]
 }
