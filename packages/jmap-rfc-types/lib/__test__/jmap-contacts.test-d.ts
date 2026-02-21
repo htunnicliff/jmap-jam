@@ -4,13 +4,11 @@ import type {
   ContactCard,
   ContactCardFilterCondition,
   ContactEmailAddress,
-  JMAPContacts
+  Entities
 } from "../jmap-contacts.ts";
 
 describe("JMAPContacts types", () => {
   it("defines correct entity types", () => {
-    type Entities = JMAPContacts.Entities;
-    
     expectTypeOf<Entities>().toEqualTypeOf<{
       AddressBook: AddressBook;
       ContactCard: ContactCard;

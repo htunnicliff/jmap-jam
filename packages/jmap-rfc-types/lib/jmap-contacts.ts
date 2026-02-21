@@ -5,15 +5,12 @@ import type { FilterCondition, ID, UTCDate } from "./jmap.ts";
  *
  * [rfc9610](https://datatracker.ietf.org/doc/html/rfc9610)
  */
+export type Entities = {
+  AddressBook: AddressBook;
+  ContactCard: ContactCard;
+};
 
-export namespace JMAPContacts {
-  export type Entities = {
-    AddressBook: AddressBook;
-    ContactCard: ContactCard;
-  };
-
-  export type Entity = keyof Entities;
-}
+export type Entity = keyof Entities;
 
 // =================================
 // AddressBooks
@@ -47,25 +44,41 @@ export type AddressBook = {
    * Defines the sort order of AddressBooks when presented in the client's UI
    * so it is consistent between devices. The number MUST be an integer in the
    * range 0 <= sortOrder < 2^31.
+   *
+   * An AddressBook with a lower order is to be displayed before a AddressBook
+   * with a higher order in any list of AddressBooks in the client's UI.
+   * AddressBooks with equal order should be sorted in alphabetical order by
+   * name. The sorting should take into account locale-specific character order
+   * convention.
    */
   sortOrder: number;
   /**
    * This SHOULD be true for exactly one AddressBook in any account and MUST
-   * NOT be true for more than one AddressBook within an account.
+   * NOT be true for more than one AddressBook within an account. The default
+   * AddressBook should be used by clients whenever they need to choose an
+   * AddressBook for the user within this account and they do not have any other
+   * information on which to make a choice. For example, if the user creates a
+   * new contact card, the client may automatically set the card as belonging to
+   * the default AddressBook from the user's primary account.
    *
    * @kind server-set
    */
   isDefault: boolean;
   /**
    * True if the user has indicated they wish to see this AddressBook in their
-   * client.
+   * client. If false, the AddressBook and its contents SHOULD only be
+   * displayed when the user explicitly requests it. The UI may offer to the
+   * user the option of subscribing to it.
    */
   isSubscribed: boolean;
   /**
    * A map of the Principal id to rights for Principals this AddressBook is
    * shared with. The Principal to which this AddressBook belongs MUST NOT be
    * in this set. This is null if the AddressBook is not shared with anyone or
-   * if the server does not support RFC 9670.
+   * if the server does not support RFC 9670. The value may be modified only if
+   * the user has the "mayShare" right. The account id for the Principals may
+   * be found in the `urn:ietf:params:jmap:principals:owner` capability of the
+   * Account to which the AddressBook belongs.
    */
   shareWith: Record<ID, AddressBookRights> | null;
   /**
@@ -123,8 +136,9 @@ export type AddressBookRights = {
 export type ContactCard = JSContactCard & {
   /**
    * The id of the ContactCard. The "id" property MAY be different to the
-   * ContactCard's "uid" property. However, there MUST NOT be more than one
-   * ContactCard with the same uid in an Account.
+   * ContactCard's "uid" property (as defined in Section 2.1.9 of RFC 9553).
+   * However, there MUST NOT be more than one ContactCard with the same uid in
+   * an Account.
    *
    * @kind immutable
    * @kind server-set
@@ -288,13 +302,13 @@ export type NameComponent = {
    * The kind of name component.
    */
   kind?:
-    | "prefix"
-    | "given"
-    | "given2"
-    | "surname"
-    | "surname2"
-    | "suffix"
-    | "credential";
+  | "prefix"
+  | "given"
+  | "given2"
+  | "surname"
+  | "surname2"
+  | "suffix"
+  | "credential";
   /**
    * The value of this name component.
    */
@@ -455,23 +469,23 @@ export type AddressComponent = {
    * The kind of address component.
    */
   kind?:
-    | "room"
-    | "apartment"
-    | "floor"
-    | "building"
-    | "number"
-    | "name"
-    | "block"
-    | "subdistrict"
-    | "district"
-    | "locality"
-    | "region"
-    | "postcode"
-    | "country"
-    | "direction"
-    | "landmark"
-    | "postOfficeBox"
-    | "separator";
+  | "room"
+  | "apartment"
+  | "floor"
+  | "building"
+  | "number"
+  | "name"
+  | "block"
+  | "subdistrict"
+  | "district"
+  | "locality"
+  | "region"
+  | "postcode"
+  | "country"
+  | "direction"
+  | "landmark"
+  | "postOfficeBox"
+  | "separator";
   /**
    * The value of this address component.
    */
@@ -692,24 +706,3 @@ export type ContactCardFilterCondition = FilterCondition<{
    */
   note?: string;
 }>;
-
-// =================================
-// Capability
-// =================================
-
-/**
- * [rfc9610 § 1.4.1](https://datatracker.ietf.org/doc/html/rfc9610#section-1.4.1)
- *
- * Capability for urn:ietf:params:jmap:contacts
- */
-export type ContactsCapability = {
-  /**
-   * The maximum number of AddressBooks that can be assigned to a single
-   * ContactCard object. This MUST be an integer >= 1, or null for no limit.
-   */
-  maxAddressBooksPerCard: number | null;
-  /**
-   * The user may create an AddressBook in this account if, and only if, this is true.
-   */
-  mayCreateAddressBook: boolean;
-};
