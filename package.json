@@ -24,7 +24,7 @@
     "@types/node": "24.10.13",
     "cspell": "9.7.0",
     "oxlint": "1.50.0",
-    "oxlint-tsgolint": "0.14.2",
+    "oxlint-tsgolint": "0.15.0",
     "prettier": "3.8.1"
   }
 }
