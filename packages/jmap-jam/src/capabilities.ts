@@ -11,7 +11,10 @@ export const knownCapabilities = {
   SearchSnippet: "urn:ietf:params:jmap:mail",
   Identity: "urn:ietf:params:jmap:submission",
   EmailSubmission: "urn:ietf:params:jmap:submission",
-  VacationResponse: "urn:ietf:params:jmap:vacationresponse"
+  VacationResponse: "urn:ietf:params:jmap:vacationresponse",
+  // RFC9610
+  AddressBook: "urn:ietf:params:jmap:contacts",
+  ContactCard: "urn:ietf:params:jmap:contacts"
 };
 
 /**
