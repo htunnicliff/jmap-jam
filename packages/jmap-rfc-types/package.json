@@ -4,6 +4,7 @@
   "type": "module",
   "exports": {
     ".": "./lib/index.ts",
+    "./jmap-contacts": "./lib/jmap-contacts.ts",
     "./jmap-mail": "./lib/jmap-mail.ts",
     "./jmap": "./lib/jmap.ts"
   },
