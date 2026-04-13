@@ -25,6 +25,6 @@
     "cspell": "9.8.0",
     "oxlint": "1.59.0",
     "oxlint-tsgolint": "0.20.0",
-    "prettier": "3.8.1"
+    "prettier": "3.8.2"
   }
 }
