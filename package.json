@@ -19,7 +19,7 @@
     "sync:readme": "cp packages/jmap-jam/README.md README.md"
   },
   "devDependencies": {
-    "@changesets/cli": "2.30.0",
+    "@changesets/cli": "2.31.0",
     "@prettier/plugin-oxc": "0.1.4",
     "@types/node": "24.12.2",
     "cspell": "9.8.0",
