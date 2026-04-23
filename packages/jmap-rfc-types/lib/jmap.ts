@@ -393,6 +393,44 @@ export type ProblemDetails = {
 };
 
 /**
+ * Custom Error class that includes ProblemDetails
+ */
+export class ProblemDetailsError extends Error {
+  problem: ProblemDetails;
+
+  constructor(details: ProblemDetails, options?: ErrorOptions) {
+    super("ProblemDetailsError", options);
+    if (ProblemDetailsError.isProblemDetails(details) === false) {
+      throw new TypeError("details is not a valid ProblemDetails object");
+    }
+    this.problem = structuredClone(details);
+  }
+
+  static isProblemDetails(input: unknown): input is ProblemDetails {
+    const requiredKeys = new Set(["type"]);
+
+    const allowedKeys = new Map<string, string>([
+      ["type", "string"],
+      ["status", "number"],
+      ["detail", "string"],
+      ["instance", "string"],
+      ["methodCallId", "string"],
+      ["limit", "string"]
+    ]);
+
+    return (
+      typeof input === "object" &&
+      input !== null &&
+      "type" in input &&
+      [...requiredKeys].every((key) => Object.hasOwn(input, key)) &&
+      Object.entries(input).every(([key, value]) => {
+        return allowedKeys.has(key) && typeof value === allowedKeys.get(key);
+      })
+    );
+  }
+}
+
+/**
  * [rfc8620 § 3.6.2](https://datatracker.ietf.org/doc/html/rfc8620#section-3.6.2)
  *
  * If a method encounters an error, the appropriate "error" response
