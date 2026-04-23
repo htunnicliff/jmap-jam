@@ -23,7 +23,7 @@
     "@prettier/plugin-oxc": "0.1.4",
     "@types/node": "24.12.2",
     "cspell": "9.8.0",
-    "oxlint": "1.60.0",
+    "oxlint": "1.61.0",
     "oxlint-tsgolint": "0.21.1",
     "prettier": "3.8.3"
   }
