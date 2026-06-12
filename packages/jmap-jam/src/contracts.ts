@@ -1,8 +1,13 @@
 import type {
+  AddressBook,
+  AddressBookCreate,
   BlobCopyArguments,
   BlobCopyResponse,
   ChangesArguments,
   ChangesResponse,
+  ContactCard,
+  ContactCardCreate,
+  ContactCardFilterCondition,
   CopyArguments,
   CopyResponse,
   Email,
@@ -54,6 +59,25 @@ export type Requests = {
   "PushSubscription/set": Omit<
     SetArguments<PushSubscriptionCreate>,
     "accountId" | "ifInState"
+  >;
+  // AddressBook ----------------------------
+  "AddressBook/get": GetArguments<AddressBook>;
+  "AddressBook/changes": ChangesArguments;
+  "AddressBook/set": SetArguments<AddressBookCreate> & {
+    onDestroyRemoveContents?: boolean;
+    onSuccessSetIsDefault?: ID | null;
+  };
+  // ContactCard ----------------------------
+  "ContactCard/get": GetArguments<ContactCard>;
+  "ContactCard/changes": ChangesArguments;
+  "ContactCard/query": QueryArguments<ContactCard, ContactCardFilterCondition>;
+  "ContactCard/queryChanges": QueryChangesArguments<
+    ContactCard,
+    ContactCardFilterCondition
+  >;
+  "ContactCard/set": SetArguments<ContactCardCreate>;
+  "ContactCard/copy": CopyArguments<
+    Pick<ContactCard, "id" | "addressBookIds">
   >;
   // Mailbox --------------------------------
   "Mailbox/get": GetArguments<Mailbox>;
@@ -151,6 +175,17 @@ export type Responses<A> = HasAllKeysOfRelated<
       SetResponse<PushSubscription, A>,
       "accountId" | "oldState" | "newState"
     >;
+    // AddressBook ----------------------------
+    "AddressBook/get": GetResponse<AddressBook, A>;
+    "AddressBook/changes": ChangesResponse;
+    "AddressBook/set": SetResponse<AddressBook, A>;
+    // ContactCard ----------------------------
+    "ContactCard/get": GetResponse<ContactCard, A>;
+    "ContactCard/changes": ChangesResponse;
+    "ContactCard/query": QueryResponse;
+    "ContactCard/queryChanges": QueryChangesResponse;
+    "ContactCard/set": SetResponse<ContactCard, A>;
+    "ContactCard/copy": CopyResponse<ContactCard>;
     // Mailbox --------------------------------
     "Mailbox/get": GetResponse<Mailbox, A>;
     "Mailbox/changes": ChangesResponse & {

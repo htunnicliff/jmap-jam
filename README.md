@@ -23,6 +23,7 @@ Jam adheres to the following IETF standards:
 
 - [RFC 8620][jmap-rfc] - JMAP
 - [RFC 8621][jmap-mail-rfc] - JMAP for Mail
+- [RFC 9610][jmap-contacts-rfc] - JMAP for Contacts
 
 ### Table of Contents
 
@@ -444,6 +445,7 @@ sse.addEventListener("close", (event) => ...));
 [jmap-3.2-invocation]: https://datatracker.ietf.org/doc/html/rfc8620#section-3.2
 [jmap-3.7-result-refs]: https://datatracker.ietf.org/doc/html/rfc8620#section-3.7
 [jmap-5-std-methods]: https://datatracker.ietf.org/doc/html/rfc8620#section-5
+[jmap-contacts-rfc]: https://datatracker.ietf.org/doc/html/rfc9610
 [jmap-mail-rfc]: https://datatracker.ietf.org/doc/html/rfc8621
 [jmap-rfc]: https://datatracker.ietf.org/doc/html/rfc8620
 [mdn-esm]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules
