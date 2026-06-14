@@ -22,7 +22,7 @@
     "@changesets/cli": "2.31.0",
     "@prettier/plugin-oxc": "0.1.4",
     "@types/node": "24.13.2",
-    "cspell": "9.8.0",
+    "cspell": "10.0.1",
     "oxlint": "1.69.0",
     "oxlint-tsgolint": "0.23.0",
     "prettier": "3.8.4"
