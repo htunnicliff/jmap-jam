@@ -32,6 +32,6 @@
     "@arethetypeswrong/core": "0.18.3",
     "tsdown": "0.22.2",
     "typescript": "5.9.3",
-    "vitest": "4.1.8"
+    "vitest": "4.1.9"
   }
 }
