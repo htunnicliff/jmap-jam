@@ -2,7 +2,7 @@
   "private": true,
   "scripts": {
     "build": "pnpm -r build",
-    "lint": "oxlint --type-aware",
+    "lint": "oxlint",
     "test": "pnpm -r test",
     "format": "oxfmt",
     "format:check": "oxfmt --check",

@@ -17,6 +17,9 @@
     "suspicious": "error",
     "pedantic": "error"
   },
+  "options": {
+    "typeAware": true
+  },
   "rules": {
     // No max lines limit
     "max-lines": "allow",
