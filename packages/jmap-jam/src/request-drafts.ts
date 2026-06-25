@@ -57,9 +57,7 @@ export class InvocationDraft<I = unknown> {
    * by replacing result reference placeholders with JMAP result references
    * and applying user-provided IDs.
    */
-  static createInvocationsFromDrafts(
-    drafts: Record<string, InvocationDraft>
-  ): {
+  static createInvocationsFromDrafts(drafts: Record<string, InvocationDraft>): {
     methodCalls: Invocation[];
     methodNames: Set<string>;
   } {
