@@ -17,7 +17,7 @@ strictPeerDependencies: true
 savePrefix: ""
 
 catalog:
-  "@arethetypeswrong/core": 0.18.3
+  "@arethetypeswrong/core": 0.18.4
   tsdown: 0.22.3
   type-fest: "5"
   typescript: 6.0.3
