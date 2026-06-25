@@ -44,6 +44,9 @@ importers:
       oxlint-tsgolint:
         specifier: 0.23.0
         version: 0.23.0
+      typescript:
+        specifier: 'catalog:'
+        version: 6.0.3
 
   packages/jmap-jam:
     dependencies:
