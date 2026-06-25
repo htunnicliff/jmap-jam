@@ -48,6 +48,7 @@ describe("Email", () => {
     expectTypeOf(email).toEqualTypeOf<WithoutHeaders<Email>>();
   });
 
+  // oxlint-disable-next-line vitest/warn-todo
   it.todo("EmailBodyPart fields are filtered by `bodyProperties`", async () => {
     /* const [
       { noBodyProperties, withBodyProperties, withBodyPropertiesAndProperties }
@@ -108,6 +109,7 @@ describe("Email", () => {
     } */
   });
 
+  // oxlint-disable-next-line vitest/expect-expect
   it("allows passing RequestOptions to API methods", async () => {
     await jam.api.Email.get(
       {

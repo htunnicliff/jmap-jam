@@ -1,22 +1,51 @@
 {
   "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["unicorn", "typescript", "oxc", "import", "promise"],
-  "jsPlugins": null,
+  "plugins": [
+    // Default plugins
+    "eslint",
+    "typescript",
+    "unicorn",
+    "oxc",
+    // Additional plugins
+    "import",
+    "promise",
+    "vitest"
+  ],
   "categories": {
     "correctness": "error",
     "perf": "error",
     "suspicious": "error",
-    "pedantic": "warn"
+    "pedantic": "error"
+  },
+  "options": {
+    "typeAware": true
   },
   "rules": {
     // No max lines limit
     "max-lines": "allow",
+
     // Use `type` instead of `interface`
     "typescript/consistent-type-definitions": ["error", "type"],
+
     // No limit on dependency count
     "import/max-dependencies": "allow",
+
     // TOOD: Fix these gradually
-    "typescript/no-unsafe-type-assertion": "warn"
+    "typescript/no-unsafe-argument": "warn",
+    "typescript/no-unsafe-assignment": "warn",
+    "typescript/no-unsafe-member-access": "warn",
+    "typescript/no-unsafe-type-assertion": "warn",
+    "typescript/only-throw-error": "warn",
+    "typescript/strict-boolean-expressions": "warn",
+
+    // Do not require readonly parameters
+    "typescript/prefer-readonly-parameter-types": "allow",
+
+    // Permit "TODO" comments
+    "no-warning-comments": "allow",
+
+    // Permit inline comments
+    "no-inline-comments": "allow"
   },
   "overrides": [
     // Permit longer functions in test files
@@ -35,18 +64,6 @@
     }
   ],
   "settings": {
-    "jsx-a11y": {
-      "polymorphicPropName": null,
-      "components": {},
-      "attributes": {}
-    },
-    "next": {
-      "rootDir": []
-    },
-    "react": {
-      "formComponents": [],
-      "linkComponents": []
-    },
     "jsdoc": {
       "ignorePrivate": false,
       "ignoreInternal": false,

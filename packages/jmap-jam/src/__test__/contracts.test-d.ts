@@ -55,6 +55,7 @@ describe("set creation", () => {
     expectTypeOf(result.notDestroyed).toEqualTypeOf<null>();
   });
 
+  // oxlint-disable-next-line vitest/expect-expect
   it("requires at least one property if create operation is defined", async () => {
     await jam.api.Mailbox.set({
       accountId: "123",
@@ -65,6 +66,7 @@ describe("set creation", () => {
     });
   });
 
+  // oxlint-disable-next-line vitest/expect-expect
   it("requires at least one of create, update, or destroy", async () => {
     // @ts-expect-error at least one of create, update, or destroy is required
     await jam.api.Mailbox.set({

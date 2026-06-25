@@ -23,7 +23,7 @@ export function isErrorInvocation(input: Invocation): input is Invocation<Proble
   return input[0] === "error";
 }
 
-export function getErrorFromInvocation<T extends Invocation>(invocation: T): ProblemDetails | null {
+export function getErrorFromInvocation(invocation: Invocation): ProblemDetails | null {
   if (isErrorInvocation(invocation)) {
     return invocation[1];
   }

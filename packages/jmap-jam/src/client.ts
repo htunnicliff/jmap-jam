@@ -151,6 +151,7 @@ export class JamClient<Config extends ClientConfig = ClientConfig> {
       } else {
         error = await response.text();
       }
+      // oxlint-disable-next-line no-throw-literal
       throw error;
     }
 
@@ -238,6 +239,7 @@ export class JamClient<Config extends ClientConfig = ClientConfig> {
         error = await response.text();
       }
 
+      // oxlint-disable-next-line no-throw-literal
       throw error;
     }
 
