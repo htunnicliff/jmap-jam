@@ -26,12 +26,12 @@
   },
   "dependencies": {
     "jmap-rfc-types": "workspace:*",
-    "type-fest": "5"
+    "type-fest": "catalog:"
   },
   "devDependencies": {
-    "@arethetypeswrong/core": "0.18.3",
-    "tsdown": "0.22.3",
-    "typescript": "5.9.3",
-    "vitest": "4.1.9"
+    "@arethetypeswrong/core": "catalog:",
+    "tsdown": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
   }
 }

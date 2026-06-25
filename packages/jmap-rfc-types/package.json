@@ -26,10 +26,10 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "type-fest": "5"
+    "type-fest": "catalog:"
   },
   "devDependencies": {
-    "typescript": "5.9.3",
-    "vitest": "4.1.9"
+    "typescript": "catalog:",
+    "vitest": "catalog:"
   }
 }

@@ -4,6 +4,24 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+catalogs:
+  default:
+    '@arethetypeswrong/core':
+      specifier: 0.18.3
+      version: 0.18.3
+    tsdown:
+      specifier: 0.22.3
+      version: 0.22.3
+    type-fest:
+      specifier: '5'
+      version: 5.7.0
+    typescript:
+      specifier: 5.9.3
+      version: 5.9.3
+    vitest:
+      specifier: 4.1.9
+      version: 4.1.9
+
 importers:
 
   .:
@@ -26,9 +44,6 @@ importers:
       oxlint-tsgolint:
         specifier: 0.23.0
         version: 0.23.0
-      prettier:
-        specifier: 3.8.4
-        version: 3.8.4
 
   packages/jmap-jam:
     dependencies:
@@ -36,33 +51,33 @@ importers:
         specifier: workspace:*
         version: link:../jmap-rfc-types
       type-fest:
-        specifier: '5'
+        specifier: 'catalog:'
         version: 5.7.0
     devDependencies:
       '@arethetypeswrong/core':
-        specifier: 0.18.3
+        specifier: 'catalog:'
         version: 0.18.3
       tsdown:
-        specifier: 0.22.3
+        specifier: 'catalog:'
         version: 0.22.3(@arethetypeswrong/core@0.18.3)(typescript@5.9.3)
       typescript:
-        specifier: 5.9.3
+        specifier: 'catalog:'
         version: 5.9.3
       vitest:
-        specifier: 4.1.9
+        specifier: 'catalog:'
         version: 4.1.9(@types/node@24.13.2)(vite@8.0.16(@types/node@24.13.2)(yaml@2.9.0))
 
   packages/jmap-rfc-types:
     dependencies:
       type-fest:
-        specifier: '5'
+        specifier: 'catalog:'
         version: 5.7.0
     devDependencies:
       typescript:
-        specifier: 5.9.3
+        specifier: 'catalog:'
         version: 5.9.3
       vitest:
-        specifier: 4.1.9
+        specifier: 'catalog:'
         version: 4.1.9(@types/node@24.13.2)(vite@8.0.16(@types/node@24.13.2)(yaml@2.9.0))
 
 packages:
@@ -1531,11 +1546,6 @@ packages:
   prettier@2.8.8:
     resolution: {integrity: sha512-tdN8qQGvNjw4CHbY+XXk0JgCXn9QiF21a55rBe5LJAU+kDyC4WQn4+awm2Xfk2lQMk5fKup9XgzTZtGkjBdP9Q==}
     engines: {node: '>=10.13.0'}
-    hasBin: true
-
-  prettier@3.8.4:
-    resolution: {integrity: sha512-N2MylSdi48+5N/6S5j+maeHbUSIzzZ5uOcX5Hm4QpV8Dkb1HFjfAKTKX6yNPJQD9AhcT3ifHNB66tWTTJDi11Q==}
-    engines: {node: '>=14'}
     hasBin: true
 
   quansync@0.2.11:
@@ -3180,8 +3190,6 @@ snapshots:
       source-map-js: 1.2.1
 
   prettier@2.8.8: {}
-
-  prettier@3.8.4: {}
 
   quansync@0.2.11: {}
 

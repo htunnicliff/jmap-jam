@@ -16,3 +16,10 @@ strictPeerDependencies: true
 
 # Save all dependencies using exact versions
 savePrefix: ""
+
+catalog:
+  '@arethetypeswrong/core': 0.18.3
+  tsdown: 0.22.3
+  type-fest: '5'
+  typescript: 5.9.3
+  vitest: 4.1.9
