@@ -1,5 +1,13 @@
 # jmap-jam
 
+## 0.13.2
+
+### Patch Changes
+
+- 1911cc4: Small linting fixes
+- Updated dependencies [1911cc4]
+  - jmap-rfc-types@0.1.3
+
 ## 0.13.1
 
 ### Patch Changes

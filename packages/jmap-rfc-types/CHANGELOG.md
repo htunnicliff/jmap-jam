@@ -1,5 +1,11 @@
 # jmap-rfc-types
 
+## 0.1.3
+
+### Patch Changes
+
+- 1911cc4: Small linting fixes
+
 ## 0.1.2
 
 ### Patch Changes
