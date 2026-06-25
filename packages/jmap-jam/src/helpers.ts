@@ -5,10 +5,7 @@ import type { Invocation, ProblemDetails } from "jmap-rfc-types";
  *
  * [rfc6570](https://datatracker.ietf.org/doc/html/rfc6570)
  */
-export function expandURITemplate(
-  template: string,
-  params: Record<string, string>
-): URL {
+export function expandURITemplate(template: string, params: Record<string, string>): URL {
   let expanded = template;
 
   for (const [key, value] of Object.entries(params)) {
@@ -22,15 +19,11 @@ export function expandURITemplate(
   return new URL(expanded);
 }
 
-export function isErrorInvocation(
-  input: Invocation
-): input is Invocation<ProblemDetails> {
+export function isErrorInvocation(input: Invocation): input is Invocation<ProblemDetails> {
   return input[0] === "error";
 }
 
-export function getErrorFromInvocation<T extends Invocation>(
-  invocation: T
-): ProblemDetails | null {
+export function getErrorFromInvocation<T extends Invocation>(invocation: T): ProblemDetails | null {
   if (isErrorInvocation(invocation)) {
     return invocation[1];
   }

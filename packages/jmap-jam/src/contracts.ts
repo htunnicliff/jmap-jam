@@ -42,6 +42,7 @@ import type {
   WithoutHeaders
 } from "jmap-rfc-types";
 import type { Exact } from "type-fest";
+
 import type { HasAllKeysOfRelated } from "./helpers.ts";
 
 export type Requests = {
@@ -51,10 +52,7 @@ export type Requests = {
   "Blob/copy": BlobCopyArguments;
   // Push Subscription ----------------------
   "PushSubscription/get": Omit<GetArguments<PushSubscription>, "accountId">;
-  "PushSubscription/set": Omit<
-    SetArguments<PushSubscriptionCreate>,
-    "accountId" | "ifInState"
-  >;
+  "PushSubscription/set": Omit<SetArguments<PushSubscriptionCreate>, "accountId" | "ifInState">;
   // Mailbox --------------------------------
   "Mailbox/get": GetArguments<Mailbox>;
   "Mailbox/changes": ChangesArguments;
@@ -62,10 +60,7 @@ export type Requests = {
     sortAsTree?: boolean;
     filterAsTree?: boolean;
   };
-  "Mailbox/queryChanges": QueryChangesArguments<
-    Mailbox,
-    MailboxFilterCondition
-  >;
+  "Mailbox/queryChanges": QueryChangesArguments<Mailbox, MailboxFilterCondition>;
   "Mailbox/set": SetArguments<MailboxCreate> & {
     onDestroyRemoveEmails?: boolean;
   };
@@ -82,9 +77,7 @@ export type Requests = {
     collapseThreads?: boolean;
   };
   "Email/set": SetArguments<EmailCreate>;
-  "Email/copy": CopyArguments<
-    Pick<Email, "id" | "mailboxIds" | "keywords" | "receivedAt">
-  >;
+  "Email/copy": CopyArguments<Pick<Email, "id" | "mailboxIds" | "keywords" | "receivedAt">>;
   "Email/import": {
     accountId: ID;
     ifInState?: string | null;
@@ -103,10 +96,7 @@ export type Requests = {
   // Search Snippet -------------------------
   "SearchSnippet/get": {
     accountId: ID;
-    filter?:
-      | FilterOperator<EmailFilterCondition>
-      | FilterCondition<EmailFilterCondition>
-      | null;
+    filter?: FilterOperator<EmailFilterCondition> | FilterCondition<EmailFilterCondition> | null;
     emailIds: ID[];
   };
   // Identity -------------------------------
@@ -116,10 +106,7 @@ export type Requests = {
   // Email Submission -----------------------
   "EmailSubmission/get": GetArguments<EmailSubmission>;
   "EmailSubmission/changes": ChangesArguments;
-  "EmailSubmission/query": QueryArguments<
-    EmailSubmission,
-    EmailSubmissionFilterCondition
-  >;
+  "EmailSubmission/query": QueryArguments<EmailSubmission, EmailSubmissionFilterCondition>;
   "EmailSubmission/queryChanges": QueryChangesArguments<
     EmailSubmission,
     EmailSubmissionFilterCondition
@@ -143,10 +130,7 @@ export type Responses<A> = HasAllKeysOfRelated<
     // Blob -----------------------------------
     "Blob/copy": BlobCopyResponse;
     // Push Subscription ----------------------
-    "PushSubscription/get": Omit<
-      GetResponse<PushSubscription, A>,
-      "state" | "accountId"
-    >;
+    "PushSubscription/get": Omit<GetResponse<PushSubscription, A>, "state" | "accountId">;
     "PushSubscription/set": Omit<
       SetResponse<PushSubscription, A>,
       "accountId" | "oldState" | "newState"
@@ -212,10 +196,7 @@ export type GetArgs<Method extends Methods, T> = Exact<Requests[Method], T>;
 /**
  * Get the response data for a method with specific arguments.
  */
-export type GetResponseData<
-  Method extends Methods,
-  Args
-> = Responses<Args>[Method];
+export type GetResponseData<Method extends Methods, Args> = Responses<Args>[Method];
 
 export type RequestOptions = {
   fetchInit?: RequestInit;
@@ -223,10 +204,10 @@ export type RequestOptions = {
   createdIds?: JMAPRequest["createdIds"];
 };
 
-export type LocalInvocation<
-  Method extends Methods,
-  Args extends Exact<Requests[Method], Args>
-> = [Method, Args];
+export type LocalInvocation<Method extends Methods, Args extends Exact<Requests[Method], Args>> = [
+  Method,
+  Args
+];
 
 export type Meta = {
   sessionState: JMAPResponse["sessionState"];
@@ -234,10 +215,7 @@ export type Meta = {
   response: Response;
 };
 
-export type GetResult<
-  Data,
-  HandleErrors extends "throw" | "return"
-> = HandleErrors extends "throw"
+export type GetResult<Data, HandleErrors extends "throw" | "return"> = HandleErrors extends "throw"
   ? Data
   :
       | {
@@ -273,9 +251,9 @@ export type ProxyAPI = {
   [Entity in keyof Requests as Entity extends `${infer EntityName}/${string}`
     ? EntityName
     : never]: {
-    [Method in Entity as Method extends `${string}/${infer MethodName}`
-      ? MethodName
-      : never]: <A extends Requests[Method]>(
+    [Method in Entity as Method extends `${string}/${infer MethodName}` ? MethodName : never]: <
+      A extends Requests[Method]
+    >(
       args: A,
       options?: RequestOptions
     ) => Promise<[Responses<A>[Method], Meta]>;
@@ -293,14 +271,13 @@ export type GetEmailArguments = {
   maxBodyValueBytes?: number;
 };
 
-type FilterEmailProperties<Properties extends GetEmailArguments["properties"]> =
-  ReadonlyArray<
-    Properties extends ReadonlyArray<infer Prop extends string>
-      ? {
-          [Key in Prop]: Key extends keyof Email ? Email[Key] : never;
-        }
-      : WithoutHeaders<Email>
-  >;
+type FilterEmailProperties<Properties extends GetEmailArguments["properties"]> = ReadonlyArray<
+  Properties extends ReadonlyArray<infer Prop extends string>
+    ? {
+        [Key in Prop]: Key extends keyof Email ? Email[Key] : never;
+      }
+    : WithoutHeaders<Email>
+>;
 
 export type GetEmailResponse<Args> = Args extends GetEmailArguments
   ? {

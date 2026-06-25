@@ -1,7 +1,8 @@
 import type { Email, EmailAddress, WithoutHeaders } from "jmap-rfc-types";
 import { describe, expectTypeOf, it } from "vitest";
-import { JamClient } from "../client.ts";
+
 import { knownCapabilities } from "../capabilities.ts";
+import { JamClient } from "../client.ts";
 
 const jam = new JamClient({
   bearerToken: "example",

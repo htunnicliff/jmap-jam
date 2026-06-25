@@ -1,4 +1,5 @@
 import type { Simplify } from "type-fest";
+
 import type { FilterCondition, ID, UTCDate } from "./jmap.ts";
 
 /**
@@ -175,12 +176,7 @@ export type MailboxRole =
 export type MailboxCreate = Omit<
   Mailbox,
   // Fields set by server
-  | "id"
-  | "totalEmails"
-  | "unreadEmails"
-  | "totalThreads"
-  | "unreadThreads"
-  | "myRights"
+  "id" | "totalEmails" | "unreadEmails" | "totalThreads" | "unreadThreads" | "myRights"
 >;
 
 /**
@@ -246,16 +242,7 @@ export type WithoutHeaders<T> = Omit<T, `header:${string}`>;
 
 // TODO: Support exclusive patterns described in [rfc8621 § 4.6](https://datatracker.ietf.org/doc/html/rfc8621#section-4.6)
 export type EmailCreate = Partial<
-  Omit<
-    Email,
-    | "id"
-    | "blobId"
-    | "threadId"
-    | "size"
-    | "hasAttachment"
-    | "preview"
-    | "headers"
-  >
+  Omit<Email, "id" | "blobId" | "threadId" | "size" | "hasAttachment" | "preview" | "headers">
 >;
 
 /**
@@ -451,9 +438,8 @@ export type HeaderParsedForm = {
   URLs?: string[];
 };
 
-type _AllowedHeadersByParsedForm<
-  T extends Record<Exclude<keyof HeaderParsedForm, "Raw">, string>
-> = T;
+type _AllowedHeadersByParsedForm<T extends Record<Exclude<keyof HeaderParsedForm, "Raw">, string>> =
+  T;
 
 export type AllowedHeadersByParsedForm = _AllowedHeadersByParsedForm<{
   /**
@@ -500,8 +486,7 @@ export type AllowedHeadersByParsedForm = _AllowedHeadersByParsedForm<{
     | "List-Archive";
 }>;
 
-export type KnownHeaders =
-  AllowedHeadersByParsedForm[keyof AllowedHeadersByParsedForm];
+export type KnownHeaders = AllowedHeadersByParsedForm[keyof AllowedHeadersByParsedForm];
 
 export type IsValidHeader<FullHeader extends string> = FullHeader extends
   | `header:${infer Header}:as${infer ParsedForm extends keyof HeaderParsedForm}`
@@ -524,9 +509,7 @@ export type HeaderField<
   Name extends string,
   Form extends keyof HeaderParsedForm,
   Options extends { all: boolean } = { all: false }
-> = Options["all"] extends true
-  ? `header:${Name}:as${Form}:all`
-  : `header:${Name}:as${Form}`;
+> = Options["all"] extends true ? `header:${Name}:as${Form}:all` : `header:${Name}:as${Form}`;
 
 export type HeaderFieldValue<T> =
   T extends `header:${infer _Name}:as${infer ParsedForm extends keyof HeaderParsedForm}:all`
@@ -614,9 +597,7 @@ type PossibleHeaderFields = Simplify<
       AllowedHeadersByParsedForm[Key],
       Key,
       { all: true }
-    >]: HeaderFieldValue<
-      HeaderField<AllowedHeadersByParsedForm[Key], Key, { all: true }>
-    >;
+    >]: HeaderFieldValue<HeaderField<AllowedHeadersByParsedForm[Key], Key, { all: true }>>;
   } & {
     [Key in `header:${KnownHeaders}:asRaw`]: HeaderFieldValue<Key>;
   } & {
@@ -629,11 +610,7 @@ type PossibleHeaderFields = Simplify<
   } & {
     [Key in HeaderField<string, keyof HeaderParsedForm>]: HeaderFieldValue<Key>;
   } & {
-    [Key in HeaderField<
-      string,
-      keyof HeaderParsedForm,
-      { all: true }
-    >]: HeaderFieldValue<Key>;
+    [Key in HeaderField<string, keyof HeaderParsedForm, { all: true }>]: HeaderFieldValue<Key>;
   }
 >;
 

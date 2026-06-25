@@ -388,10 +388,7 @@ const accountId = await jam.getPrimaryAccount();
 Initiate a fetch request to upload a blob.
 
 ```js
-const data = await jam.uploadBlob(
-  accountId,
-  new Blob(["hello world"], { type: "text/plain" })
-);
+const data = await jam.uploadBlob(accountId, new Blob(["hello world"], { type: "text/plain" }));
 console.log(data); // =>
 // {
 //   accountId: "account-abcd",

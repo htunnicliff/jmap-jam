@@ -1,8 +1,5 @@
-import type {
-  ExtendedJSONPointer,
-  Invocation,
-  ResultReference
-} from "jmap-rfc-types";
+import type { ExtendedJSONPointer, Invocation, ResultReference } from "jmap-rfc-types";
+
 import type { LocalInvocation, Methods, Requests } from "./contracts.ts";
 import type { ExcludeValue, IncludeValue } from "./helpers.ts";
 
@@ -73,10 +70,7 @@ export class InvocationDraft<I = unknown> {
     const invocationToId = new Map<unknown, string>();
 
     const methodCalls = Object.entries(drafts).map(([id, draft]) => {
-      const [method, inputArgs] = draft.#invocation as LocalInvocation<
-        any,
-        any
-      >;
+      const [method, inputArgs] = draft.#invocation as LocalInvocation<any, any>;
 
       invocationToId.set(draft.#invocation, id);
       methodNames.add(method);
@@ -113,9 +107,7 @@ export type DraftsProxy = {
   [Entity in keyof Requests as Entity extends `${infer EntityName}/${string}`
     ? EntityName
     : never]: {
-    [Method in Entity as Method extends `${string}/${infer MethodName}`
-      ? MethodName
-      : never]: <
+    [Method in Entity as Method extends `${string}/${infer MethodName}` ? MethodName : never]: <
       Args extends {
         [T in keyof Requests[Method]]: Requests[Method][T] | Ref;
       }
@@ -125,9 +117,9 @@ export type DraftsProxy = {
   };
 };
 
-export function buildRequestsFromDrafts<
-  R extends Record<string, InvocationDraft>
->(draftsFn: (p: DraftsProxy) => R) {
+export function buildRequestsFromDrafts<R extends Record<string, InvocationDraft>>(
+  draftsFn: (p: DraftsProxy) => R
+) {
   // Create a proxy to intercept {entity}.{operation} calls
   const draftsProxy = new Proxy({} as DraftsProxy, {
     get: (_, entity: string) =>
@@ -138,10 +130,7 @@ export function buildRequestsFromDrafts<
             return (args: unknown) => {
               const method = `${entity}/${operation}` as Methods;
 
-              const invocation = [method, args] as LocalInvocation<
-                Methods,
-                any
-              >;
+              const invocation = [method, args] as LocalInvocation<Methods, any>;
 
               return new InvocationDraft(invocation);
             };

@@ -204,19 +204,12 @@ export type Account<Capability extends string = string> = {
  *      calls to other methods; all responses initiated by this method
  *      call get the same method call id in the response).
  */
-export type Invocation<T = unknown> = [
-  name: string,
-  argsOrResponse: T,
-  methodCallId: string
-];
+export type Invocation<T = unknown> = [name: string, argsOrResponse: T, methodCallId: string];
 
 /**
  * [rfc8620 § 3.3](https://datatracker.ietf.org/doc/html/rfc8620#section-3.3)
  */
-export type Request<
-  T extends Invocation[] = Invocation[],
-  Capability extends string = string
-> = {
+export type Request<T extends Invocation[] = Invocation[], Capability extends string = string> = {
   /**
    * The set of capabilities the client wishes to use.  The client MAY
    * include capability identifiers even if the method calls it makes
@@ -532,9 +525,7 @@ export type GetResponse<T, Args> =
          * the response.
          */
         list: ReadonlyArray<
-          Args["properties"] extends Array<infer P extends keyof T>
-            ? Pick<T, P>
-            : T
+          Args["properties"] extends Array<infer P extends keyof T> ? Pick<T, P> : T
         >;
         /**
          * This array contains the ids passed to the method for records that
@@ -711,9 +702,7 @@ export type SetResponse<T extends object, Args> =
          *
          * This argument is null if no `T` objects were successfully created.
          */
-        created: Args["create"] extends object
-          ? { [K in keyof Args["create"]]?: T }
-          : null;
+        created: Args["create"] extends object ? { [K in keyof Args["create"]]?: T } : null;
         /**
          * The keys in this map are the ids of all `T` objects that were
          * successfully updated.
@@ -725,9 +714,7 @@ export type SetResponse<T extends object, Args> =
          *
          * This argument is null if no `T` objects were successfully updated.
          */
-        updated: Args["update"] extends object
-          ? { [K in keyof Args["update"]]?: T | null }
-          : null;
+        updated: Args["update"] extends object ? { [K in keyof Args["update"]]?: T | null } : null;
         /**
          * A list of `T` ids for records that were successfully destroyed, or
          * null if none.
@@ -751,9 +738,7 @@ export type SetResponse<T extends object, Args> =
          * A map of the `T` id to a SetError object for each record that
          * failed to be destroyed, or null if all successful.
          */
-        notDestroyed: Args["destroy"] extends string[]
-          ? Record<ID, SetError> | null
-          : null;
+        notDestroyed: Args["destroy"] extends string[] ? Record<ID, SetError> | null : null;
       }
     : never;
 
@@ -1292,10 +1277,7 @@ export enum FilterOperatorType {
   Not = "NOT"
 }
 
-export type FilterCondition<Filter extends Obj> = Except<
-  Partial<Filter>,
-  "operator"
->;
+export type FilterCondition<Filter extends Obj> = Except<Partial<Filter>, "operator">;
 
 /**
  * Lists the names of properties to compare between two T records,
@@ -1423,10 +1405,7 @@ export type BlobCopyResponse = {
   notCopied: Record<ID, BlobCopySetError> | null;
 };
 
-export type BlobCopySetError<T extends Obj = Obj> = Except<
-  SetError<T>,
-  "type"
-> & {
+export type BlobCopySetError<T extends Obj = Obj> = Except<SetError<T>, "type"> & {
   type: SetError<T>["type"] | BlobCopySetErrorType;
 };
 

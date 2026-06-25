@@ -1,23 +1,23 @@
 {
   "name": "jmap-rfc-types",
   "version": "0.1.2",
-  "type": "module",
-  "exports": {
-    ".": "./lib/index.ts",
-    "./jmap-mail": "./lib/jmap-mail.ts",
-    "./jmap": "./lib/jmap.ts"
-  },
-  "sideEffects": false,
-  "license": "MIT",
   "description": "TypeScript types for JMAP RFCs",
+  "license": "MIT",
+  "author": {
+    "name": "Hunter Tunnicliff",
+    "url": "https://github.com/htunnicliff"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/htunnicliff/jmap-jam.git",
     "directory": "packages/jmap-rfc-types"
   },
-  "author": {
-    "name": "Hunter Tunnicliff",
-    "url": "https://github.com/htunnicliff"
+  "type": "module",
+  "sideEffects": false,
+  "exports": {
+    ".": "./lib/index.ts",
+    "./jmap-mail": "./lib/jmap-mail.ts",
+    "./jmap": "./lib/jmap.ts"
   },
   "scripts": {
     "check:types": "tsc --noEmit",

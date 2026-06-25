@@ -10,10 +10,8 @@ import type {
   ProblemDetails,
   Session
 } from "jmap-rfc-types";
-import {
-  getCapabilitiesForMethodCalls,
-  knownCapabilities
-} from "./capabilities.ts";
+
+import { getCapabilitiesForMethodCalls, knownCapabilities } from "./capabilities.ts";
 import type {
   GetArgs,
   GetResponseData,
@@ -23,11 +21,7 @@ import type {
   ProxyAPI,
   RequestOptions
 } from "./contracts.ts";
-import {
-  expandURITemplate,
-  getErrorFromInvocation,
-  getResultsForMethodCalls
-} from "./helpers.ts";
+import { expandURITemplate, getErrorFromInvocation, getResultsForMethodCalls } from "./helpers.ts";
 import type {
   DraftsProxy,
   InvocationDraft,
@@ -116,11 +110,7 @@ export class JamClient<Config extends ClientConfig = ClientConfig> {
     [method, args]: LocalInvocation<Method, Args>,
     options?: RequestOptions
   ): Promise<[Data, Meta]> {
-    const {
-      using = [],
-      fetchInit,
-      createdIds: createdIdsInput
-    } = options ?? {};
+    const { using = [], fetchInit, createdIds: createdIdsInput } = options ?? {};
 
     // Assemble method call
     const invocation: Invocation<Args> = [method, args, "r1"];
@@ -252,8 +242,7 @@ export class JamClient<Config extends ClientConfig = ClientConfig> {
     }
 
     // Handle success
-    const { methodResponses, sessionState, createdIds } =
-      (await response.json()) as JMAPResponse;
+    const { methodResponses, sessionState, createdIds } = (await response.json()) as JMAPResponse;
 
     const meta: Meta = {
       sessionState,

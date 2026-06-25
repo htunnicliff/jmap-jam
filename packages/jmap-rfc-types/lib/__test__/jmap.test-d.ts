@@ -1,4 +1,5 @@
 import { describe, expectTypeOf, it } from "vitest";
+
 import {
   AllowedHeadersByParsedForm,
   EmailAddress,
@@ -38,9 +39,7 @@ describe("HeaderField", () => {
       HeaderField<"Some-Header", "Addresses">
     >().toEqualTypeOf<`header:Some-Header:asAddresses`>();
 
-    expectTypeOf<
-      HeaderField<"From", "Raw">
-    >().toEqualTypeOf<`header:From:asRaw`>();
+    expectTypeOf<HeaderField<"From", "Raw">>().toEqualTypeOf<`header:From:asRaw`>();
 
     expectTypeOf<
       HeaderField<"Some-Header", "Addresses", { all: true }>
@@ -191,9 +190,7 @@ describe("IsValidHeader", () => {
       [ParsedForm in keyof AllowedHeadersByParsedForm as `${ParsedForm}:${AllowedHeadersByParsedForm[ParsedForm]}`]: `header:${AllowedHeadersByParsedForm[ParsedForm]}:as${ParsedForm}`;
     };
 
-    expectTypeOf<
-      IsValidHeader<ValidCombos[keyof ValidCombos]>
-    >().toEqualTypeOf<"valid">();
+    expectTypeOf<IsValidHeader<ValidCombos[keyof ValidCombos]>>().toEqualTypeOf<"valid">();
 
     // Sanity check for random known header combinations
     expectTypeOf<
@@ -209,9 +206,7 @@ describe("IsValidHeader", () => {
       [Key in keyof AllowedHeadersByParsedForm]: `header:${Exclude<KnownHeaders, AllowedHeadersByParsedForm[Key]>}:as${Key}`;
     };
 
-    expectTypeOf<
-      IsValidHeader<InvalidCombos[keyof InvalidCombos]>
-    >().toEqualTypeOf<"invalid">();
+    expectTypeOf<IsValidHeader<InvalidCombos[keyof InvalidCombos]>>().toEqualTypeOf<"invalid">();
 
     // Sanity check for random invalid header combinations
     expectTypeOf<

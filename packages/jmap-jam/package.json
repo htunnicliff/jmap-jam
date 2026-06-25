@@ -1,22 +1,22 @@
 {
   "name": "jmap-jam",
   "version": "0.13.1",
-  "type": "module",
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
-  "exports": "./dist/index.js",
-  "sideEffects": false,
-  "license": "MIT",
   "description": "A JMAP client library for Node.js and the browser.",
+  "license": "MIT",
+  "author": {
+    "name": "Hunter Tunnicliff",
+    "url": "https://github.com/htunnicliff"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/htunnicliff/jmap-jam.git",
     "directory": "packages/jmap-jam"
   },
-  "author": {
-    "name": "Hunter Tunnicliff",
-    "url": "https://github.com/htunnicliff"
-  },
+  "type": "module",
+  "sideEffects": false,
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": "./dist/index.js",
   "scripts": {
     "preversion": "tsdown",
     "build": "tsdown",
