@@ -31,7 +31,15 @@
     "import/max-dependencies": "allow",
 
     // TOOD: Fix these gradually
+    "typescript/no-unsafe-argument": "warn",
+    "typescript/no-unsafe-assignment": "warn",
+    "typescript/no-unsafe-member-access": "warn",
     "typescript/no-unsafe-type-assertion": "warn",
+    "typescript/only-throw-error": "warn",
+    "typescript/strict-boolean-expressions": "warn",
+
+    // Do not require readonly parameters
+    "typescript/prefer-readonly-parameter-types": "allow",
 
     // Permit "TODO" comments
     "no-warning-comments": "allow",
