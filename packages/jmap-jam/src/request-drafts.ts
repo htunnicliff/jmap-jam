@@ -57,8 +57,8 @@ export class InvocationDraft<I = unknown> {
    * by replacing result reference placeholders with JMAP result references
    * and applying user-provided IDs.
    */
-  static createInvocationsFromDrafts<T extends Record<string, InvocationDraft>>(
-    drafts: T
+  static createInvocationsFromDrafts(
+    drafts: Record<string, InvocationDraft>
   ): {
     methodCalls: Invocation[];
     methodNames: Set<string>;
@@ -117,8 +117,8 @@ export type DraftsProxy = {
   };
 };
 
-export function buildRequestsFromDrafts<R extends Record<string, InvocationDraft>>(
-  draftsFn: (p: DraftsProxy) => R
+export function buildRequestsFromDrafts(
+  draftsFn: (p: DraftsProxy) => Record<string, InvocationDraft>
 ) {
   // Create a proxy to intercept {entity}.{operation} calls
   const draftsProxy = new Proxy({} as DraftsProxy, {

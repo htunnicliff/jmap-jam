@@ -15,7 +15,7 @@
     "correctness": "error",
     "perf": "error",
     "suspicious": "error",
-    "pedantic": "warn"
+    "pedantic": "error"
   },
   "rules": {
     // No max lines limit
@@ -28,7 +28,13 @@
     "import/max-dependencies": "allow",
 
     // TOOD: Fix these gradually
-    "typescript/no-unsafe-type-assertion": "warn"
+    "typescript/no-unsafe-type-assertion": "warn",
+
+    // Permit "TODO" comments
+    "no-warning-comments": "allow",
+
+    // Permit inline comments
+    "no-inline-comments": "allow"
   },
   "overrides": [
     // Permit longer functions in test files

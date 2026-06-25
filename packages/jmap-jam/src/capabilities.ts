@@ -17,7 +17,7 @@ export const knownCapabilities = {
 /**
  * Regex to match an entity name from within a method name.
  */
-const entityMatcher = /^(\w+)\//;
+const entityMatcher = /^(\w+)\//u;
 
 /**
  * Given a list of method names, determine the entities and provide the capabilities
