@@ -21,4 +21,4 @@ catalog:
   tsdown: 0.22.3
   type-fest: "5"
   typescript: 6.0.3
-  vitest: 4.1.9
+  vitest: 4.1.10
