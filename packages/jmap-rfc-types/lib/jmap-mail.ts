@@ -819,12 +819,16 @@ export type EmailBodyValue = {
    * This is true if malformed sections were found while decoding
    * the charset, the charset was unknown, or the content-transfer-
    * encoding was unknown.
+   * 
+   * @default false
    */
-  isEncodingProblem: boolean;
+  isEncodingProblem?: boolean;
   /**
    * This is true if the "value" has been truncated.
+   * 
+   * @default false
    */
-  isTruncated: boolean;
+  isTruncated?: boolean;
 };
 
 /**
