@@ -4,10 +4,15 @@ import {
   AllowedHeadersByParsedForm,
   EmailAddress,
   EmailAddressGroup,
+  EmailCreate,
+  EmailImport,
+  EmailSubmissionCreate,
   HeaderField,
   HeaderFieldValue,
+  IdentityCreate,
   IsValidHeader,
   KnownHeaders,
+  MailboxCreate,
   WithoutHeaders
 } from "../jmap-mail.ts";
 
@@ -215,5 +220,63 @@ describe("IsValidHeader", () => {
       | "header:Resent-From:asMessageIds"
       | "header:List-Id:asDate"
     >().toExtend<InvalidCombos[keyof InvalidCombos]>();
+  });
+});
+
+describe("MailboxCreate", () => {
+  it("only requires `name`", () => {
+    expectTypeOf({ name: "Inbox" }).toExtend<MailboxCreate>();
+  });
+
+  it("accepts properties with defaults", () => {
+    expectTypeOf({
+      name: "Inbox",
+      parentId: null,
+      role: "inbox" as const,
+      sortOrder: 0,
+      isSubscribed: true
+    }).toExtend<MailboxCreate>();
+  });
+
+  it("rejects an empty object", () => {
+    expectTypeOf({}).not.toExtend<MailboxCreate>();
+  });
+});
+
+describe("EmailCreate", () => {
+  it("only requires `mailboxIds`", () => {
+    expectTypeOf({ mailboxIds: { mailbox1: true } }).toExtend<EmailCreate>();
+  });
+
+  it("rejects an empty object", () => {
+    expectTypeOf({}).not.toExtend<EmailCreate>();
+  });
+});
+
+describe("IdentityCreate", () => {
+  it("only requires `email`", () => {
+    expectTypeOf({ email: "user@example.com" }).toExtend<IdentityCreate>();
+  });
+
+  it("rejects an empty object", () => {
+    expectTypeOf({}).not.toExtend<IdentityCreate>();
+  });
+});
+
+describe("EmailSubmissionCreate", () => {
+  it("does not accept the server-set `undoStatus`", () => {
+    expectTypeOf<keyof EmailSubmissionCreate>().toEqualTypeOf<
+      "identityId" | "emailId" | "envelope"
+    >();
+  });
+});
+
+describe("EmailImport", () => {
+  it("only requires `blobId` and `mailboxIds`", () => {
+    expectTypeOf({ blobId: "blob1", mailboxIds: { mailbox1: true } }).toExtend<EmailImport>();
+  });
+
+  it("rejects a missing `mailboxIds`", () => {
+    expectTypeOf({ blobId: "blob1" }).not.toExtend<EmailImport>();
   });
 });
