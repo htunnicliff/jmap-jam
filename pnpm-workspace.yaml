@@ -18,7 +18,7 @@ savePrefix: ""
 
 catalog:
   "@arethetypeswrong/core": 0.18.5
-  tsdown: 0.22.4
+  tsdown: 0.22.5
   type-fest: "5"
   typescript: 6.0.3
   vitest: 4.1.10
