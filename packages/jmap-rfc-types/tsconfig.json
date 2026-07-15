@@ -6,6 +6,8 @@
     "moduleResolution": "Node16",
     "strict": true,
     "rewriteRelativeImportExtensions": true,
+    "verbatimModuleSyntax": true,
+    "erasableSyntaxOnly": true,
     "noEmit": true,
     "skipLibCheck": true,
     "noUnusedLocals": true
