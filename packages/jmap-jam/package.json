@@ -1,6 +1,6 @@
 {
   "name": "jmap-jam",
-  "version": "0.13.2",
+  "version": "0.13.3",
   "description": "A JMAP client library for Node.js and the browser.",
   "license": "MIT",
   "author": {
