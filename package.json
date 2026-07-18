@@ -12,7 +12,7 @@
     "sync:readme": "cp packages/jmap-jam/README.md README.md"
   },
   "devDependencies": {
-    "@changesets/cli": "2.31.0",
+    "@changesets/cli": "2.31.1",
     "@types/node": "24.13.3",
     "cspell": "10.0.1",
     "oxfmt": "0.59.0",
