@@ -1,5 +1,13 @@
 # jmap-jam
 
+## 0.13.3
+
+### Patch Changes
+
+- Updated dependencies [30d846c]
+- Updated dependencies [30d846c]
+  - jmap-rfc-types@0.2.0
+
 ## 0.13.2
 
 ### Patch Changes

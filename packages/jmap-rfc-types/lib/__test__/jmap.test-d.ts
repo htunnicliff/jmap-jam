@@ -1,6 +1,6 @@
 import { describe, expectTypeOf, it } from "vitest";
 
-import {
+import type {
   AllowedHeadersByParsedForm,
   EmailAddress,
   EmailAddressGroup,

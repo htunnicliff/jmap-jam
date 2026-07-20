@@ -1,4 +1,4 @@
-import type { Simplify } from "type-fest";
+import type { Simplify, ValueOf } from "type-fest";
 
 import type { FilterCondition, ID, UTCDate } from "./jmap.ts";
 
@@ -1275,50 +1275,54 @@ export type DeliveryStatus = {
  * Represents whether a message has been successfully delivered
  * to the recipient.
  */
-export enum DeliveryStatusDelivered {
+export const DeliveryStatusDelivered = {
   /**
    * The message is in a local mail queue and the
    * status will change once it exits the local mail queues.  The
    * `smtpReply` property may still change.
    */
-  Queued = "queued",
+  Queued: "queued",
   /**
    * The message was successfully delivered to the mail
    * store of the recipient.  The `smtpReply` property is final.
    */
-  Yes = "yes",
+  Yes: "yes",
   /**
    * Delivery to the recipient permanently failed.  The
    * `smtpReply` property is final.
    */
-  No = "no",
+  No: "no",
   /**
    * The final delivery status is unknown, (e.g., it
    * was relayed to an external machine and no further
    * information is available).  The `smtpReply` property may
    * still change if a DSN arrives.
    */
-  Unknown = "unknown"
-}
+  Unknown: "unknown"
+} as const;
+
+export type DeliveryStatusDelivered = ValueOf<typeof DeliveryStatusDelivered>;
 
 /**
  * Represents whether a message has been displayed to a
  * recipient.
  */
-export enum DeliveryStatusDisplayed {
+export const DeliveryStatusDisplayed = {
   /**
    * The display status is unknown.  This is the
    * initial value.
    */
-  Unknown = "unknown",
+  Unknown: "unknown",
   /**
    * The recipient's system claims the message content has
    * been displayed to the recipient.  Note that there is no
    * guarantee that the recipient has noticed, read, or
    * understood the content.
    */
-  Yes = "yes"
-}
+  Yes: "yes"
+} as const;
+
+export type DeliveryStatusDisplayed = ValueOf<typeof DeliveryStatusDisplayed>;
 
 /**
  * [rfc8621 § 7.3](https://datatracker.ietf.org/doc/html/rfc8621#section-7.3)
@@ -1359,23 +1363,25 @@ export type EmailSubmissionFilterCondition = {
 /**
  * This represents whether a submission may be canceled.
  */
-export enum UndoStatus {
+export const UndoStatus = {
   /**
    * It may be possible to cancel this submission.
    */
-  Pending = "pending",
+  Pending: "pending",
   /**
    * The message has been relayed to at least one recipient
    * in a manner that cannot be recalled.  It is no longer possible
    * to cancel this submission.
    */
-  Final = "final",
+  Final: "final",
   /**
    * The submission was canceled and will not be
    * delivered to any recipient.
    */
-  Canceled = "canceled"
-}
+  Canceled: "canceled"
+} as const;
+
+export type UndoStatus = ValueOf<typeof UndoStatus>;
 
 // =================================
 // Vacation Response
