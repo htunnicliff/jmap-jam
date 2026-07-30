@@ -16,7 +16,7 @@
     "@types/node": "24.13.3",
     "cspell": "10.0.1",
     "oxfmt": "0.61.0",
-    "oxlint": "1.75.0",
+    "oxlint": "1.76.0",
     "oxlint-tsgolint": "0.25.0",
     "typescript": "catalog:"
   },
