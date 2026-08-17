@@ -173,10 +173,10 @@ export type MailboxRole =
   | "subscribed"
   | "trash";
 
-export type MailboxCreate = Omit<
-  Mailbox,
-  // Fields set by server
-  "id" | "totalEmails" | "unreadEmails" | "totalThreads" | "unreadThreads" | "myRights"
+export type MailboxCreate = Simplify<
+  Pick<Mailbox, "name"> &
+    // Fields with defaults defined by [rfc8621 § 2](https://datatracker.ietf.org/doc/html/rfc8621#section-2)
+    Partial<Pick<Mailbox, "parentId" | "role" | "sortOrder" | "isSubscribed">>
 >;
 
 /**
@@ -241,8 +241,21 @@ export type Email = Simplify<
 export type WithoutHeaders<T> = Omit<T, `header:${string}`>;
 
 // TODO: Support exclusive patterns described in [rfc8621 § 4.6](https://datatracker.ietf.org/doc/html/rfc8621#section-4.6)
-export type EmailCreate = Partial<
-  Omit<Email, "id" | "blobId" | "threadId" | "size" | "hasAttachment" | "preview" | "headers">
+export type EmailCreate = Simplify<
+  Pick<Email, "mailboxIds"> &
+    Partial<
+      Omit<
+        Email,
+        | "id"
+        | "blobId"
+        | "threadId"
+        | "size"
+        | "hasAttachment"
+        | "preview"
+        | "headers"
+        | "mailboxIds"
+      >
+    >
 >;
 
 /**
@@ -640,8 +653,12 @@ export type EmailBodyPart = {
    * The size, in octets, of the raw data after content transfer
    * decoding (as referenced by the `blobId`, i.e., the number of
    * octets in the file the user would download).
+   *
+   * On creation ([rfc8621 § 4.6](https://datatracker.ietf.org/doc/html/rfc8621#section-4.6)),
+   * this MUST be omitted if a `partId` is given; if a `blobId` is
+   * given, it may be included but is ignored by the server.
    */
-  size: number;
+  size?: number;
   /**
    * This is a list of all header fields in the part, in the order they
    * appear in the message.  The values are in Raw form.
@@ -819,12 +836,16 @@ export type EmailBodyValue = {
    * This is true if malformed sections were found while decoding
    * the charset, the charset was unknown, or the content-transfer-
    * encoding was unknown.
+   * 
+   * @default false
    */
-  isEncodingProblem: boolean;
+  isEncodingProblem?: boolean;
   /**
    * This is true if the "value" has been truncated.
+   * 
+   * @default false
    */
-  isTruncated: boolean;
+  isTruncated?: boolean;
 };
 
 /**
@@ -953,12 +974,16 @@ export type EmailImport = {
   mailboxIds: Record<ID, boolean>;
   /**
    * The keywords to apply to the Email.
+   *
+   * @default {}
    */
-  keywords: Record<string, boolean>;
+  keywords?: Record<string, boolean>;
   /**
    * The `receivedAt` date to set on the Email.
+   *
+   * @default Time of most recent Received header, or time of import on server if none
    */
-  receivedAt: UTCDate;
+  receivedAt?: UTCDate;
 };
 
 // =================================
@@ -1073,7 +1098,9 @@ export type Identity = {
   mayDelete: boolean;
 };
 
-export type IdentityCreate = Omit<Identity, "id" | "mayDelete">;
+export type IdentityCreate = Simplify<
+  Pick<Identity, "email"> & Partial<Omit<Identity, "id" | "mayDelete" | "email">>
+>;
 
 // =================================
 // Email Submission
@@ -1170,7 +1197,7 @@ export type EmailSubmission = {
 
 export type EmailSubmissionCreate = Omit<
   EmailSubmission,
-  "id" | "threadId" | "sendAt" | "deliveryStatus" | "dsnBlobIds" | "mdnBlobIds"
+  "id" | "threadId" | "sendAt" | "undoStatus" | "deliveryStatus" | "dsnBlobIds" | "mdnBlobIds"
 >;
 
 /**
