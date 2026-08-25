@@ -17,7 +17,8 @@
   "exports": {
     ".": "./lib/index.ts",
     "./jmap-mail": "./lib/jmap-mail.ts",
-    "./jmap": "./lib/jmap.ts"
+    "./jmap": "./lib/jmap.ts",
+    "./contracts": "./lib/contracts/index.ts"
   },
   "scripts": {
     "check:types": "tsc --noEmit",
