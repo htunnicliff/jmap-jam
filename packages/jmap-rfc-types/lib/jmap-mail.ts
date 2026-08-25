@@ -593,18 +593,19 @@ type EmailAutomaticallyParsedHeaderFields = {
 
 type PossibleHeaderFields = Simplify<
   {
-    [Key in keyof AllowedHeadersByParsedForm as HeaderField<
-      AllowedHeadersByParsedForm[Key],
-      Key,
-      { all: true }
-    >]: HeaderFieldValue<HeaderField<AllowedHeadersByParsedForm[Key], Key, { all: true }>>;
+    [
+      Key in keyof AllowedHeadersByParsedForm as HeaderField<
+        AllowedHeadersByParsedForm[Key],
+        Key,
+        { all: true }
+      >
+    ]: HeaderFieldValue<HeaderField<AllowedHeadersByParsedForm[Key], Key, { all: true }>>;
   } & {
     [Key in `header:${KnownHeaders}:asRaw`]: HeaderFieldValue<Key>;
   } & {
-    [Key in keyof AllowedHeadersByParsedForm as HeaderField<
-      AllowedHeadersByParsedForm[Key],
-      Key
-    >]: HeaderFieldValue<HeaderField<AllowedHeadersByParsedForm[Key], Key>>;
+    [
+      Key in keyof AllowedHeadersByParsedForm as HeaderField<AllowedHeadersByParsedForm[Key], Key>
+    ]: HeaderFieldValue<HeaderField<AllowedHeadersByParsedForm[Key], Key>>;
   } & {
     [Key in `header:${KnownHeaders}:asRaw:all`]: HeaderFieldValue<Key>;
   } & {

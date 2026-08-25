@@ -187,7 +187,9 @@ describe("IsValidHeader", () => {
 
   it("permits known headers with correct formats", () => {
     type ValidCombos = {
-      [ParsedForm in keyof AllowedHeadersByParsedForm as `${ParsedForm}:${AllowedHeadersByParsedForm[ParsedForm]}`]: `header:${AllowedHeadersByParsedForm[ParsedForm]}:as${ParsedForm}`;
+      [
+        ParsedForm in keyof AllowedHeadersByParsedForm as `${ParsedForm}:${AllowedHeadersByParsedForm[ParsedForm]}`
+      ]: `header:${AllowedHeadersByParsedForm[ParsedForm]}:as${ParsedForm}`;
     };
 
     expectTypeOf<IsValidHeader<ValidCombos[keyof ValidCombos]>>().toEqualTypeOf<"valid">();
@@ -203,7 +205,9 @@ describe("IsValidHeader", () => {
 
   it("treats known headers with missing or incorrect formats as invalid", () => {
     type InvalidCombos = {
-      [Key in keyof AllowedHeadersByParsedForm]: `header:${Exclude<KnownHeaders, AllowedHeadersByParsedForm[Key]>}:as${Key}`;
+      [
+        Key in keyof AllowedHeadersByParsedForm
+      ]: `header:${Exclude<KnownHeaders, AllowedHeadersByParsedForm[Key]>}:as${Key}`;
     };
 
     expectTypeOf<IsValidHeader<InvalidCombos[keyof InvalidCombos]>>().toEqualTypeOf<"invalid">();

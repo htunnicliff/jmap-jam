@@ -102,9 +102,9 @@ export class InvocationDraft<I = unknown> {
 }
 
 export type DraftsProxy = {
-  [Entity in keyof Requests as Entity extends `${infer EntityName}/${string}`
-    ? EntityName
-    : never]: {
+  [
+    Entity in keyof Requests as Entity extends `${infer EntityName}/${string}` ? EntityName : never
+  ]: {
     [Method in Entity as Method extends `${string}/${infer MethodName}` ? MethodName : never]: <
       Args extends {
         [T in keyof Requests[Method]]: Requests[Method][T] | Ref;
