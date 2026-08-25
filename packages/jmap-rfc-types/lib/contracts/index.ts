@@ -1,5 +1,6 @@
 export type * from "./blob.ts";
 export type * from "./email-submission.ts";
+export type * from "./email.ts";
 export type * from "./identity.ts";
 export type * from "./mailbox.ts";
 export type * from "./push-subscription.ts";
