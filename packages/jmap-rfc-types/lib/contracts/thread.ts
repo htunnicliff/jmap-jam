@@ -3,14 +3,14 @@ import type { ChangesArguments, ChangesResponse, GetArguments, GetResponse } fro
 
 export declare namespace ThreadContracts {
   export namespace Get {
-    type Input = GetArguments<Thread>;
-    type Output<A> = GetResponse<Thread, A>;
+    export type Input = GetArguments<Thread>;
+    export type Output<A> = GetResponse<Thread, A>;
     export type Method = <const A extends Input>(args: A) => Output<A>;
   }
 
   export namespace Changes {
-    type Input = ChangesArguments;
-    type Output = ChangesResponse;
+    export type Input = ChangesArguments;
+    export type Output = ChangesResponse;
     export type Method = (args: Input) => Output;
   }
 }
