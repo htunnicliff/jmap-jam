@@ -1,5 +1,11 @@
 # jmap-rfc-types
 
+## 0.3.0
+
+### Minor Changes
+
+- f5d2df5: Began adding contracts as namespaces
+
 ## 0.2.0
 
 ### Minor Changes
