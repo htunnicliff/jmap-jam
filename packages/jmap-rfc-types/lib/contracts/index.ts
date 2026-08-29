@@ -1,4 +1,5 @@
 export type * from "./blob.ts";
+export type * from "./core.ts";
 export type * from "./email-submission.ts";
 export type * from "./email.ts";
 export type * from "./identity.ts";
