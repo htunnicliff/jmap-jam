@@ -1,5 +1,11 @@
 # jmap-rfc-types
 
+## 0.4.0
+
+### Minor Changes
+
+- 94f0bd1: Add missing core export
+
 ## 0.3.1
 
 ### Patch Changes
