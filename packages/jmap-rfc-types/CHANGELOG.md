@@ -1,5 +1,23 @@
 # jmap-rfc-types
 
+## 0.4.0
+
+### Minor Changes
+
+- 94f0bd1: Add missing core export
+
+## 0.3.1
+
+### Patch Changes
+
+- b258bde: Add missing email contracts export
+
+## 0.3.0
+
+### Minor Changes
+
+- f5d2df5: Began adding contracts as namespaces
+
 ## 0.2.0
 
 ### Minor Changes

@@ -248,9 +248,9 @@ export type GetResult<Data, HandleErrors extends "throw" | "return"> = HandleErr
  * ```
  */
 export type ProxyAPI = {
-  [Entity in keyof Requests as Entity extends `${infer EntityName}/${string}`
-    ? EntityName
-    : never]: {
+  [
+    Entity in keyof Requests as Entity extends `${infer EntityName}/${string}` ? EntityName : never
+  ]: {
     [Method in Entity as Method extends `${string}/${infer MethodName}` ? MethodName : never]: <
       A extends Requests[Method]
     >(

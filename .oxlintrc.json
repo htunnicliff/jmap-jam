@@ -45,7 +45,10 @@
     "no-warning-comments": "allow",
 
     // Permit inline comments
-    "no-inline-comments": "allow"
+    "no-inline-comments": "allow",
+
+    // Permit redeclare
+    "no-redeclare": "allow"
   },
   "overrides": [
     // Permit longer functions in test files
