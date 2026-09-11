@@ -1,5 +1,11 @@
 # jmap-rfc-types
 
+## 0.4.1
+
+### Patch Changes
+
+- 5d336b8: Small type tweaks to better adhere to RFC 8621
+
 ## 0.4.0
 
 ### Minor Changes
