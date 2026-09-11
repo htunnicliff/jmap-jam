@@ -1,5 +1,13 @@
 # jmap-jam
 
+## 0.13.7
+
+### Patch Changes
+
+- 5d336b8: Small type tweaks to better adhere to RFC 8621
+- Updated dependencies [5d336b8]
+  - jmap-rfc-types@0.4.1
+
 ## 0.13.6
 
 ### Patch Changes
