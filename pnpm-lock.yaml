@@ -172,7 +172,7 @@ catalogs:
       version: 0.23.0
     type-fest:
       specifier: '5'
-      version: 5.9.0
+      version: 5.10.0
     typescript:
       specifier: 6.0.3
       version: 6.0.3
@@ -216,7 +216,7 @@ importers:
         version: link:../jmap-rfc-types
       type-fest:
         specifier: 'catalog:'
-        version: 5.9.0
+        version: 5.10.0
     devDependencies:
       '@arethetypeswrong/core':
         specifier: 'catalog:'
@@ -235,7 +235,7 @@ importers:
     dependencies:
       type-fest:
         specifier: 'catalog:'
-        version: 5.9.0
+        version: 5.10.0
     devDependencies:
       typescript:
         specifier: 'catalog:'
@@ -1616,8 +1616,8 @@ packages:
       unrun:
         optional: true
 
-  type-fest@5.9.0:
-    resolution: {integrity: sha512-yANm3Jr3GiJ1qgJlxGAVxTOIcEOk1rhQHamlXtnrCK7EHP4HeM9OGxtMg/W7HFdrVzw/ZWJKGVIJusVH85sLtw==}
+  type-fest@5.10.0:
+    resolution: {integrity: sha512-NoSdpq/WEiAg5sjmBkmV/hfxv6HJH4NqPNrqjtSO5CwRmpsDfaf4begxW34KdJykH/l1yHtwBWQkCRdoXO8mPA==}
     engines: {node: '>=20'}
 
   typescript@5.6.1-rc:
@@ -2885,7 +2885,7 @@ snapshots:
       - oxc-resolver
       - vue-tsc
 
-  type-fest@5.9.0:
+  type-fest@5.10.0:
     dependencies:
       tagged-tag: 1.0.0
 
