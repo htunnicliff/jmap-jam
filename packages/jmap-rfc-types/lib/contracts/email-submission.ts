@@ -22,7 +22,10 @@ export declare namespace EmailSubmissionContracts {
   export namespace Get {
     export type Input = GetArguments<EmailSubmission>;
     export type Output<A> = GetResponse<EmailSubmission, A>;
-    export type Method = <const A extends Input>(args: A) => Output<A>;
+    export interface Contract {
+      input: Input;
+      output: Output<this["input"]>;
+    }
   }
 
   export namespace Set {
@@ -31,24 +34,36 @@ export declare namespace EmailSubmissionContracts {
       onSuccessDestroyEmail?: ID[] | null;
     };
     export type Output<A> = SetResponse<EmailSubmission, A>;
-    export type Method = <const A extends Input>(args: A) => Output<A>;
+    export interface Contract {
+      input: Input;
+      output: Output<this["input"]>;
+    }
   }
 
   export namespace Query {
     export type Input = QueryArguments<EmailSubmission, EmailSubmissionFilterCondition>;
     export type Output = QueryResponse;
-    export type Method = (args: Input) => Output;
+    export interface Contract {
+      input: Input;
+      output: Output;
+    }
   }
 
   export namespace QueryChanges {
     export type Input = QueryChangesArguments<EmailSubmission, EmailSubmissionFilterCondition>;
     export type Output = QueryChangesResponse;
-    export type Method = (args: Input) => Output;
+    export interface Contract {
+      input: Input;
+      output: Output;
+    }
   }
 
   export namespace Changes {
     export type Input = ChangesArguments;
     export type Output = ChangesResponse;
-    export type Method = (args: Input) => Output;
+    export interface Contract {
+      input: Input;
+      output: Output;
+    }
   }
 }

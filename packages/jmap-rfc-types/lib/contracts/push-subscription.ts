@@ -11,7 +11,10 @@ export declare namespace PushSubscriptionContracts {
   export namespace Get {
     export type Input = Omit<GetArguments<PushSubscription>, "accountId">;
     export type Output<A> = Omit<GetResponse<PushSubscription, A>, "state" | "accountId">;
-    export type Method = <const A extends Input>(args: A) => Output<A>;
+    export interface Contract {
+      input: Input;
+      output: Output<this["input"]>;
+    }
   }
 
   export namespace Set {
@@ -20,6 +23,9 @@ export declare namespace PushSubscriptionContracts {
       SetResponse<PushSubscription, A>,
       "accountId" | "oldState" | "newState"
     >;
-    export type Method = <const A extends Input>(args: A) => Output<A>;
+    export interface Contract {
+      input: Input;
+      output: Output<this["input"]>;
+    }
   }
 }

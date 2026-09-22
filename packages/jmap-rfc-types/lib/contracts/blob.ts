@@ -7,6 +7,9 @@ export declare namespace BlobContracts {
   export namespace Copy {
     export type Input = BlobCopyArguments;
     export type Output = BlobCopyResponse;
-    export type Method = (args: Input) => Output;
+    export interface Contract {
+      input: Input;
+      output: Output;
+    }
   }
 }

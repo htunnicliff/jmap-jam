@@ -51,13 +51,19 @@ export declare namespace EmailContracts {
 
     export type Input = GetEmailArguments;
     export type Output<A> = GetEmailResponse<A>;
-    export type Method = <const A extends Input>(args: A) => Output<A>;
+    export interface Contract {
+      input: Input;
+      output: Output<this["input"]>;
+    }
   }
 
   export namespace Changes {
     export type Input = ChangesArguments;
     export type Output = ChangesResponse;
-    export type Method = (args: Input) => Output;
+    export interface Contract {
+      input: Input;
+      output: Output;
+    }
   }
 
   export namespace Query {
@@ -65,7 +71,10 @@ export declare namespace EmailContracts {
       collapseThreads?: boolean;
     };
     export type Output = QueryResponse;
-    export type Method = (args: Input) => Output;
+    export interface Contract {
+      input: Input;
+      output: Output;
+    }
   }
 
   export namespace QueryChanges {
@@ -73,19 +82,28 @@ export declare namespace EmailContracts {
       collapseThreads?: boolean;
     };
     export type Output = QueryChangesResponse;
-    export type Method = (args: Input) => Output;
+    export interface Contract {
+      input: Input;
+      output: Output;
+    }
   }
 
   export namespace Set {
     export type Input = SetArguments<EmailCreate>;
     export type Output<A> = SetResponse<Email, A>;
-    export type Method = <const A extends Input>(args: A) => Output<A>;
+    export interface Contract {
+      input: Input;
+      output: Output<this["input"]>;
+    }
   }
 
   export namespace Copy {
     export type Input = CopyArguments<Pick<Email, "id" | "mailboxIds" | "keywords" | "receivedAt">>;
     export type Output = CopyResponse<Email>;
-    export type Method = (args: Input) => Output;
+    export interface Contract {
+      input: Input;
+      output: Output;
+    }
   }
 
   export namespace Import {
@@ -101,7 +119,10 @@ export declare namespace EmailContracts {
       created: Record<ID, Email> | null;
       notCreated: Record<ID, SetError> | null;
     };
-    export type Method = (args: Input) => Output;
+    export interface Contract {
+      input: Input;
+      output: Output;
+    }
   }
 
   export namespace Parse {
@@ -121,6 +142,9 @@ export declare namespace EmailContracts {
       notParsable: ID[] | null;
       notFound: ID[] | null;
     };
-    export type Method = (args: Input) => Output;
+    export interface Contract {
+      input: Input;
+      output: Output;
+    }
   }
 }

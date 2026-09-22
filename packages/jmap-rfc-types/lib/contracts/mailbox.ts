@@ -16,19 +16,28 @@ export declare namespace MailboxContracts {
   export namespace Get {
     export type Input = GetArguments<Mailbox>;
     export type Output<A> = GetResponse<Mailbox, A>;
-    export type Method = <const A extends Input>(args: A) => Output<A>;
+    export interface Contract {
+      input: Input;
+      output: Output<this["input"]>;
+    }
   }
 
   export namespace Set {
     export type Input = SetArguments<MailboxCreate> & { onDestroyRemoveEmails?: boolean };
     export type Output<A> = SetResponse<Mailbox, A>;
-    export type Method = <const A extends Input>(args: A) => Output<A>;
+    export interface Contract {
+      input: Input;
+      output: Output<this["input"]>;
+    }
   }
 
   export namespace Changes {
     export type Input = ChangesArguments;
     export type Output = ChangesResponse & { updatedProperties: Array<keyof Mailbox> | null };
-    export type Method = (args: Input) => Output;
+    export interface Contract {
+      input: Input;
+      output: Output;
+    }
   }
 
   export namespace Query {
@@ -37,12 +46,18 @@ export declare namespace MailboxContracts {
       filterAsTree?: boolean;
     };
     export type Output = QueryResponse;
-    export type Method = (args: Input) => Output;
+    export interface Contract {
+      input: Input;
+      output: Output;
+    }
   }
 
   export namespace QueryChanges {
     export type Input = QueryChangesArguments<Mailbox, MailboxFilterCondition>;
     export type Output = QueryChangesResponse;
-    export type Method = (args: Input) => Output;
+    export interface Contract {
+      input: Input;
+      output: Output;
+    }
   }
 }
