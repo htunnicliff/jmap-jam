@@ -532,7 +532,7 @@ export type GetResponse<T, Args> =
          * the response.
          */
         list: ReadonlyArray<
-          Args["properties"] extends Array<infer P extends keyof T> ? Pick<T, P> : T
+          Args["properties"] extends ReadonlyArray<infer P extends keyof T> ? Pick<T, P> : T
         >;
         /**
          * This array contains the ids passed to the method for records that
