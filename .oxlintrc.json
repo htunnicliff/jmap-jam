@@ -24,9 +24,6 @@
     // No max lines limit
     "max-lines": "allow",
 
-    // Use `type` instead of `interface`
-    "typescript/consistent-type-definitions": ["error", "type"],
-
     // No limit on dependency count
     "import/max-dependencies": "allow",
 
