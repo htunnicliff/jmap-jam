@@ -20,4 +20,12 @@ jobs:
 
       - run: pnpm install
 
-      - run: pnpm exec pkg-pr-new publish './packages/*'
+      - run: pnpm build
+
+      - run: | #shell
+          pnpm exec pkg-pr-new publish \
+            --packageManager=pnpm \
+            --commentWithSha \
+            --previewVersion \
+            --pnpm \
+            './packages/*'

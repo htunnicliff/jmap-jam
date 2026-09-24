@@ -3,14 +3,15 @@ import type {
   EmailBodyPart,
   EmailCreate,
   EmailFilterCondition,
-  EmailImport,
-  WithoutHeaders
+  EmailImport
 } from "../jmap-mail.ts";
 import type {
   ChangesArguments,
   ChangesResponse,
   CopyArguments,
   CopyResponse,
+  GetArguments,
+  GetResponse,
   ID,
   QueryArguments,
   QueryChangesArguments,
@@ -23,41 +24,27 @@ import type {
 
 export declare namespace EmailContracts {
   export namespace Get {
-    type GetEmailArguments = {
-      accountId: ID;
-      ids?: ReadonlyArray<ID> | null;
-      properties?: ReadonlyArray<keyof Email> | null;
+    export type Input = GetArguments<Email> & {
       bodyProperties?: Array<keyof EmailBodyPart>;
       fetchTextBodyValues?: boolean;
       fetchHTMLBodyValues?: boolean;
       fetchAllBodyValues?: boolean;
       maxBodyValueBytes?: number;
     };
-
-    type FilterEmailProperties<P extends GetEmailArguments["properties"]> = ReadonlyArray<
-      P extends ReadonlyArray<infer Prop extends string>
-        ? { [Key in Prop]: Key extends keyof Email ? Email[Key] : never }
-        : WithoutHeaders<Email>
-    >;
-
-    type GetEmailResponse<Args> = Args extends GetEmailArguments
-      ? {
-          accountId: ID;
-          state: string;
-          list: FilterEmailProperties<Args["properties"]>;
-          notFound: ReadonlyArray<ID>;
-        }
-      : never;
-
-    export type Input = GetEmailArguments;
-    export type Output<A> = GetEmailResponse<A>;
-    export type Method = <const A extends Input>(args: A) => Output<A>;
+    export type Output<A> = GetResponse<Email, A>;
+    export interface Contract {
+      input: Input;
+      output: Output<this["input"]>;
+    }
   }
 
   export namespace Changes {
     export type Input = ChangesArguments;
     export type Output = ChangesResponse;
-    export type Method = (args: Input) => Output;
+    export interface Contract {
+      input: Input;
+      output: Output;
+    }
   }
 
   export namespace Query {
@@ -65,7 +52,10 @@ export declare namespace EmailContracts {
       collapseThreads?: boolean;
     };
     export type Output = QueryResponse;
-    export type Method = (args: Input) => Output;
+    export interface Contract {
+      input: Input;
+      output: Output;
+    }
   }
 
   export namespace QueryChanges {
@@ -73,19 +63,28 @@ export declare namespace EmailContracts {
       collapseThreads?: boolean;
     };
     export type Output = QueryChangesResponse;
-    export type Method = (args: Input) => Output;
+    export interface Contract {
+      input: Input;
+      output: Output;
+    }
   }
 
   export namespace Set {
     export type Input = SetArguments<EmailCreate>;
     export type Output<A> = SetResponse<Email, A>;
-    export type Method = <const A extends Input>(args: A) => Output<A>;
+    export interface Contract {
+      input: Input;
+      output: Output<this["input"]>;
+    }
   }
 
   export namespace Copy {
     export type Input = CopyArguments<Pick<Email, "id" | "mailboxIds" | "keywords" | "receivedAt">>;
     export type Output = CopyResponse<Email>;
-    export type Method = (args: Input) => Output;
+    export interface Contract {
+      input: Input;
+      output: Output;
+    }
   }
 
   export namespace Import {
@@ -101,7 +100,10 @@ export declare namespace EmailContracts {
       created: Record<ID, Email> | null;
       notCreated: Record<ID, SetError> | null;
     };
-    export type Method = (args: Input) => Output;
+    export interface Contract {
+      input: Input;
+      output: Output;
+    }
   }
 
   export namespace Parse {
@@ -121,6 +123,9 @@ export declare namespace EmailContracts {
       notParsable: ID[] | null;
       notFound: ID[] | null;
     };
-    export type Method = (args: Input) => Output;
+    export interface Contract {
+      input: Input;
+      output: Output;
+    }
   }
 }

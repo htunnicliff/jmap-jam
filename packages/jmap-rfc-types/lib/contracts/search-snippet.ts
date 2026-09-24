@@ -18,6 +18,9 @@ export declare namespace SearchSnippetContracts {
       list: SearchSnippet[];
       notFound: ID[] | null;
     };
-    export type Method = (args: Input) => Output;
+    export interface Contract {
+      input: Input;
+      output: Output;
+    }
   }
 }
