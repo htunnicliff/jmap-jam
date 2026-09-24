@@ -1,5 +1,12 @@
 # jmap-jam
 
+## 0.13.8
+
+### Patch Changes
+
+- Updated dependencies [[`b98dd7a`](https://github.com/htunnicliff/jmap-jam/commit/b98dd7ab1a3cf6ec653c0c411932c75285e5cbd1)]:
+  - jmap-rfc-types@0.5.0
+
 ## 0.13.7
 
 ### Patch Changes
