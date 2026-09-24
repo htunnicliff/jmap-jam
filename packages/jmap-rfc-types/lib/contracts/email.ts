@@ -3,14 +3,15 @@ import type {
   EmailBodyPart,
   EmailCreate,
   EmailFilterCondition,
-  EmailImport,
-  WithoutHeaders
+  EmailImport
 } from "../jmap-mail.ts";
 import type {
   ChangesArguments,
   ChangesResponse,
   CopyArguments,
   CopyResponse,
+  GetArguments,
+  GetResponse,
   ID,
   QueryArguments,
   QueryChangesArguments,
@@ -23,34 +24,14 @@ import type {
 
 export declare namespace EmailContracts {
   export namespace Get {
-    type GetEmailArguments = {
-      accountId: ID;
-      ids?: ReadonlyArray<ID> | null;
-      properties?: ReadonlyArray<keyof Email> | null;
+    export type Input = GetArguments<Email> & {
       bodyProperties?: Array<keyof EmailBodyPart>;
       fetchTextBodyValues?: boolean;
       fetchHTMLBodyValues?: boolean;
       fetchAllBodyValues?: boolean;
       maxBodyValueBytes?: number;
     };
-
-    type FilterEmailProperties<P extends GetEmailArguments["properties"]> = ReadonlyArray<
-      P extends ReadonlyArray<infer Prop extends string>
-        ? { [Key in Prop]: Key extends keyof Email ? Email[Key] : never }
-        : WithoutHeaders<Email>
-    >;
-
-    type GetEmailResponse<Args> = Args extends GetEmailArguments
-      ? {
-          accountId: ID;
-          state: string;
-          list: FilterEmailProperties<Args["properties"]>;
-          notFound: ReadonlyArray<ID>;
-        }
-      : never;
-
-    export type Input = GetEmailArguments;
-    export type Output<A> = GetEmailResponse<A>;
+    export type Output<A> = GetResponse<Email, A>;
     export interface Contract {
       input: Input;
       output: Output<this["input"]>;
