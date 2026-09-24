@@ -1,5 +1,11 @@
 # jmap-rfc-types
 
+## 0.5.0
+
+### Minor Changes
+
+- [#400](https://github.com/htunnicliff/jmap-jam/pull/400) [`b98dd7a`](https://github.com/htunnicliff/jmap-jam/commit/b98dd7ab1a3cf6ec653c0c411932c75285e5cbd1) Thanks [@htunnicliff](https://github.com/htunnicliff)! - Adopt more accurate contract types using polymorphic this to preserve generic behavior
+
 ## 0.4.1
 
 ### Patch Changes
