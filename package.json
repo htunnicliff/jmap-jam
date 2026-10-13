@@ -22,5 +22,5 @@
     "pkg-pr-new": "0.0.91",
     "typescript": "catalog:"
   },
-  "packageManager": "pnpm@12.11.1"
+  "packageManager": "pnpm@12.11.2"
 }
