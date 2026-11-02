@@ -19,7 +19,7 @@
     "oxfmt": "0.75.0",
     "oxlint": "1.90.0",
     "oxlint-tsgolint": "7.0.2005",
-    "pkg-pr-new": "0.0.92",
+    "pkg-pr-new": "0.0.93",
     "typescript": "catalog:"
   },
   "packageManager": "pnpm@12.16.1"
