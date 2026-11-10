@@ -16,7 +16,7 @@
     "@changesets/cli": "3.0.3",
     "@types/node": "24.19.2",
     "cspell": "10.4.1",
-    "oxfmt": "0.76.0",
+    "oxfmt": "0.77.0",
     "oxlint": "1.92.0",
     "oxlint-tsgolint": "7.0.2006",
     "pkg-pr-new": "0.0.93",
