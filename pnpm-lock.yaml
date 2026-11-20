@@ -180,8 +180,8 @@ catalogs:
       specifier: 0.23.7
       version: 0.23.7
     type-fest:
-      specifier: '5'
-      version: 5.10.0
+      specifier: '6'
+      version: 6.0.3
     typescript:
       specifier: 6.0.3
       version: 6.0.3
@@ -228,7 +228,7 @@ importers:
         version: link:../jmap-rfc-types
       type-fest:
         specifier: 'catalog:'
-        version: 5.10.0
+        version: 6.0.3
     devDependencies:
       '@arethetypeswrong/core':
         specifier: 'catalog:'
@@ -247,7 +247,7 @@ importers:
     dependencies:
       type-fest:
         specifier: 'catalog:'
-        version: 5.10.0
+        version: 6.0.3
     devDependencies:
       typescript:
         specifier: 'catalog:'
@@ -1677,9 +1677,9 @@ packages:
   tslib@2.9.1:
     resolution: {integrity: sha512-a4Ux9VKuIMHsOS7ENbEq6hK2ZGYIT27Rtl0E4eD9KqwxhKiQeMZE/9xb3IdYwWaSOyIBQLExhQgXDTYoiCxnWA==}
 
-  type-fest@5.10.0:
-    resolution: {integrity: sha512-NoSdpq/WEiAg5sjmBkmV/hfxv6HJH4NqPNrqjtSO5CwRmpsDfaf4begxW34KdJykH/l1yHtwBWQkCRdoXO8mPA==}
-    engines: {node: '>=20'}
+  type-fest@6.0.3:
+    resolution: {integrity: sha512-MOJXegkac3h+sWdVb6VY/ACclsa71z3BprNpedGV8ljIzYCo+LRWgyIkWhidKNoiNJOb6kUds1pNCyzQ2p6hJQ==}
+    engines: {node: '>=22'}
 
   typescript@5.6.1-rc:
     resolution: {integrity: sha512-E3b2+1zEFu84jB0YQi9BORDjz9+jGbwwy1Zi3G0LUNw7a7cePUrHMRNy8aPh53nXpkFGVHSxIZo5vKTfYaFiBQ==}
@@ -3014,7 +3014,7 @@ snapshots:
   tslib@2.9.1:
     optional: true
 
-  type-fest@5.10.0:
+  type-fest@6.0.3:
     dependencies:
       tagged-tag: 1.0.0
 
