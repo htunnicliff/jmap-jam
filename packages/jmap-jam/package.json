@@ -1,7 +1,11 @@
 {
   "name": "jmap-jam",
   "version": "0.13.8",
-  "description": "A JMAP client library for Node.js and the browser.",
+  "description": "Deprecated: use json-meta-client. A JMAP client library for Node.js and the browser.",
+  "keywords": [
+    "deprecated"
+  ],
+  "homepage": "https://json-meta-client.dev/migrating-from-jmap-jam",
   "license": "MIT",
   "author": {
     "name": "Hunter Tunnicliff",

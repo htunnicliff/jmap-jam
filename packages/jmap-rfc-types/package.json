@@ -1,7 +1,11 @@
 {
   "name": "jmap-rfc-types",
   "version": "0.5.0",
-  "description": "TypeScript types for JMAP RFCs",
+  "description": "Deprecated: use json-meta-client. TypeScript types for JMAP RFCs",
+  "keywords": [
+    "deprecated"
+  ],
+  "homepage": "https://json-meta-client.dev/migrating-from-jmap-jam",
   "license": "MIT",
   "author": {
     "name": "Hunter Tunnicliff",

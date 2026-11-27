@@ -1,3 +1,10 @@
+> [!WARNING]
+> **jmap-jam is deprecated.** It has been succeeded by
+> [json-meta-client](https://json-meta-client.dev), and will not receive
+> new features or fixes. See the
+> [migration guide](https://json-meta-client.dev/migrating-from-jmap-jam)
+> to switch over.
+
 <div align="center">
   <img alt="Jam Illustration" src="/JMAP-Jam.png" height="100" />
   <h1 align="center">Jam: A JMAP Client</h1>
