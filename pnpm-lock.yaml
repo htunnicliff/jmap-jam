@@ -224,9 +224,6 @@ importers:
       oxlint-tsgolint:
         specifier: 7.0.2008
         version: 7.0.2008
-      pkg-pr-new:
-        specifier: 0.0.94
-        version: 0.0.94
       typescript:
         specifier: 'catalog:'
         version: 6.0.3
@@ -1543,10 +1540,6 @@ packages:
   picomatch@4.0.7:
     resolution: {integrity: sha512-qcJu88Q2IWqJsDD529JKMdwGm/dvInW4HvQnRwiH9JtihJvzGOscDtHE3x1pBKeUOTysQ8kVmLnJ2kJu7yhcGA==}
     engines: {node: '>=12'}
-
-  pkg-pr-new@0.0.94:
-    resolution: {integrity: sha512-+s3ZZl1Vt3wHfsIRH+chHG6/3wsu1N+Z5jitNYAPc0GGCYR8xmju34UShzTAMosi4WAYFCXvp80LZZc/fXSdpQ==}
-    hasBin: true
 
   postcss@8.5.33:
     resolution: {integrity: sha512-RVHEU9/Pp1Fnjr/MpAJsZoADukCKhfIi15OunEYiGktIkYLkPVvC1sioWolGDS7XByMTx9m/IGbro0Js13zhnQ==}
@@ -2889,8 +2882,6 @@ snapshots:
   picocolors@1.1.1: {}
 
   picomatch@4.0.7: {}
-
-  pkg-pr-new@0.0.94: {}
 
   postcss@8.5.33:
     dependencies:

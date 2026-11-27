@@ -1,4 +1,5 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["github>htunnicliff/renovate"]
+  "extends": ["github>htunnicliff/renovate"],
+  "enabled": false
 }
