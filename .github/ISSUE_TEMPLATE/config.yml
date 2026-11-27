@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Report a bug or request a feature in json-meta-client
+    url: https://github.com/htunnicliff/json-meta-client/issues/new/choose
+    about: jmap-jam is deprecated and no longer accepts new issues. Its successor, json-meta-client, is where bugs, fixes, and features go now.
+  - name: Migrate from jmap-jam
+    url: https://json-meta-client.dev/migrating-from-jmap-jam
+    about: Step-by-step guide to moving from jmap-jam and jmap-rfc-types to json-meta-client.
+  - name: Ask a migration question
+    url: https://github.com/htunnicliff/jmap-jam/issues/490
+    about: Comment on the sunset tracking issue with questions about moving off jmap-jam.
