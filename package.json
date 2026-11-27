@@ -17,7 +17,7 @@
     "@types/node": "24.19.2",
     "cspell": "10.5.2",
     "oxfmt": "0.80.0",
-    "oxlint": "1.94.0",
+    "oxlint": "1.95.0",
     "oxlint-tsgolint": "7.0.2008",
     "pkg-pr-new": "0.0.94",
     "typescript": "catalog:"
