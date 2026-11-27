@@ -217,15 +217,14 @@ export type Meta = {
 
 export type GetResult<Data, HandleErrors extends "throw" | "return"> = HandleErrors extends "throw"
   ? Data
-  :
-      | {
-          data: Data;
-          error: null;
-        }
-      | {
-          data: null;
-          error: ProblemDetails;
-        };
+  : | {
+        data: Data;
+        error: null;
+      }
+    | {
+        data: null;
+        error: ProblemDetails;
+      };
 
 /**
  * This is an interface for a Proxy-based API that functions similarly to this example:

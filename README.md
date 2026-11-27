@@ -1,3 +1,18 @@
+> [!TIP]
+> **jmap-jam has a successor: [json-meta-client](https://json-meta-client.dev)!**
+> It's a ground-up redesign built on everything learned from jmap-jam:
+>
+> - Typed support for all 12 stable JMAP RFCs, including mail, contacts, sharing, quotas, and Sieve
+> - Automatic batching of calls into a single request
+> - Improved experience for result references between calls
+> - More robust and clear error behavior
+> - Significantly improved event subscription experience
+> - WebSocket support (RFC 8887)
+> - Extensible with your own capabilities and methods, with the RFC types included
+> - Still zero runtime dependencies
+>
+> Ready to switch? The [migration guide](https://json-meta-client.dev/migrating-from-jmap-jam) shows each jmap-jam API next to its new equivalent, and the [playground](https://json-meta-client.dev/playground) lets you try it in your browser. jmap-jam is now deprecated.
+
 <div align="center">
   <img alt="Jam Illustration" src="/JMAP-Jam.png" height="100" />
   <h1 align="center">Jam: A JMAP Client</h1>

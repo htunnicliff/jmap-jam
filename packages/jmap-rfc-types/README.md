@@ -1,3 +1,7 @@
+> [!TIP]
+> **These types have a new home in [json-meta-client](https://json-meta-client.dev)!**
+> They now ship with the json-meta-client package as `json-meta-client/rfc-types`, and cover all 12 stable JMAP RFCs, up from 2 here. See the [Types section of the migration guide](https://json-meta-client.dev/migrating-from-jmap-jam#types) to switch over. jmap-rfc-types is now deprecated.
+
 # JMAP RFC Types
 
 <p align="center">
