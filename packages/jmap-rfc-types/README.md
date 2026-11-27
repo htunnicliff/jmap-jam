@@ -1,8 +1,7 @@
 > [!WARNING]
 > **jmap-rfc-types is deprecated.** These types now ship inside
 > [json-meta-client](https://json-meta-client.dev) as
-> `json-meta-client/rfc-types`, and this package will not receive new
-> features or fixes. See the
+> `json-meta-client/rfc-types`. See the
 > [Types section of the migration guide](https://json-meta-client.dev/migrating-from-jmap-jam#types)
 > to switch over.
 

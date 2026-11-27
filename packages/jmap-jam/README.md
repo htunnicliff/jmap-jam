@@ -1,7 +1,6 @@
 > [!WARNING]
 > **jmap-jam is deprecated.** It has been succeeded by
-> [json-meta-client](https://json-meta-client.dev), and will not receive
-> new features or fixes. See the
+> [json-meta-client](https://json-meta-client.dev). See the
 > [migration guide](https://json-meta-client.dev/migrating-from-jmap-jam)
 > to switch over.
 
