@@ -1,6 +1,6 @@
 {
   "name": "jmap-jam",
-  "version": "0.13.8",
+  "version": "0.13.9",
   "description": "Deprecated: use json-meta-client. A JMAP client library for Node.js and the browser.",
   "keywords": [
     "deprecated"
